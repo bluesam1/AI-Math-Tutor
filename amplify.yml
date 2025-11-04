@@ -3,10 +3,15 @@ frontend:
   phases:
     preBuild:
       commands:
+        - nvm use 18
+        - node --version
+        - npm --version
         - npm ci
     build:
       commands:
         - npm run build:web
+        - ls -la apps/web/dist/
+        - test -f apps/web/dist/index.html && echo "index.html found" || echo "index.html NOT found"
   artifacts:
     baseDirectory: apps/web/dist
     files:
