@@ -120,8 +120,8 @@ npm run lint
 
 Required environment variables are documented in `.env.example`. Create a `.env` file in the root directory with your configuration:
 
-- `AWS_REGION` - AWS region for deployment
-- `S3_BUCKET` - S3 bucket for frontend hosting
+- `AWS_REGION` - AWS region for deployment (default: us-east-1)
+- `AMPLIFY_APP_ID` - AWS Amplify App ID (for manual deployment)
 - `OPENAI_API_KEY` - OpenAI API key (for future stories)
 - `ANTHROPIC_API_KEY` - Anthropic API key (for future stories)
 - `REDIS_HOST` - ElastiCache Redis host (for future stories)
@@ -141,7 +141,37 @@ The project uses GitHub Actions for CI/CD:
 
 - **Deploy Workflow** (`.github/workflows/deploy.yaml`): Runs on push to main branch
   - Builds frontend
-  - Deploys to S3/CloudFront (to be configured)
+  - Deploys to AWS Amplify (configured for auto-deployment via Amplify Console)
+
+## Deployment
+
+### Frontend Deployment (AWS Amplify)
+
+The frontend is deployed to AWS Amplify:
+- **Build Command**: `npm run build:web`
+- **Output Directory**: `apps/web/dist`
+- **Configuration**: `amplify.yml` (build settings for monorepo)
+
+**Setup Instructions:**
+
+1. **Connect GitHub Repository to AWS Amplify:**
+   - Go to [AWS Amplify Console](https://console.aws.amazon.com/amplify/)
+   - Click "New app" → "Host web app"
+   - Select "GitHub" as the source
+   - Authorize and select this repository
+   - Select the `main` branch
+   - Amplify will automatically detect `amplify.yml` and configure the build
+
+2. **Manual Deployment (Optional):**
+   ```bash
+   npm install -g @aws-amplify/cli
+   amplify init
+   amplify publish
+   ```
+
+3. **Auto-Deployment:**
+   - Once connected, Amplify will automatically deploy on every push to `main`
+   - Build status and URL will be available in the Amplify Console
 
 ## TypeScript Configuration
 
@@ -163,16 +193,6 @@ All code must pass linting checks before merging.
 ## Testing
 
 Testing infrastructure will be set up in later stories. For now, the CI/CD pipeline will verify that builds complete successfully.
-
-## Deployment
-
-### Frontend Deployment
-
-The frontend is deployed to AWS S3 + CloudFront:
-
-- Build command: `npm run build:web`
-- Output directory: `apps/web/dist`
-- Deployment is automated via GitHub Actions (to be configured)
 
 ## Contributing
 
