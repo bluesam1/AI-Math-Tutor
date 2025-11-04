@@ -44,7 +44,6 @@ Edit `.env` with your configuration:
 NODE_ENV=development
 FRONTEND_URL=http://localhost:3000
 OPENAI_API_KEY=your-openai-api-key
-ANTHROPIC_API_KEY=your-anthropic-api-key
 ```
 
 ### 3. Build

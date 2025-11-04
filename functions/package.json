@@ -14,7 +14,8 @@
     "logs": "firebase functions:log",
     "logs:api": "firebase functions:log --only api",
     "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix"
+    "lint:fix": "eslint . --ext .ts --fix",
+    "type-check": "tsc --noEmit"
   },
   "engines": {
     "node": "20"

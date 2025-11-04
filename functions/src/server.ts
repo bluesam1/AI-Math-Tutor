@@ -42,11 +42,17 @@ app.use(errorHandler);
 // Firebase Functions handles the server lifecycle automatically
 // FUNCTION_TARGET is set by Firebase Functions runtime
 // FUNCTIONS_EMULATOR is set by Firebase emulators
-if (
+// K_SERVICE is set by Google Cloud Run (which Firebase Functions uses)
+// Only start server if explicitly running in standalone development mode
+// Use STANDALONE_MODE env var to explicitly enable standalone mode
+const isStandaloneMode =
+  process.env.STANDALONE_MODE === 'true' &&
   !process.env.FUNCTIONS_EMULATOR &&
   !process.env.FUNCTION_TARGET &&
-  process.env.NODE_ENV !== 'production'
-) {
+  !process.env.K_SERVICE &&
+  process.env.NODE_ENV !== 'production';
+
+if (isStandaloneMode) {
   const PORT = env.port;
   app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);

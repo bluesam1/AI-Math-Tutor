@@ -10,5 +10,4 @@ export interface EnvConfig {
   port: number;
   frontendUrl: string;
   openaiApiKey?: string;
-  anthropicApiKey?: string;
 }

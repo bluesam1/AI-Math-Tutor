@@ -1,6 +1,5 @@
 import React from 'react';
 import Layout from './components/Layout';
-import ApiConnectionTest from './components/ApiConnectionTest';
 import type { Message } from './types';
 
 const App: React.FC = () => {
@@ -71,19 +70,12 @@ const App: React.FC = () => {
   ];
 
   return (
-    <div className="h-screen flex flex-col">
-      <div className="p-4 border-b bg-gray-50">
-        <ApiConnectionTest />
-      </div>
-      <div className="flex-1">
-        <Layout
-          problem={sampleProblem}
-          problemType="word"
-          messages={sampleMessages}
-          emptyState={false}
-        />
-      </div>
-    </div>
+    <Layout
+      problem={sampleProblem}
+      problemType="word"
+      messages={sampleMessages}
+      emptyState={false}
+    />
   );
 };
 

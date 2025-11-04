@@ -130,7 +130,6 @@ Required environment variables are documented in `.env.example` files. Create `.
 - `NODE_ENV` - Environment (development, production)
 - `FRONTEND_URL` - Frontend origin for CORS (default: http://localhost:3000)
 - `OPENAI_API_KEY` - OpenAI API key (for future stories)
-- `ANTHROPIC_API_KEY` - Anthropic API key (for future stories)
 
 **Important**: Never commit `.env` files to the repository.
 

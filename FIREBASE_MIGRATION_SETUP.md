@@ -54,7 +54,6 @@ Edit `functions/.env` and add your values:
 NODE_ENV=development
 FRONTEND_URL=http://localhost:3000
 OPENAI_API_KEY=your-openai-api-key
-ANTHROPIC_API_KEY=your-anthropic-api-key
 ```
 
 ### 5. Test Locally with Emulators

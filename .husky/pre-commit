@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-# Run TypeScript type checking for web and api workspaces
+# Run TypeScript type checking for web and functions workspaces
 echo "🔍 Running TypeScript type checks..."
-npm run type-check:web && npm run type-check:api
+npm run type-check:web && npm run type-check:functions

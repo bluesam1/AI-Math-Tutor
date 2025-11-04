@@ -8,11 +8,25 @@
 // In development with emulators, use localhost:5000 (Firebase Hosting emulator)
 // In production, this will be the Firebase Hosting domain
 const getApiBaseUrl = (): string => {
-  // Check for Vite environment variable
+  // Prefer explicit environment variable (build-time override)
   if (import.meta.env?.VITE_API_URL) {
     return import.meta.env.VITE_API_URL;
   }
-  // Default to Firebase Hosting emulator in development
+
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    const isHostedEnvironment =
+      hostname.endsWith('web.app') ||
+      hostname.endsWith('firebaseapp.com') ||
+      hostname.endsWith('.run.app');
+
+    if (isHostedEnvironment) {
+      // Use Hosting rewrite `/api` → Cloud Function
+      return '/api';
+    }
+  }
+
+  // Fallback to local emulator (default dev experience)
   return 'http://localhost:5000/api';
 };
 
