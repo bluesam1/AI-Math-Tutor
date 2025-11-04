@@ -18,38 +18,40 @@ The PRD specifies a monorepo structure combining frontend and backend code in a 
 | ---------- | ------- | ------------------------------------------------------------------ | --------- |
 | 2025-01-XX | 1.0     | Initial architecture document created                              | Architect |
 | 2025-01-XX | 1.1     | Updated scope to 6th grade math, added developer testing interface | Architect |
+| 2025-11-04 | 1.2     | Migrated from AWS (Lambda, S3, CloudFront, ElastiCache) to Firebase (Functions, Hosting, Firestore) | Architect |
 
 ## High Level Architecture
 
 ### Technical Summary
 
-AI Math Tutor uses a serverless fullstack architecture with AWS Lambda functions for backend API endpoints, paired with a React frontend deployed as static assets. The system follows a monorepo structure combining frontend and backend TypeScript code in a single repository, enabling shared types and utilities across the stack. The architecture leverages AWS services (S3, CloudFront, API Gateway, ElastiCache/DynamoDB) for scalable, cost-effective deployment while maintaining clean separation between frontend UI, backend API services, and session management. The system integrates with OpenAI Vision API for image parsing and LLM APIs (OpenAI GPT-4 or Claude) for Socratic dialogue generation, with enforced answer detection guardrails ensuring pedagogical quality. The system is specifically designed for 6th grade mathematics (ages 11-12), focusing on core 6th grade math topics including operations with fractions and decimals, ratios and proportions, integers, introductory algebra, basic geometry, and multi-step word problems. A developer testing interface (development-only) enables streamlined testing workflows for rapid validation across all problem types and edge cases. This serverless approach provides the scalability and cost-effectiveness needed for an MVP while supporting the requirement for sub-3-second LLM response times and maintaining conversation context across 10+ message exchanges.
+AI Math Tutor uses a serverless fullstack architecture with Firebase Cloud Functions for backend API endpoints, paired with a React frontend deployed as static assets. The system follows a monorepo structure combining frontend and backend TypeScript code in a single repository, enabling shared types and utilities across the stack. The architecture leverages Firebase services (Hosting, Cloud Functions, Firestore) for scalable, cost-effective deployment while maintaining clean separation between frontend UI, backend API services, and session management. The system integrates with OpenAI Vision API for image parsing and LLM APIs (OpenAI GPT-4 or Claude) for Socratic dialogue generation, with enforced answer detection guardrails ensuring pedagogical quality. The system is specifically designed for 6th grade mathematics (ages 11-12), focusing on core 6th grade math topics including operations with fractions and decimals, ratios and proportions, integers, introductory algebra, basic geometry, and multi-step word problems. A developer testing interface (development-only) enables streamlined testing workflows for rapid validation across all problem types and edge cases. This serverless approach provides the scalability and cost-effectiveness needed for an MVP while supporting the requirement for sub-3-second LLM response times and maintaining conversation context across 10+ message exchanges.
 
 ### Platform and Infrastructure Choice
 
-**Platform:** AWS Full Stack
+**Platform:** Firebase Full Stack
 
 **Key Services:**
 
-- **Frontend:** AWS S3 + CloudFront (or AWS Amplify for full-stack deployment)
-- **Backend:** AWS Lambda (serverless) for API endpoints
-- **Session Storage:** AWS ElastiCache (Redis) for in-memory session management (last 10 messages)
-- **API Gateway:** AWS API Gateway for API routing, rate limiting, and request management
-- **CDN:** CloudFront for static asset delivery and edge caching
+- **Frontend:** Firebase Hosting with global CDN distribution
+- **Backend:** Firebase Cloud Functions (serverless) for API endpoints with Express app integration
+- **Session Storage:** Firestore for session management (last 10 messages) with TTL policies
+- **API Routing:** Firebase Hosting rewrites for API routing, connecting frontend to Cloud Functions
+- **CDN:** Firebase Hosting global CDN for static asset delivery and edge caching
 
 **Deployment Host and Regions:**
 
-- Primary: US East (N. Virginia) us-east-1
-- CDN: CloudFront global distribution
+- Primary: us-central1 (Firebase Cloud Functions region)
+- CDN: Firebase Hosting global distribution
 
 **Rationale:**
-The PRD explicitly specifies AWS infrastructure with serverless architecture. AWS provides:
+Firebase provides integrated serverless architecture with unified deployment:
 
 - **Cost-effectiveness for MVP:** Pay-per-use model ideal for initial deployment
-- **Scalability:** Auto-scaling Lambda functions handle variable load
-- **Integration:** Seamless integration between S3, CloudFront, API Gateway, and Lambda
-- **Session Management:** ElastiCache (Redis) provides fast in-memory storage for session context (last 10 messages)
-- **Alternative Considered:** Vercel + Supabase was considered but PRD constraints specify AWS
+- **Scalability:** Auto-scaling Cloud Functions handle variable load
+- **Integration:** Seamless integration between Hosting, Functions, and Firestore
+- **Session Management:** Firestore provides fast storage for session context (last 10 messages) with TTL policies for automatic cleanup
+- **Unified Deployment:** Single CLI tool (Firebase CLI) for deploying functions, hosting, and database
+- **Local Development:** Firebase emulators provide local testing environment
 
 ### Repository Structure
 
@@ -82,24 +84,17 @@ graph TB
         Browser[Web Browser<br/>React App]
     end
 
-    subgraph "AWS Infrastructure"
+    subgraph "Firebase Infrastructure"
         subgraph "Frontend"
-            S3[S3 Bucket<br/>Static Assets]
-            CF[CloudFront<br/>CDN]
-        end
-
-        subgraph "API Layer"
-            APIGW[API Gateway<br/>Routing & Rate Limiting]
+            Hosting[Firebase Hosting<br/>Static Assets + CDN]
         end
 
         subgraph "Backend Services"
-            Lambda1[Lambda: Problem Input<br/>Image Parsing]
-            Lambda2[Lambda: Socratic Dialogue<br/>LLM Integration]
-            Lambda3[Lambda: Answer Detection<br/>Guardrails]
+            Functions[Cloud Functions<br/>Express API<br/>Problem Input, Dialogue, Detection]
         end
 
         subgraph "Session Storage"
-            Redis[ElastiCache Redis<br/>Session Context]
+            Firestore[Firestore<br/>Session Context<br/>TTL Policies]
         end
     end
 
@@ -108,30 +103,27 @@ graph TB
         LLMAPI[LLM API<br/>OpenAI GPT-4/Claude]
     end
 
-    Browser -->|HTTPS| CF
-    CF -->|Static Assets| S3
-    Browser -->|API Requests| APIGW
-    APIGW -->|Route| Lambda1
-    APIGW -->|Route| Lambda2
-    APIGW -->|Route| Lambda3
-    Lambda1 -->|Parse Image| VisionAPI
-    Lambda2 -->|Generate Dialogue| LLMAPI
-    Lambda3 -->|Validate Response| LLMAPI
-    Lambda2 -->|Store Context| Redis
-    Lambda2 -->|Retrieve Context| Redis
+    Browser -->|HTTPS| Hosting
+    Browser -->|API Requests<br/>/api/**| Hosting
+    Hosting -->|Rewrite| Functions
+    Functions -->|Parse Image| VisionAPI
+    Functions -->|Generate Dialogue| LLMAPI
+    Functions -->|Validate Response| LLMAPI
+    Functions -->|Store Context| Firestore
+    Functions -->|Retrieve Context| Firestore
 ```
 
 ### Architectural Patterns
 
-- **Serverless Architecture:** Backend deployed as AWS Lambda functions - _Rationale:_ Cost-effective for MVP, auto-scaling, pay-per-use model, eliminates server management overhead
+- **Serverless Architecture:** Backend deployed as Firebase Cloud Functions - _Rationale:_ Cost-effective for MVP, auto-scaling, pay-per-use model, eliminates server management overhead
 
-- **Jamstack Architecture:** Static frontend with serverless APIs - _Rationale:_ Optimal performance through static asset delivery via CloudFront, reduced backend load, improved security
+- **Jamstack Architecture:** Static frontend with serverless APIs - _Rationale:_ Optimal performance through static asset delivery via Firebase Hosting CDN, reduced backend load, improved security
 
 - **Component-Based UI:** React functional components with TypeScript - _Rationale:_ Maintainability, reusability, type safety across UI components, aligns with modern React best practices
 
 - **Repository Pattern:** Abstract data access for session management - _Rationale:_ Enables testing with mock implementations, future flexibility for storage backend changes
 
-- **API Gateway Pattern:** Single entry point via AWS API Gateway - _Rationale:_ Centralized authentication, rate limiting, request routing, monitoring, and CORS handling
+- **Firebase Hosting Rewrites:** API routing via Firebase Hosting rewrites - _Rationale:_ Unified deployment, seamless integration between frontend and backend, automatic SSL and CDN distribution
 
 - **Two-Tier Guardrail Pattern:** Keyword-based + LLM-based answer detection - _Rationale:_ Defense in depth approach ensures 100% Socratic compliance, catches both explicit and implicit answers
 
@@ -218,12 +210,9 @@ This section documents all technical dependencies, their versions, compatibility
 | typescript                  | ^5.3.0    | Type checking          | -                   | Shared with frontend                        |
 | @types/express              | ^4.17.0   | TypeScript types       | express, typescript | Express type definitions                    |
 | @types/node                 | ^20.0.0   | Node.js types          | typescript          | Node.js type definitions                    |
-| aws-sdk                     | ^2.1500.0 | AWS SDK v2             | -                   | AWS service integration                     |
-| @aws-sdk/client-s3          | ^3.0.0    | AWS S3 client          | -                   | Alternative: AWS SDK v3 (modular)           |
-| @aws-sdk/client-lambda      | ^3.0.0    | AWS Lambda client      | -                   | Alternative: AWS SDK v3 (modular)           |
-| @aws-sdk/client-elasticache | ^3.0.0    | AWS ElastiCache client | -                   | Alternative: AWS SDK v3 (modular)           |
-| ioredis                     | ^5.3.0    | Redis client           | -                   | For ElastiCache (Redis) connection          |
-| @types/ioredis              | ^5.0.0    | TypeScript types       | ioredis, typescript | Redis type definitions                      |
+| firebase-admin              | ^12.0.0   | Firebase Admin SDK     | -                   | Server-side Firebase operations             |
+| firebase-functions          | ^5.0.0    | Firebase Functions SDK  | -                   | Cloud Functions integration                  |
+| @firebase/firestore         | ^4.0.0    | Firestore client       | -                   | Firestore session storage                   |
 | openai                      | ^4.0.0    | OpenAI API client      | -                   | For Vision API and LLM API                  |
 | @anthropic-ai/sdk           | ^0.9.0    | Anthropic Claude API   | -                   | Alternative LLM provider                    |
 | cors                        | ^2.8.5    | CORS middleware        | express             | Required for frontend-backend communication |
@@ -235,9 +224,9 @@ This section documents all technical dependencies, their versions, compatibility
 **Backend Dependency Compatibility Notes:**
 
 - Express 4.x is stable and well-tested
-- AWS SDK: Choose either v2 (aws-sdk) or v3 (modular @aws-sdk/client-\* packages)
-  - **Recommendation:** Use AWS SDK v3 for better tree-shaking and smaller bundle size
-- ioredis 5.x is latest stable for Redis connections
+- Firebase Admin SDK 12.x is latest for server-side operations
+- Firebase Functions 5.x is latest for Cloud Functions v2
+- Firestore client 4.x is latest for session storage
 - OpenAI SDK 4.x is latest for GPT-4 and Vision API
 - Anthropic SDK 0.9.x is latest for Claude API (alternative provider)
 
@@ -284,21 +273,19 @@ This section documents all technical dependencies, their versions, compatibility
 
 | Service                 | Version/Region | Purpose              | Dependencies     | Notes                      |
 | ----------------------- | -------------- | -------------------- | ---------------- | -------------------------- |
-| AWS S3                  | Latest         | Static asset hosting | -                | Frontend deployment        |
-| AWS CloudFront          | Latest         | CDN distribution     | AWS S3           | Global content delivery    |
-| AWS Lambda              | Latest         | Serverless functions | AWS API Gateway  | Backend API endpoints      |
-| AWS API Gateway         | Latest         | API routing          | AWS Lambda       | API request routing        |
-| AWS ElastiCache (Redis) | Latest         | Session storage      | -                | In-memory session context  |
-| AWS IAM                 | Latest         | Access control       | All AWS services | Security and permissions   |
+| Firebase Hosting        | Latest         | Static asset hosting | -                | Frontend deployment with CDN |
+| Firebase Cloud Functions | Latest         | Serverless functions | Firebase Hosting | Backend API endpoints      |
+| Firestore               | Latest         | Session storage      | -                | Session context with TTL   |
+| Firebase Hosting Rewrites | Latest       | API routing          | Cloud Functions  | API request routing        |
 | OpenAI API              | Latest         | Vision + LLM APIs    | -                | Image parsing and dialogue |
 | Anthropic Claude API    | Latest         | Alternative LLM      | -                | Alternative LLM provider   |
 
 **Infrastructure Dependency Compatibility Notes:**
 
-- All AWS services use latest versions (managed services)
-- AWS SDK must be compatible with service APIs
+- All Firebase services use latest versions (managed services)
+- Firebase Admin SDK must be compatible with service APIs
 - OpenAI and Anthropic APIs are versioned independently
-- Region: us-east-1 (primary) for cost-effectiveness
+- Region: us-central1 (primary) for Firebase Functions
 
 #### Shared Dependencies (Monorepo Root)
 
@@ -957,7 +944,7 @@ components:
 
 ### Backend Components
 
-#### ProblemInputHandler Lambda
+#### ProblemInputHandler (Express Route)
 
 **Responsibility:** Processes text input and image uploads, validates problems
 
@@ -968,9 +955,9 @@ components:
 
 **Dependencies:** OpenAI Vision API client, LLM API client for validation
 
-**Technology Stack:** Node.js + TypeScript, Express, AWS Lambda
+**Technology Stack:** Node.js + TypeScript, Express, Firebase Cloud Functions
 
-#### SocraticDialogueHandler Lambda
+#### SocraticDialogueHandler (Express Route)
 
 **Responsibility:** Generates Socratic dialogue responses using LLM
 
@@ -980,7 +967,7 @@ components:
 
 **Dependencies:** LLM API client, Context management service, Answer detection service
 
-**Technology Stack:** Node.js + TypeScript, Express, AWS Lambda
+**Technology Stack:** Node.js + TypeScript, Express, Firebase Cloud Functions
 
 #### AnswerDetectionService
 
@@ -1004,9 +991,9 @@ components:
 - `addMessage(sessionId: string, message: Message): Promise<void>` - Add message to context
 - `setProblem(sessionId: string, problem: Problem): Promise<void>` - Set current problem
 
-**Dependencies:** Redis client (ElastiCache)
+**Dependencies:** Firestore Admin SDK
 
-**Technology Stack:** Node.js + TypeScript, Redis client
+**Technology Stack:** Node.js + TypeScript, Firestore
 
 #### TestingService (Development Only)
 
@@ -1021,7 +1008,7 @@ components:
 
 **Dependencies:** Test fixtures, test utilities, answer detection service
 
-**Technology Stack:** Node.js + TypeScript, Express, AWS Lambda
+**Technology Stack:** Node.js + TypeScript, Express, Firebase Cloud Functions
 
 **Access Control:** Only accessible in development environment, disabled in production
 
@@ -1037,7 +1024,7 @@ graph TB
         DTI[DeveloperTestingInterface<br/>Dev Only]
     end
 
-    subgraph "Backend (Lambda)"
+    subgraph "Backend (Firebase Functions)"
         PIH[ProblemInputHandler]
         SDH[SocraticDialogueHandler]
         ADS[AnswerDetectionService]
@@ -1047,7 +1034,7 @@ graph TB
     subgraph "External Services"
         VisionAPI[OpenAI Vision API]
         LLMAPI[LLM API]
-        Redis[ElastiCache Redis]
+        Firestore[Firestore]
     end
 
     PI -->|POST /api/problem/parse-image| PIH
@@ -1057,7 +1044,7 @@ graph TB
     SDH -->|Validate Response| ADS
     ADS -->|Check Answer| LLMAPI
     SDH -->|Store Context| CMS
-    CMS -->|Get/Set Context| Redis
+    CMS -->|Get/Set Context| Firestore
     PIH -->|Parse Image| VisionAPI
     PIH -->|Validate Problem| LLMAPI
     DTI -->|Load Test Problems| PIH
@@ -1119,22 +1106,22 @@ graph TB
 sequenceDiagram
     participant User
     participant Frontend
-    participant API Gateway
+    participant Hosting
     participant ProblemInputHandler
     participant VisionAPI
     participant LLMAPI
-    participant Redis
+    participant Firestore
 
     User->>Frontend: Upload image or enter text
-    Frontend->>API Gateway: POST /api/problem/parse-image (if image)
-    API Gateway->>ProblemInputHandler: Route request
+    Frontend->>Hosting: POST /api/problem/parse-image (if image)
+    Hosting->>ProblemInputHandler: Rewrite to Function
     ProblemInputHandler->>VisionAPI: Parse image text
     VisionAPI-->>ProblemInputHandler: Extracted text
     ProblemInputHandler->>LLMAPI: Validate problem & identify type
     LLMAPI-->>ProblemInputHandler: Validation result
-    ProblemInputHandler->>Redis: Store problem in session
-    ProblemInputHandler-->>API Gateway: Problem validated
-    API Gateway-->>Frontend: Problem data
+    ProblemInputHandler->>Firestore: Store problem in session
+    ProblemInputHandler-->>Hosting: Problem validated
+    Hosting-->>Frontend: Problem data
     Frontend->>Frontend: Display problem on left panel
     Frontend->>Frontend: Initialize chat interface
 ```
@@ -1145,17 +1132,17 @@ sequenceDiagram
 sequenceDiagram
     participant User
     participant Frontend
-    participant API Gateway
+    participant Hosting
     participant DialogueHandler
     participant LLMAPI
     participant AnswerDetection
-    participant Redis
+    participant Firestore
 
     User->>Frontend: Send message
-    Frontend->>API Gateway: POST /api/chat/message
-    API Gateway->>DialogueHandler: Route request
-    DialogueHandler->>Redis: Retrieve session context (last 10 messages)
-    Redis-->>DialogueHandler: Context data
+    Frontend->>Hosting: POST /api/chat/message
+    Hosting->>DialogueHandler: Rewrite to Function
+    DialogueHandler->>Firestore: Retrieve session context (last 10 messages)
+    Firestore-->>DialogueHandler: Context data
     DialogueHandler->>LLMAPI: Generate Socratic response
     LLMAPI-->>DialogueHandler: Response text
     DialogueHandler->>AnswerDetection: Check for direct answers
@@ -1166,49 +1153,56 @@ sequenceDiagram
         DialogueHandler->>LLMAPI: Rewrite as Socratic question
         LLMAPI-->>DialogueHandler: Rewritten response
     end
-    DialogueHandler->>Redis: Store message in context
-    DialogueHandler-->>API Gateway: Socratic response
-    API Gateway-->>Frontend: Response data
+    DialogueHandler->>Firestore: Store message in context
+    DialogueHandler-->>Hosting: Socratic response
+    Hosting-->>Frontend: Response data
     Frontend->>Frontend: Display response with visual feedback
 ```
 
 ## Database Schema
 
-Since the system uses in-memory session storage (Redis) with no persistent database, the schema is defined as Redis data structures:
+Since the system uses Firestore for session storage with TTL policies, the schema is defined as Firestore collections:
 
-### Redis Schema
+### Firestore Schema
 
-**Session Storage (Hash):**
+**Session Storage (Collection):**
 
-- Key: `session:{sessionId}`
+- Collection: `sessions`
+- Document ID: `{sessionId}`
 - Fields:
   - `sessionId`: string
-  - `problem`: JSON string (Problem object)
-  - `messages`: JSON array (Message[] array, max 10 items)
-  - `createdAt`: ISO timestamp string
-  - `lastActivityAt`: ISO timestamp string
+  - `problem`: Problem object (or null)
+  - `messages`: Message[] array (max 10 items)
+  - `createdAt`: Timestamp
+  - `lastActivityAt`: Timestamp
+  - `expiresAt`: Timestamp (for TTL policy)
 
 **Session Expiration:**
 
 - TTL: 30 minutes of inactivity (configurable)
-- Automatic cleanup via Redis TTL
+- Automatic cleanup via Firestore TTL policy
 
-**Example Redis Structure:**
+**Example Firestore Structure:**
 
 ```
-session:abc123
-  sessionId: "abc123"
-  problem: '{"id":"prob1","text":"Solve 2x + 5 = 13","type":"algebra",...}'
-  messages: '[{"id":"msg1","role":"user","content":"What is x?",...},...]'
-  createdAt: "2025-01-XXT10:00:00Z"
-  lastActivityAt: "2025-01-XXT10:15:00Z"
+sessions/
+  abc123/
+    sessionId: "abc123"
+    problem: { id: "prob1", text: "Solve 2x + 5 = 13", type: "algebra", ... }
+    messages: [
+      { id: "msg1", role: "user", content: "What is x?", ... },
+      ...
+    ]
+    createdAt: Timestamp(2025-01-XXT10:00:00Z)
+    lastActivityAt: Timestamp(2025-01-XXT10:15:00Z)
+    expiresAt: Timestamp(2025-01-XXT10:45:00Z)  // TTL field
 ```
 
 **Rationale:**
 
 - No persistent storage required per PRD
-- Fast in-memory access for session context
-- Automatic expiration prevents data accumulation
+- Fast access for session context
+- Automatic expiration via TTL policies prevents data accumulation
 - Cost-effective for anonymous sessions
 
 ## Frontend Architecture
@@ -1450,128 +1444,122 @@ export const testingService = {
 
 #### Serverless Architecture (Lambda Functions)
 
-Since the architecture uses serverless AWS Lambda functions, the backend is organized as Lambda handlers:
+Since the architecture uses serverless Firebase Cloud Functions, the backend is organized as Express app routes integrated with Cloud Functions:
 
 ##### Function Organization
 
 ```
-apps/api/src/
-├── functions/
-│   ├── problemInput/
-│   │   ├── handler.ts
-│   │   ├── parseImage.ts
-│   │   └── validateProblem.ts
-│   ├── socraticDialogue/
-│   │   ├── handler.ts
-│   │   ├── generateDialogue.ts
-│   │   └── manageContext.ts
-│   ├── health/
-│   │   └── handler.ts
-│   └── testing/
-│       ├── handler.ts
-│       ├── getTestFixtures.ts
-│       ├── runScenario.ts
-│       └── runBatch.ts
-├── services/
-│   ├── vision/
-│   │   └── visionApi.ts
-│   ├── llm/
-│   │   └── llmApi.ts
-│   ├── answerDetection/
-│   │   ├── keywordDetection.ts
-│   │   └── llmValidation.ts
-│   ├── context/
-│   │   └── contextService.ts
-│   └── testing/
-│       ├── testFixtures.ts
-│       ├── scenarioRunner.ts
-│       └── testValidator.ts
-├── middleware/
-│   ├── errorHandler.ts
-│   ├── cors.ts
-│   └── validation.ts
-├── types/
-│   ├── problem.ts
-│   ├── message.ts
-│   └── session.ts
-└── utils/
-    ├── logger.ts
-    └── config.ts
+functions/
+├── index.ts              # Firebase Functions entry point
+├── src/
+│   ├── server.ts         # Express app
+│   ├── routes/
+│   │   ├── health.ts
+│   │   ├── problem.ts
+│   │   └── chat.ts
+│   ├── controllers/
+│   │   ├── healthController.ts
+│   │   ├── problemController.ts
+│   │   └── chatController.ts
+│   ├── services/
+│   │   ├── vision/
+│   │   │   └── visionApi.ts
+│   │   ├── llm/
+│   │   │   └── llmApi.ts
+│   │   ├── answerDetection/
+│   │   │   ├── keywordDetection.ts
+│   │   │   └── llmValidation.ts
+│   │   ├── context/
+│   │   │   └── contextService.ts
+│   │   └── testing/
+│   │       ├── testFixtures.ts
+│   │       ├── scenarioRunner.ts
+│   │       └── testValidator.ts
+│   ├── middleware/
+│   │   ├── errorHandler.ts
+│   │   ├── cors.ts
+│   │   └── validation.ts
+│   ├── types/
+│   │   ├── problem.ts
+│   │   ├── message.ts
+│   │   └── session.ts
+│   └── utils/
+│       ├── logger.ts
+│       └── config.ts
+└── lib/                   # Compiled JavaScript
 ```
 
 ##### Function Template
 
 ```typescript
-// apps/api/src/functions/socraticDialogue/handler.ts
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { generateDialogue } from './generateDialogue';
-import { errorHandler } from '../../middleware/errorHandler';
+// functions/index.ts
+import { onRequest } from 'firebase-functions/v2/https';
+import app from './src/server';
 
-export const handler = async (
-  event: APIGatewayProxyEvent
-): Promise<APIGatewayProxyResult> => {
-  try {
-    const { sessionId, message, problemId } = JSON.parse(event.body || '{}');
+// Export Express app as Firebase Function
+export const api = onRequest(
+  {
+    region: 'us-central1',
+    memory: '512MiB',
+    timeoutSeconds: 30,
+  },
+  app
+);
 
-    // Validate input
-    if (!sessionId || !message) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: 'Missing required fields' }),
-      };
-    }
+// Express app handles all routes
+// functions/src/server.ts
+import express from 'express';
+import healthRoutes from './routes/health';
+import problemRoutes from './routes/problem';
+import chatRoutes from './routes/chat';
 
-    // Generate Socratic dialogue
-    const response = await generateDialogue(sessionId, message, problemId);
-
-    return {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-      body: JSON.stringify(response),
-    };
-  } catch (error) {
-    return errorHandler(error);
-  }
-};
+const app = express();
+app.use('/api', healthRoutes);
+app.use('/api/problem', problemRoutes);
+app.use('/api/chat', chatRoutes);
+export default app;
 ```
 
 ### Database Architecture
 
 #### Schema Design
 
-N/A - No persistent database. Session storage uses Redis (ElastiCache) with hash structure as defined in Database Schema section.
+N/A - No persistent database. Session storage uses Firestore with TTL policies. Schema structure:
+
+```
+sessions/
+  {sessionId}/
+    createdAt: timestamp
+    lastActivity: timestamp
+    expiresAt: timestamp  // For TTL-based cleanup
+    messages: [
+      { messageId, role, content, timestamp }
+    ]
+    problem: { problemType, problemText, ... }
+```
 
 #### Data Access Layer
 
 ```typescript
-// apps/api/src/services/context/contextService.ts
-import { Redis } from 'ioredis';
+// functions/src/services/context/contextService.ts
+import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { Session, Message, Problem } from '../../types';
 
 export class ContextService {
-  private redis: Redis;
-
-  constructor() {
-    this.redis = new Redis({
-      host: process.env.REDIS_HOST,
-      port: parseInt(process.env.REDIS_PORT || '6379'),
-    });
-  }
+  private db = getFirestore();
 
   async getContext(sessionId: string): Promise<Session | null> {
-    const data = await this.redis.hgetall(`session:${sessionId}`);
-    if (!data || Object.keys(data).length === 0) {
+    const doc = await this.db.collection('sessions').doc(sessionId).get();
+    if (!doc.exists) {
       return null;
     }
+    const data = doc.data();
     return {
-      sessionId: data.sessionId,
-      problem: data.problem ? JSON.parse(data.problem) : null,
-      messages: data.messages ? JSON.parse(data.messages) : [],
-      createdAt: new Date(data.createdAt),
-      lastActivityAt: new Date(data.lastActivityAt),
+      sessionId: data!.sessionId,
+      problem: data!.problem || null,
+      messages: data!.messages || [],
+      createdAt: data!.createdAt.toDate(),
+      lastActivityAt: data!.lastActivityAt.toDate(),
     };
   }
 
@@ -1592,16 +1580,16 @@ export class ContextService {
 
     session.lastActivityAt = new Date();
 
-    await this.redis.hset(`session:${sessionId}`, {
+    await this.db.collection('sessions').doc(sessionId).set({
       sessionId: session.sessionId,
-      problem: session.problem ? JSON.stringify(session.problem) : '',
-      messages: JSON.stringify(session.messages),
-      createdAt: session.createdAt.toISOString(),
-      lastActivityAt: session.lastActivityAt.toISOString(),
-    });
+      problem: session.problem,
+      messages: session.messages,
+      createdAt: Timestamp.fromDate(session.createdAt),
+      lastActivityAt: Timestamp.fromDate(session.lastActivityAt),
+      expiresAt: Timestamp.fromDate(new Date(Date.now() + 30 * 60 * 1000)), // 30 minutes TTL
+    }, { merge: true });
 
-    // Set TTL to 30 minutes
-    await this.redis.expire(`session:${sessionId}`, 1800);
+    // TTL policy configured in Firestore for automatic cleanup
   }
 }
 ```
@@ -1834,16 +1822,17 @@ REGION=us-east-1
 
 **Frontend Deployment:**
 
-- **Platform:** AWS S3 + CloudFront
+- **Platform:** Firebase Hosting
 - **Build Command:** `npm run build:web`
 - **Output Directory:** `apps/web/dist`
-- **CDN/Edge:** CloudFront distribution for global content delivery
+- **CDN/Edge:** Firebase Hosting global CDN distribution
 
 **Backend Deployment:**
 
-- **Platform:** AWS Lambda (serverless)
-- **Build Command:** `npm run build:api`
-- **Deployment Method:** Serverless Framework or AWS CDK
+- **Platform:** Firebase Cloud Functions (serverless)
+- **Build Command:** `npm run build:functions`
+- **Deployment Method:** Firebase CLI
+- **Region:** us-central1
 
 ### CI/CD Pipeline
 
@@ -1881,20 +1870,19 @@ jobs:
           node-version: '18'
       - run: npm ci
       - run: npm run build
-      - name: Deploy to AWS
+      - name: Deploy to Firebase
         run: npm run deploy
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 ```
 
 ### Environments
 
 | Environment | Frontend URL                    | Backend URL                         | Purpose                |
 | ----------- | ------------------------------- | ----------------------------------- | ---------------------- |
-| Development | http://localhost:5173           | http://localhost:3000               | Local development      |
-| Staging     | https://staging.aimathtutor.com | https://api-staging.aimathtutor.com | Pre-production testing |
-| Production  | https://aimathtutor.com         | https://api.aimathtutor.com         | Live environment       |
+| Development | http://localhost:3000           | http://localhost:5000/api           | Local development (emulators) |
+| Staging     | https://staging-{project}.web.app | https://us-central1-{project}.cloudfunctions.net/api | Pre-production testing |
+| Production  | https://{project}.web.app       | https://us-central1-{project}.cloudfunctions.net/api | Live environment       |
 
 ## Security and Performance
 
@@ -1909,8 +1897,8 @@ jobs:
 **Backend Security:**
 
 - Input Validation: Validate all inputs using middleware before processing
-- Rate Limiting: API Gateway rate limiting (100 requests/minute per IP)
-- CORS Policy: Restrict CORS to frontend domain only
+- Rate Limiting: Firebase Functions rate limiting (configurable)
+- CORS Policy: Restrict CORS to frontend domain and Firebase Hosting domains
 
 **Authentication Security:**
 
@@ -1924,14 +1912,14 @@ jobs:
 
 - Bundle Size Target: < 500KB initial bundle (gzipped) (developer testing interface excluded from production build)
 - Loading Strategy: Code splitting for routes, lazy loading for heavy components
-- Caching Strategy: CloudFront caching for static assets, service worker for offline support (future)
+- Caching Strategy: Firebase Hosting CDN caching for static assets, service worker for offline support (future)
 - Developer Testing Interface: Excluded from production build via conditional compilation/environment checks
 
 **Backend Performance:**
 
 - Response Time Target: < 3 seconds for LLM responses (PRD requirement)
-- Database Optimization: N/A (Redis in-memory, no queries)
-- Caching Strategy: Redis caching for session context, LLM response caching where appropriate (future)
+- Database Optimization: N/A (Firestore, no queries needed)
+- Caching Strategy: Firestore caching for session context, LLM response caching where appropriate (future)
 
 ## Testing Strategy
 
@@ -2288,9 +2276,9 @@ describe('Algebra - Linear Equations', () => {
 **Integration Test for Full Socratic Dialogue:**
 
 ```typescript
-// apps/api/tests/integration/socraticDialogue.test.ts
-import { handler } from '../../src/functions/socraticDialogue/handler';
-import { APIGatewayProxyEvent } from 'aws-lambda';
+// functions/tests/integration/socraticDialogue.test.ts
+import request from 'supertest';
+import app from '../../src/server';
 import { arithmeticProblems } from '../../../fixtures/problems/arithmetic.fixtures';
 
 describe('Socratic Dialogue Integration', () => {
@@ -2301,18 +2289,17 @@ describe('Socratic Dialogue Integration', () => {
 
     // Simulate 10 message exchanges
     for (let i = 0; i < 10; i++) {
-      const event: APIGatewayProxyEvent = {
-        body: JSON.stringify({
+      const response = await request(app)
+        .post('/api/chat/message')
+        .send({
           sessionId,
           message: messages[i] || 'What should I do?',
           problemId: 'test-problem',
-        }),
-      } as APIGatewayProxyEvent;
+        });
 
-      const result = await handler(event);
-      expect(result.statusCode).toBe(200);
+      expect(response.status).toBe(200);
 
-      const body = JSON.parse(result.body);
+      const body = response.body;
 
       // CRITICAL: Verify no direct answers
       expect(body.message).not.toContain('the answer is');
@@ -2448,18 +2435,18 @@ npm run test:manual -- --scenario basic-addition --verbose
 ```mermaid
 sequenceDiagram
     participant Frontend
-    participant API Gateway
-    participant Lambda
+    participant Hosting
+    participant Function
     participant External API
 
-    Frontend->>API Gateway: API Request
-    API Gateway->>Lambda: Route request
-    Lambda->>External API: Call external service
+    Frontend->>Hosting: API Request
+    Hosting->>Function: Rewrite to Function
+    Function->>External API: Call external service
     alt External API Error
-        External API-->>Lambda: Error response
-        Lambda->>Lambda: Transform error
-        Lambda-->>API Gateway: Error response (400/500)
-        API Gateway-->>Frontend: Error response
+        External API-->>Function: Error response
+        Function->>Function: Transform error
+        Function-->>Hosting: Error response (400/500)
+        Hosting-->>Frontend: Error response
         Frontend->>Frontend: Display error message
     end
 ```
@@ -2505,27 +2492,34 @@ apiClient.interceptors.response.use(
 ### Backend Error Handling
 
 ```typescript
-// apps/api/src/middleware/errorHandler.ts
-export const errorHandler = (error: any): APIGatewayProxyResult => {
-  const errorCode = error.code || 'INTERNAL_ERROR';
-  const statusCode = error.statusCode || 500;
-  const message = error.message || 'An unexpected error occurred';
+// functions/src/middleware/errorHandler.ts
+import type { Request, Response, NextFunction } from 'express';
+import type { ApiErrorResponse } from '../types/api';
 
-  return {
+export const errorHandler = (
+  err: Error | { name?: string; message?: string; statusCode?: number },
+  req: Request,
+  res: Response,
+  _next: NextFunction
+): void => {
+  const statusCode = 'statusCode' in err ? err.statusCode || 500 : 500;
+  const errorResponse: ApiErrorResponse = {
+    error: err.name || 'Error',
+    message: err.message || 'An unexpected error occurred',
     statusCode,
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-    },
-    body: JSON.stringify({
-      error: {
-        code: errorCode,
-        message,
-        timestamp: new Date().toISOString(),
-        requestId: context?.awsRequestId || 'unknown',
-      },
-    }),
   };
+
+  // Log error (Firebase Functions automatically captures these logs)
+  console.error('API Error:', {
+    error: err.name || 'Error',
+    message: err.message,
+    statusCode,
+    path: req.path,
+    method: req.method,
+    stack: err instanceof Error ? err.stack : undefined,
+  });
+
+  res.status(statusCode).json(errorResponse);
 };
 ```
 
@@ -2533,10 +2527,10 @@ export const errorHandler = (error: any): APIGatewayProxyResult => {
 
 ### Monitoring Stack
 
-- **Frontend Monitoring:** CloudWatch Logs for frontend errors (via API errors)
-- **Backend Monitoring:** CloudWatch Logs and Metrics for Lambda functions
-- **Error Tracking:** CloudWatch Logs with error aggregation
-- **Performance Monitoring:** CloudWatch Metrics for Lambda duration, API Gateway latency
+- **Frontend Monitoring:** Firebase Hosting logs for frontend errors (via API errors)
+- **Backend Monitoring:** Firebase Functions Logs and Metrics for Cloud Functions
+- **Error Tracking:** Firebase Functions Logs with error aggregation
+- **Performance Monitoring:** Firebase Functions Metrics for function duration and latency
 
 ### Key Metrics
 
@@ -2550,9 +2544,9 @@ export const errorHandler = (error: any): APIGatewayProxyResult => {
 
 **Backend Metrics:**
 
-- Request rate (API Gateway)
+- Request rate (Firebase Functions)
 - Error rate (4xx, 5xx responses)
-- Response time (Lambda duration + API Gateway latency)
+- Response time (Function duration)
 - External API usage (OpenAI Vision API, LLM API calls)
 - Developer testing metrics (development only): scenarios run, test execution time, Socratic compliance rate
 
@@ -2585,23 +2579,28 @@ The Developer Testing Interface is a comprehensive testing infrastructure design
 sequenceDiagram
     participant Developer
     participant TestingInterface
+    participant Hosting
     participant TestingAPI
     participant ScenarioRunner
     participant AnswerDetection
     participant LLMAPI
 
     Developer->>TestingInterface: Load test problem library
-    TestingInterface->>TestingAPI: GET /api/dev/test-fixtures
-    TestingAPI-->>TestingInterface: Return test fixtures
+    TestingInterface->>Hosting: GET /api/dev/test-fixtures
+    Hosting->>TestingAPI: Rewrite to Function
+    TestingAPI-->>Hosting: Return test fixtures
+    Hosting-->>TestingInterface: Test fixtures
     Developer->>TestingInterface: Select test scenario
-    TestingInterface->>TestingAPI: POST /api/dev/run-scenario
+    TestingInterface->>Hosting: POST /api/dev/run-scenario
+    Hosting->>TestingAPI: Rewrite to Function
     TestingAPI->>ScenarioRunner: Execute scenario
     ScenarioRunner->>LLMAPI: Generate dialogue
     LLMAPI-->>ScenarioRunner: Response
     ScenarioRunner->>AnswerDetection: Validate response
     AnswerDetection-->>ScenarioRunner: Validation result
     ScenarioRunner->>TestingAPI: Test result
-    TestingAPI-->>TestingInterface: Test result with metrics
+    TestingAPI-->>Hosting: Test result with metrics
+    Hosting-->>TestingInterface: Test result with metrics
     TestingInterface->>TestingInterface: Display results dashboard
 ```
 

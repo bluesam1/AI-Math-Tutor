@@ -7,18 +7,18 @@
 
 ### High-Level Architecture
 
-AI Math Tutor uses a **serverless fullstack architecture** with AWS Lambda functions for backend API endpoints, paired with a React frontend deployed as static assets. The system follows a monorepo structure combining frontend and backend TypeScript code in a single repository.
+AI Math Tutor uses a **serverless fullstack architecture** with Firebase Cloud Functions for backend API endpoints, paired with a React frontend deployed as static assets. The system follows a monorepo structure combining frontend and backend TypeScript code in a single repository.
 
 ### Architecture Components
 
 ```
 Client Layer (Browser)
     ↓
-AWS Infrastructure:
-    - Frontend: S3 + CloudFront (static assets)
-    - API Layer: API Gateway (routing & rate limiting)
-    - Backend: Lambda functions (API endpoints)
-    - Session Storage: ElastiCache Redis (session context)
+Firebase Infrastructure:
+    - Frontend: Firebase Hosting (static assets + CDN)
+    - API Routing: Firebase Hosting rewrites
+    - Backend: Cloud Functions (Express API endpoints)
+    - Session Storage: Firestore (session context with TTL)
     ↓
 External Services:
     - OpenAI Vision API (image parsing)
@@ -28,11 +28,12 @@ External Services:
 ### Key Technical Decisions
 
 1. **Monorepo Structure:** npm workspaces for unified dependency management and shared TypeScript types
-2. **Serverless Architecture:** AWS Lambda for cost-effective, scalable backend
+2. **Serverless Architecture:** Firebase Cloud Functions for cost-effective, scalable backend
 3. **TypeScript Only:** All code must be written in TypeScript (no raw JavaScript)
 4. **Two-Tier Answer Detection:** Keyword-based pattern matching + LLM-based validation
-5. **Session Management:** In-memory storage (last 10 messages) using ElastiCache Redis
+5. **Session Management:** Session storage (last 10 messages) using Firestore with TTL policies
 6. **Progressive Help Escalation:** Escalates help after 2+ turns without progress
+7. **Firebase Deployment:** Unified deployment via Firebase CLI (functions, hosting, database)
 
 ## Component Structure
 
@@ -52,29 +53,32 @@ apps/web/src/
 └── ...
 ```
 
-### Backend (apps/api/)
+### Backend (functions/)
 
 ```
-apps/api/src/
-├── server.ts            # Express server entry point
-├── routes/              # API route definitions
-│   ├── health.ts
-│   ├── problem.ts
-│   └── chat.ts
-├── controllers/         # Route controllers
-├── services/            # Business logic
-│   ├── llmService.ts
-│   ├── answerDetectionService.ts
-│   ├── answerValidationService.ts
-│   ├── contextService.ts
-│   └── helpEscalationService.ts
-├── middleware/          # Express middleware
-│   ├── cors.ts
-│   └── errorHandler.ts
-├── config/             # Configuration
-│   └── env.ts
-├── types/               # TypeScript types
-└── utils/               # Utility functions
+functions/
+├── index.ts              # Firebase Functions entry point
+├── src/
+│   ├── server.ts         # Express app
+│   ├── routes/           # API route definitions
+│   │   ├── health.ts
+│   │   ├── problem.ts
+│   │   └── chat.ts
+│   ├── controllers/       # Route controllers
+│   ├── services/          # Business logic
+│   │   ├── llmService.ts
+│   │   ├── answerDetectionService.ts
+│   │   ├── answerValidationService.ts
+│   │   ├── contextService.ts
+│   │   └── helpEscalationService.ts
+│   ├── middleware/        # Express middleware
+│   │   ├── cors.ts
+│   │   └── errorHandler.ts
+│   ├── config/            # Configuration
+│   │   └── env.ts
+│   ├── types/             # TypeScript types
+│   └── utils/             # Utility functions
+└── lib/                   # Compiled JavaScript
 ```
 
 ### Shared (packages/shared/)
@@ -136,14 +140,14 @@ packages/shared/src/
 **Pattern:** Maintains conversation context for coherent dialogue
 
 - **Storage:** Last 10 messages (user inputs + system responses)
-- **Session:** In-memory storage using ElastiCache Redis
+- **Session:** Storage using Firestore with TTL policies
 - **Retrieval:** Included in LLM prompts for dialogue generation
 
 **Implementation:**
 
-- `contextService.ts` - Stores and retrieves conversation context
+- `contextService.ts` - Stores and retrieves conversation context using Firestore
 - Session identifiers for multi-user support
-- Context expiration after 30 minutes of inactivity
+- Context expiration after 30 minutes of inactivity via Firestore TTL policies
 
 ### 5. Problem Validation Pattern
 
@@ -219,7 +223,7 @@ API Request
 
 1. **Vision API (OpenAI Vision):** Image parsing for problem extraction
 2. **LLM API (OpenAI GPT-4 or Claude):** Problem validation, dialogue generation, answer validation
-3. **ElastiCache Redis:** Session storage for conversation context
+3. **Firestore:** Session storage for conversation context with TTL policies
 
 ### Internal Integration
 
@@ -251,6 +255,6 @@ API Request
 
 ### Scalability Patterns
 
-- **Serverless Architecture:** Auto-scaling Lambda functions
-- **CDN:** CloudFront for static asset delivery
-- **Session Storage:** ElastiCache Redis for fast in-memory storage
+- **Serverless Architecture:** Auto-scaling Cloud Functions
+- **CDN:** Firebase Hosting global CDN for static asset delivery
+- **Session Storage:** Firestore for fast session storage with TTL policies

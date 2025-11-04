@@ -4,16 +4,17 @@
 
 **Frontend Deployment:**
 
-- **Platform:** AWS S3 + CloudFront
+- **Platform:** Firebase Hosting
 - **Build Command:** `npm run build:web`
 - **Output Directory:** `apps/web/dist`
-- **CDN/Edge:** CloudFront distribution for global content delivery
+- **CDN/Edge:** Firebase Hosting global CDN distribution
 
 **Backend Deployment:**
 
-- **Platform:** AWS Lambda (serverless)
-- **Build Command:** `npm run build:api`
-- **Deployment Method:** Serverless Framework or AWS CDK
+- **Platform:** Firebase Cloud Functions (serverless)
+- **Build Command:** `npm run build:functions`
+- **Deployment Method:** Firebase CLI
+- **Region:** us-central1
 
 ### CI/CD Pipeline
 
@@ -51,17 +52,16 @@ jobs:
           node-version: '18'
       - run: npm ci
       - run: npm run build
-      - name: Deploy to AWS
+      - name: Deploy to Firebase
         run: npm run deploy
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 ```
 
 ### Environments
 
 | Environment | Frontend URL                    | Backend URL                         | Purpose                |
 | ----------- | ------------------------------- | ----------------------------------- | ---------------------- |
-| Development | http://localhost:5173           | http://localhost:3000               | Local development      |
-| Staging     | https://staging.aimathtutor.com | https://api-staging.aimathtutor.com | Pre-production testing |
-| Production  | https://aimathtutor.com         | https://api.aimathtutor.com         | Live environment       |
+| Development | http://localhost:3000           | http://localhost:5000/api           | Local development (emulators) |
+| Staging     | https://staging-{project}.web.app | https://us-central1-{project}.cloudfunctions.net/api | Pre-production testing |
+| Production  | https://{project}.web.app       | https://us-central1-{project}.cloudfunctions.net/api | Live environment       |

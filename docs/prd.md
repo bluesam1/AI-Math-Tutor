@@ -30,6 +30,7 @@ The system is specifically designed for 6th grade mathematics, focusing on core 
 | 2025-11-03 | 1.0     | Initial PRD created from Project Brief                                               | PM     |
 | 2025-01-XX | 1.1     | Scope refined to focus on 6th grade math specifically                                | PM     |
 | 2025-01-XX | 1.2     | Added requirements for streamlined testing workflows and developer testing interface | PM     |
+| 2025-11-04 | 1.3     | Migrated from AWS (Lambda, S3, CloudFront, ElastiCache) to Firebase (Functions, Hosting, Firestore) | PM     |
 
 ## Requirements
 
@@ -220,16 +221,16 @@ The project will use a monorepo structure combining frontend and backend code in
 
 ### Service Architecture
 
-The system will use a **serverless architecture** with AWS Lambda functions for backend API endpoints, paired with a React frontend deployed as static assets. This architecture:
+The system will use a **serverless architecture** with Firebase Cloud Functions for backend API endpoints, paired with a React frontend deployed as static assets. This architecture:
 
-- **Frontend:** React application built with component-based UI architecture, deployed as static assets to AWS S3 with CloudFront distribution, or using AWS Amplify for full-stack deployment
-- **Backend:** Node.js/Express-based API endpoints deployed as AWS Lambda functions (serverless) or containerized on AWS ECS/ECS Fargate
-- **Session Storage:** AWS ElastiCache (Redis) for in-memory session management (last 10 messages), or AWS DynamoDB for lightweight session storage
-- **API Gateway:** AWS API Gateway for API routing, rate limiting, and request management
-- **Image Processing:** Vision API calls (OpenAI Vision, Google Vision, or similar) handled through backend Lambda functions
-- **LLM Integration:** LLM API calls (OpenAI GPT-4, Claude, or similar) handled through backend Lambda functions with answer detection guardrails
+- **Frontend:** React application built with component-based UI architecture, deployed as static assets to Firebase Hosting with global CDN distribution
+- **Backend:** Node.js/Express-based API endpoints deployed as Firebase Cloud Functions (serverless) with Express app integration
+- **Session Storage:** Firestore for session management (last 10 messages) with TTL policies for automatic cleanup
+- **API Routing:** Firebase Hosting rewrites for API routing, connecting frontend requests to Cloud Functions
+- **Image Processing:** Vision API calls (OpenAI Vision, Google Vision, or similar) handled through backend Cloud Functions
+- **LLM Integration:** LLM API calls (OpenAI GPT-4, Claude, or similar) handled through backend Cloud Functions with answer detection guardrails
 
-**Rationale:** Serverless architecture provides scalability, cost-effectiveness for MVP, and simplified deployment. The separation of frontend (static) and backend (API) allows for independent scaling and deployment.
+**Rationale:** Serverless architecture provides scalability, cost-effectiveness for MVP, and simplified deployment. Firebase provides integrated hosting, functions, and database services with a unified deployment workflow. The separation of frontend (static) and backend (API) allows for independent scaling and deployment.
 
 ### Testing Requirements: Unit + Integration
 
@@ -260,21 +261,21 @@ The system will implement:
 1. **Keyword-based pattern matching:** Detects common answer patterns (e.g., "the answer is", "equals", numeric results at end of responses)
 2. **LLM-based validation:** Uses a secondary LLM call to analyze response context and detect implicit answers that keyword matching might miss
 
-**Context Management:** In-memory session storage (last 10 messages + problem understanding) using AWS ElastiCache (Redis) or DynamoDB, with no persistence beyond browser session.
+**Context Management:** Session storage (last 10 messages + problem understanding) using Firestore with TTL policies for automatic cleanup, with no persistence beyond browser session.
 
 **API Integration:** RESTful API design for frontend-backend communication, with clear error handling and response formatting.
 
 **Deployment Targets:**
 
-- **Frontend:** AWS S3 + CloudFront for static hosting, or AWS Amplify for full-stack deployment
-- **Backend:** AWS Lambda (serverless) for API endpoints, or AWS ECS/ECS Fargate for containerized deployment
-- **Session Storage:** AWS ElastiCache (Redis) or DynamoDB for session management
-- **API Gateway:** AWS API Gateway for API routing and management
+- **Frontend:** Firebase Hosting for static hosting with global CDN distribution
+- **Backend:** Firebase Cloud Functions (serverless) for API endpoints with Express app integration
+- **Session Storage:** Firestore for session management with TTL policies
+- **API Routing:** Firebase Hosting rewrites for API routing, connecting frontend to Cloud Functions
 
-**Alternative Hosting:** If AWS is not preferred, Cloud hosting alternatives:
+**Deployment Tools:**
 
-- Frontend: Vercel, Netlify
-- Backend: Railway, Render
+- **Firebase CLI:** Unified deployment tool for functions, hosting, and database
+- **Firebase Emulators:** Local development environment for testing before deployment
 
 **Security:**
 
@@ -1253,4 +1254,4 @@ Create a UX design system and detailed UI specifications for the AI Math Tutor a
 
 ### Architect Prompt
 
-Design the system architecture for the AI Math Tutor application based on this PRD. Create detailed architecture diagrams, component specifications, API contracts, and database schemas (if needed). Focus on the serverless architecture with AWS Lambda functions, React frontend, session management, Vision API integration, LLM integration with answer detection guardrails, and context management. Ensure the architecture supports all functional and non-functional requirements, including scalability, security, and performance requirements.
+Design the system architecture for the AI Math Tutor application based on this PRD. Create detailed architecture diagrams, component specifications, API contracts, and database schemas (if needed). Focus on the serverless architecture with Firebase Cloud Functions, React frontend, session management with Firestore, Vision API integration, LLM integration with answer detection guardrails, and context management. Ensure the architecture supports all functional and non-functional requirements, including scalability, security, and performance requirements.

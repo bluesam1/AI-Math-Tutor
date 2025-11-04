@@ -12,9 +12,10 @@ import healthRoutes from './routes/health';
 import problemRoutes from './routes/problem';
 import chatRoutes from './routes/chat';
 
-// Load environment variables (only in local development, not in Firebase Functions)
-// Firebase Functions environment variables are set directly, no need for dotenv
-if (!process.env.FUNCTIONS_EMULATOR && process.env.NODE_ENV !== 'production') {
+// Load environment variables from .env file (only in local development/emulator)
+// Firebase Functions in production use environment variables set via Firebase CLI or console
+// The FUNCTIONS_EMULATOR env var is set when running Firebase emulators
+if (process.env.FUNCTIONS_EMULATOR || process.env.NODE_ENV !== 'production') {
   config();
 }
 
@@ -37,11 +38,14 @@ app.use('/api/chat', chatRoutes);
 // Error handling middleware (must be last)
 app.use(errorHandler);
 
-// Start server (only if not running in Firebase Functions or emulator)
+// Start server (only in standalone mode, not in Firebase Functions)
+// Firebase Functions handles the server lifecycle automatically
+// FUNCTION_TARGET is set by Firebase Functions runtime
+// FUNCTIONS_EMULATOR is set by Firebase emulators
 if (
-  process.env.IS_OFFLINE !== 'true' &&
   !process.env.FUNCTIONS_EMULATOR &&
-  !process.env.FUNCTION_TARGET
+  !process.env.FUNCTION_TARGET &&
+  process.env.NODE_ENV !== 'production'
 ) {
   const PORT = env.port;
   app.listen(PORT, () => {
