@@ -1,5 +1,6 @@
 import React from 'react';
 import ProblemInput from './ProblemInput';
+import ImageUpload from './ImageUpload';
 import type { ProblemPanelProps, ProblemType } from '../types';
 
 interface ExtendedProblemPanelProps extends ProblemPanelProps {
@@ -46,8 +47,21 @@ const ProblemPanel: React.FC<ExtendedProblemPanelProps> = ({
 
       {/* Problem Input Section */}
       {onProblemSubmit && (
-        <div className="mb-6">
-          <ProblemInput onSubmit={onProblemSubmit} />
+        <div className="mb-6 space-y-6">
+          <div>
+            <ProblemInput onSubmit={onProblemSubmit} />
+          </div>
+          <div>
+            <label className="block text-text-primary text-lg font-medium mb-2">
+              Or Upload Image
+            </label>
+            <ImageUpload
+              onFileSelect={(file) => {
+                // File is ready for processing (Story 1.6 will handle Vision API)
+                console.log('Image selected:', file.name);
+              }}
+            />
+          </div>
         </div>
       )}
 
