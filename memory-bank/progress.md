@@ -36,7 +36,7 @@
 - **Linting:** ESLint with TypeScript support configured
 - **Formatting:** Prettier configured for consistent code style
 - **Build System:** Vite for frontend, TypeScript compilation for backend
-- **Deployment:** AWS Amplify configuration for frontend deployment
+- **Deployment:** Firebase configuration (Hosting + Functions) with Firebase CLI
 
 ## What's Left to Build
 
@@ -113,9 +113,9 @@
 - ✅ Monorepo structure
 - ✅ TypeScript configuration
 - ✅ CI/CD pipeline foundation
-- ⏳ AWS deployment configuration
-- ⏳ Session storage (ElastiCache Redis)
-- ⏳ API Gateway configuration
+- ✅ Firebase deployment configuration
+- ⏳ Session storage (Firestore with TTL policies)
+- ⏳ Firebase Hosting rewrites configuration
 
 ## Known Issues
 
@@ -185,15 +185,16 @@
 
 ### Current Deployment
 
-- **Frontend:** AWS Amplify configuration prepared, not yet deployed
-- **Backend:** Serverless deployment configuration prepared, not yet deployed
+- **Frontend:** Firebase Hosting configuration prepared
+- **Backend:** Firebase Cloud Functions configuration prepared
+- **Status:** Migrated from AWS to Firebase, ready for deployment
 
 ### Deployment Requirements
 
-- AWS credentials configured
-- Environment variables set in deployment environment
+- Firebase project configured
+- Environment variables set in Firebase Functions Config or Secret Manager
 - API keys configured (OpenAI, Anthropic)
-- Redis connection configured (ElastiCache)
+- Firestore TTL policies configured for session cleanup
 
 ## Notes
 

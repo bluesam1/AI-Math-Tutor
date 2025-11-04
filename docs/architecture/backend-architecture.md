@@ -2,130 +2,124 @@
 
 ### Service Architecture
 
-#### Serverless Architecture (Lambda Functions)
+#### Serverless Architecture (Firebase Cloud Functions)
 
-Since the architecture uses serverless AWS Lambda functions, the backend is organized as Lambda handlers:
+Since the architecture uses serverless Firebase Cloud Functions, the backend is organized as Express app routes integrated with Cloud Functions:
 
 ##### Function Organization
 
 ```
-apps/api/src/
-├── functions/
-│   ├── problemInput/
-│   │   ├── handler.ts
-│   │   ├── parseImage.ts
-│   │   └── validateProblem.ts
-│   ├── socraticDialogue/
-│   │   ├── handler.ts
-│   │   ├── generateDialogue.ts
-│   │   └── manageContext.ts
-│   ├── health/
-│   │   └── handler.ts
-│   └── testing/
-│       ├── handler.ts
-│       ├── getTestFixtures.ts
-│       ├── runScenario.ts
-│       └── runBatch.ts
-├── services/
-│   ├── vision/
-│   │   └── visionApi.ts
-│   ├── llm/
-│   │   └── llmApi.ts
-│   ├── answerDetection/
-│   │   ├── keywordDetection.ts
-│   │   └── llmValidation.ts
-│   ├── context/
-│   │   └── contextService.ts
-│   └── testing/
-│       ├── testFixtures.ts
-│       ├── scenarioRunner.ts
-│       └── testValidator.ts
-├── middleware/
-│   ├── errorHandler.ts
-│   ├── cors.ts
-│   └── validation.ts
-├── types/
-│   ├── problem.ts
-│   ├── message.ts
-│   └── session.ts
-└── utils/
-    ├── logger.ts
-    └── config.ts
+functions/
+├── index.ts              # Firebase Functions entry point
+├── src/
+│   ├── server.ts         # Express app
+│   ├── routes/
+│   │   ├── health.ts
+│   │   ├── problem.ts
+│   │   └── chat.ts
+│   ├── controllers/
+│   │   ├── healthController.ts
+│   │   ├── problemController.ts
+│   │   └── chatController.ts
+│   ├── services/
+│   │   ├── vision/
+│   │   │   └── visionApi.ts
+│   │   ├── llm/
+│   │   │   └── llmApi.ts
+│   │   ├── answerDetection/
+│   │   │   ├── keywordDetection.ts
+│   │   │   └── llmValidation.ts
+│   │   ├── context/
+│   │   │   └── contextService.ts
+│   │   └── testing/
+│   │       ├── testFixtures.ts
+│   │       ├── scenarioRunner.ts
+│   │       └── testValidator.ts
+│   ├── middleware/
+│   │   ├── errorHandler.ts
+│   │   ├── cors.ts
+│   │   └── validation.ts
+│   ├── types/
+│   │   ├── problem.ts
+│   │   ├── message.ts
+│   │   └── session.ts
+│   └── utils/
+│       ├── logger.ts
+│       └── config.ts
+└── lib/                   # Compiled JavaScript
 ```
 
-##### Function Template
+##### Firebase Functions Integration
 
 ```typescript
-// apps/api/src/functions/socraticDialogue/handler.ts
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { generateDialogue } from './generateDialogue';
-import { errorHandler } from '../../middleware/errorHandler';
+// functions/index.ts
+import { onRequest } from 'firebase-functions/v2/https';
+import app from './src/server';
 
-export const handler = async (
-  event: APIGatewayProxyEvent
-): Promise<APIGatewayProxyResult> => {
-  try {
-    const { sessionId, message, problemId } = JSON.parse(event.body || '{}');
+// Export Express app as Firebase Function
+export const api = onRequest(
+  {
+    region: 'us-central1',
+    memory: '512MiB',
+    timeoutSeconds: 30,
+  },
+  app
+);
 
-    // Validate input
-    if (!sessionId || !message) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: 'Missing required fields' }),
-      };
-    }
+// Express app handles all routes
+// functions/src/server.ts
+import express from 'express';
+import healthRoutes from './routes/health';
+import problemRoutes from './routes/problem';
+import chatRoutes from './routes/chat';
 
-    // Generate Socratic dialogue
-    const response = await generateDialogue(sessionId, message, problemId);
-
-    return {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-      body: JSON.stringify(response),
-    };
-  } catch (error) {
-    return errorHandler(error);
-  }
-};
+const app = express();
+app.use('/api', healthRoutes);
+app.use('/api/problem', problemRoutes);
+app.use('/api/chat', chatRoutes);
+export default app;
 ```
 
 ### Database Architecture
 
 #### Schema Design
 
-N/A - No persistent database. Session storage uses Redis (ElastiCache) with hash structure as defined in Database Schema section.
+N/A - No persistent database. Session storage uses Firestore with TTL policies for automatic cleanup. Schema structure:
+
+```
+sessions/
+  {sessionId}/
+    createdAt: timestamp
+    lastActivity: timestamp
+    expiresAt: timestamp  // For TTL-based cleanup
+    messages: [
+      { messageId, role, content, timestamp }
+    ]
+    problem: { problemType, problemText, ... }
+```
 
 #### Data Access Layer
 
 ```typescript
-// apps/api/src/services/context/contextService.ts
-import { Redis } from 'ioredis';
+// functions/src/services/context/contextService.ts
+import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { Session, Message, Problem } from '../../types';
 
 export class ContextService {
-  private redis: Redis;
-
-  constructor() {
-    this.redis = new Redis({
-      host: process.env.REDIS_HOST,
-      port: parseInt(process.env.REDIS_PORT || '6379'),
-    });
-  }
+  private db = getFirestore();
 
   async getContext(sessionId: string): Promise<Session | null> {
-    const data = await this.redis.hgetall(`session:${sessionId}`);
-    if (!data || Object.keys(data).length === 0) {
+    const doc = await this.db.collection('sessions').doc(sessionId).get();
+    if (!doc.exists) {
       return null;
     }
+    const data = doc.data();
     return {
-      sessionId: data.sessionId,
-      problem: data.problem ? JSON.parse(data.problem) : null,
-      messages: data.messages ? JSON.parse(data.messages) : [],
-      createdAt: new Date(data.createdAt),
-      lastActivityAt: new Date(data.lastActivityAt),
+      sessionId: data!.sessionId,
+      problem: data!.problem || null,
+      messages: data!.messages || [],
+      createdAt: data!.createdAt.toDate(),
+      lastActivityAt: data!.lastActivityAt.toDate(),
     };
   }
 
@@ -146,16 +140,16 @@ export class ContextService {
 
     session.lastActivityAt = new Date();
 
-    await this.redis.hset(`session:${sessionId}`, {
+    await this.db.collection('sessions').doc(sessionId).set({
       sessionId: session.sessionId,
-      problem: session.problem ? JSON.stringify(session.problem) : '',
-      messages: JSON.stringify(session.messages),
-      createdAt: session.createdAt.toISOString(),
-      lastActivityAt: session.lastActivityAt.toISOString(),
-    });
+      problem: session.problem,
+      messages: session.messages,
+      createdAt: Timestamp.fromDate(session.createdAt),
+      lastActivityAt: Timestamp.fromDate(session.lastActivityAt),
+      expiresAt: Timestamp.fromDate(new Date(Date.now() + 30 * 60 * 1000)), // 30 minutes TTL
+    }, { merge: true });
 
-    // Set TTL to 30 minutes
-    await this.redis.expire(`session:${sessionId}`, 1800);
+    // TTL policy configured in Firestore for automatic cleanup
   }
 }
 ```
@@ -184,13 +178,19 @@ if (import.meta.env.MODE !== 'development') {
   return null; // Component not rendered in production
 }
 
-// apps/api/src/functions/testing/handler.ts
+// functions/src/routes/testing.ts
+import { Router } from 'express';
+const router = Router();
+
+// Testing endpoints only available in development
 if (process.env.NODE_ENV === 'production') {
-  return {
-    statusCode: 403,
-    body: JSON.stringify({
+  router.use((req, res) => {
+    res.status(403).json({
       error: 'Testing endpoints not available in production',
-    }),
-  };
+    });
+  });
 }
+
+// ... testing routes ...
+export default router;
 ```

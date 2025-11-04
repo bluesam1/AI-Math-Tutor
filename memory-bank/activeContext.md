@@ -7,6 +7,16 @@
 
 ### Recent Changes
 
+**Firebase Migration** - ✅ **COMPLETE** (2025-11-04)
+
+- ✅ **Infrastructure Migration:** Migrated from AWS Serverless to Firebase
+  - Firebase Functions setup with standard TypeScript configuration
+  - All API source code moved from `apps/api/src/` to `functions/src/`
+  - Firebase Hosting configured for frontend deployment
+  - Firebase emulators configured for local development
+  - Environment variables configured via `.env` file
+  - Region: us-central1, Plan: Firebase Blaze
+
 **Epic 1: Foundation & Problem Input System** - In Progress
 
 - ✅ **Story 1.1:** Foundation & Project Setup - Complete
@@ -27,6 +37,7 @@
   - Error handling middleware implemented
   - Health check endpoint created (`GET /api/health`)
   - Route structure established (`/api/problem`, `/api/chat`)
+  - ✅ **Migrated to Firebase Functions** - Standard Firebase setup complete
 
 - ⏳ **Story 1.4:** Text Input for Math Problems - Pending
 - ⏳ **Story 1.5:** Image Upload UI Component - Pending
@@ -84,8 +95,12 @@
 
 1. **LLM Provider Selection:** Need to decide between OpenAI GPT-4 or Claude for Socratic dialogue generation
 2. **Vision API Provider:** Need to decide between OpenAI Vision API or Google Vision API
-3. **Session Storage:** Need to configure ElastiCache Redis or DynamoDB for session management
-4. **Deployment Strategy:** Finalize AWS deployment configuration (S3 + CloudFront vs Amplify)
+3. **Session Storage:** Using Firestore (migrated from ElastiCache Redis) - TTL policies configured for automatic cleanup
+4. **Deployment Strategy:** ✅ **MIGRATED TO FIREBASE** - Full cutover completed on branch `firebase-migration-plan`
+   - Firebase Functions (us-central1) replacing AWS Lambda
+   - Firebase Hosting replacing AWS S3 + CloudFront
+   - Firestore replacing ElastiCache Redis
+   - Environment variables via `.env` file (not Secret Manager)
 
 ### Active Considerations
 

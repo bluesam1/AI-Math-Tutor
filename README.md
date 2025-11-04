@@ -21,7 +21,8 @@ This project uses a monorepo structure with npm workspaces to manage both fronte
 ai-math-tutor/
 ├── apps/
 │   ├── web/          # React frontend application
-│   └── api/          # Express backend API
+│   └── api/          # Express backend API (legacy, migrated to functions/)
+├── functions/         # Firebase Cloud Functions (Express API)
 ├── packages/
 │   └── shared/       # Shared types and utilities
 ├── .github/
@@ -73,11 +74,14 @@ The frontend will be available at `http://localhost:3000`
 ### Backend Development
 
 ```bash
-# Start the backend development server
+# Start Firebase emulators (functions + hosting)
+npm run dev:emulators
+
+# Or start backend development server (standalone)
 npm run dev:api
 
 # Build the backend
-npm run build:api
+npm run build:functions
 ```
 
 ### Running All Workspaces
@@ -110,24 +114,33 @@ npm run lint
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build
 
-### Backend (apps/api)
+### Backend (functions/)
 
-- `npm run dev` - Start development server with hot reload
-- `npm run build` - Compile TypeScript
-- `npm start` - Run production build
+- `npm run build` - Compile TypeScript to JavaScript
+- `npm run serve` - Start Firebase emulators (functions only)
+- `npm run deploy` - Deploy functions to Firebase
+- `npm run logs` - View function logs
 
 ## Environment Variables
 
-Required environment variables are documented in `.env.example`. Create a `.env` file in the root directory with your configuration:
+Required environment variables are documented in `.env.example` files. Create `.env` files in the appropriate directories:
 
-- `AWS_REGION` - AWS region for deployment (default: us-east-1)
-- `AMPLIFY_APP_ID` - AWS Amplify App ID (for manual deployment)
+### Functions (functions/.env)
+
+- `NODE_ENV` - Environment (development, production)
+- `FRONTEND_URL` - Frontend origin for CORS (default: http://localhost:3000)
 - `OPENAI_API_KEY` - OpenAI API key (for future stories)
-- `ANTHROPIC_API_KEY` - Anthropic API key (for future stories)
-- `REDIS_HOST` - ElastiCache Redis host (for future stories)
-- `REDIS_PORT` - Redis port (default: 6379)
 
 **Important**: Never commit `.env` files to the repository.
+
+### Production Environment Variables
+
+Set environment variables for deployed Firebase Functions via Firebase CLI:
+
+```bash
+firebase functions:config:set env.node_env="production"
+firebase functions:config:set env.frontend_url="https://your-domain.web.app"
+```
 
 ## CI/CD Pipeline
 
@@ -140,40 +153,68 @@ The project uses GitHub Actions for CI/CD:
   - Runs tests
 
 - **Deploy Workflow** (`.github/workflows/deploy.yaml`): Runs on push to main branch
-  - Builds frontend
-  - Deploys to AWS Amplify (configured for auto-deployment via Amplify Console)
+  - Builds frontend and functions
+  - Deploys to Firebase (hosting + functions)
 
 ## Deployment
 
-### Frontend Deployment (AWS Amplify)
+### Firebase Deployment
 
-The frontend is deployed to AWS Amplify:
+The application is deployed to Firebase (Hosting + Cloud Functions):
 
-- **Build Command**: `npm run build:web`
-- **Output Directory**: `apps/web/dist`
-- **Configuration**: `amplify.yml` (build settings for monorepo)
+- **Frontend**: Firebase Hosting with global CDN
+- **Backend**: Firebase Cloud Functions (us-central1)
+- **Session Storage**: Firestore with TTL policies
 
 **Setup Instructions:**
 
-1. **Connect GitHub Repository to AWS Amplify:**
-   - Go to [AWS Amplify Console](https://console.aws.amazon.com/amplify/)
-   - Click "New app" → "Host web app"
-   - Select "GitHub" as the source
-   - Authorize and select this repository
-   - Select the `main` branch
-   - Amplify will automatically detect `amplify.yml` and configure the build
-
-2. **Manual Deployment (Optional):**
+1. **Install Firebase CLI:**
 
    ```bash
-   npm install -g @aws-amplify/cli
-   amplify init
-   amplify publish
+   npm install -g firebase-tools
    ```
 
-3. **Auto-Deployment:**
-   - Once connected, Amplify will automatically deploy on every push to `main`
-   - Build status and URL will be available in the Amplify Console
+2. **Login to Firebase:**
+
+   ```bash
+   firebase login
+   ```
+
+3. **Set Firebase Project:**
+
+   ```bash
+   firebase use --add
+   # Select your Firebase project
+   ```
+
+4. **Deploy Everything:**
+
+   ```bash
+   # Build and deploy functions
+   npm run deploy:functions
+
+   # Build and deploy hosting
+   npm run deploy:hosting
+
+   # Or deploy everything
+   npm run deploy
+   ```
+
+5. **View Deployment:**
+
+   - Functions: `https://us-central1-{project-id}.cloudfunctions.net/api`
+   - Hosting: `https://{project-id}.web.app` or `https://{project-id}.firebaseapp.com`
+
+### Local Development with Emulators
+
+```bash
+# Start Firebase emulators (functions + hosting)
+npm run dev:emulators
+
+# Emulator UI: http://localhost:4000
+# Functions: http://localhost:5001
+# Hosting: http://localhost:5000
+```
 
 ## TypeScript Configuration
 
@@ -181,7 +222,7 @@ The project uses TypeScript project references for cross-workspace type checking
 
 - Root `tsconfig.json` - Base configuration and project references
 - `apps/web/tsconfig.json` - React frontend configuration
-- `apps/api/tsconfig.json` - Node.js backend configuration
+- `functions/tsconfig.json` - Firebase Functions configuration (CommonJS)
 - `packages/shared/tsconfig.json` - Shared package configuration
 
 ## Code Quality

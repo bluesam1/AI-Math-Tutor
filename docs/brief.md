@@ -217,15 +217,14 @@ A comprehensive math learning platform that combines Socratic tutoring with prac
 
 - **Frontend:** React for component-based UI with side-by-side layout
 - **Backend:** Node.js/Express for API endpoints handling LLM integration and Vision API calls
-- **Database:** Lightweight solution for session management (AWS ElastiCache for Redis, or DynamoDB for session storage)
+- **Database:** Lightweight solution for session management (Firestore with TTL policies)
 - **Hosting/Infrastructure:**
-  - **AWS Infrastructure:**
-    - Frontend: AWS S3 + CloudFront for static hosting, or AWS Amplify for full-stack deployment
-    - Backend: AWS Lambda (serverless) or EC2/ECS for API endpoints
-    - Session Storage: AWS ElastiCache (Redis) or DynamoDB for session management
-    - API Gateway: AWS API Gateway for API routing and management
-    - Container: AWS ECS or EKS if using containerized deployment
-  - Alternative: Cloud hosting (Vercel, Netlify for frontend; Railway, Render for backend) if AWS is not preferred
+  - **Firebase Infrastructure:**
+    - Frontend: Firebase Hosting with global CDN distribution
+    - Backend: Firebase Cloud Functions (serverless) for API endpoints
+    - Session Storage: Firestore for session management with TTL policies
+    - API Routing: Firebase Hosting rewrites for API routing
+    - Deployment: Firebase CLI for unified deployment
 
 ### Architecture Considerations
 
@@ -254,7 +253,7 @@ A comprehensive math learning platform that combines Socratic tutoring with prac
 - **Budget:** Limited budget for MVP (3-day timeline suggests minimal external costs beyond API usage)
   - Vision API costs (per image processed)
   - LLM API costs (per request/token)
-  - AWS infrastructure costs (minimal for MVP scale)
+  - Firebase infrastructure costs (minimal for MVP scale with Blaze plan)
 - **Timeline:** 3-day development window for MVP
   - Must prioritize core features over stretch features
   - Trade-offs between polish and feature completeness

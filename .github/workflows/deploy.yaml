@@ -1,8 +1,10 @@
 name: Deploy
 
 on:
-  push:
-    branches: [main]
+  # Auto-deployment disabled - migrated to Firebase
+  # push:
+  #   branches: [main]
+  workflow_dispatch:
 
 jobs:
   deploy-frontend:

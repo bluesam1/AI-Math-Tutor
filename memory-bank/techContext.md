@@ -18,15 +18,15 @@
 - **Node.js 18.x LTS or 20.x LTS:** Runtime environment
 - **Express 4.18.0:** Web framework for API endpoints
 - **TypeScript 5.3.0+:** Type-safe development (required - no raw JavaScript)
-- **Serverless Framework:** AWS Lambda deployment configuration
+- **Firebase Functions:** Firebase Cloud Functions deployment with Express app integration
 
 ### Infrastructure & Deployment
 
-- **AWS S3 + CloudFront:** Frontend static asset hosting and CDN
-- **AWS Lambda:** Serverless backend API endpoints
-- **AWS API Gateway:** API routing, rate limiting, request management
-- **AWS ElastiCache (Redis):** In-memory session storage (last 10 messages)
-- **AWS Amplify:** Full-stack deployment option (alternative to S3 + CloudFront)
+- **Firebase Hosting:** Frontend static asset hosting with global CDN
+- **Firebase Cloud Functions:** Serverless backend API endpoints (us-central1)
+- **Firebase Hosting Rewrites:** API routing, connecting frontend to Cloud Functions
+- **Firestore:** Session storage (last 10 messages) with TTL policies
+- **Firebase CLI:** Unified deployment tool for functions, hosting, and database
 
 ### External Services
 
@@ -65,13 +65,12 @@
    ```
 
 3. **Set up environment variables:**
-   - Copy `.env.example` to `.env` (if exists)
+   - Copy `functions/.env.example` to `functions/.env`
    - Configure required environment variables:
-     - `AWS_REGION` - AWS region (default: us-east-1)
+     - `NODE_ENV` - Environment (development, production)
+     - `FRONTEND_URL` - Frontend origin for CORS (default: http://localhost:3000)
      - `OPENAI_API_KEY` - OpenAI API key (for Vision API and LLM)
      - `ANTHROPIC_API_KEY` - Anthropic API key (alternative LLM)
-     - `REDIS_HOST` - ElastiCache Redis host
-     - `REDIS_PORT` - Redis port (default: 6379)
 
 4. **Verify setup:**
    ```bash
@@ -93,10 +92,13 @@ npm run dev:web
 #### Backend Development
 
 ```bash
-# Start backend development server
+# Start Firebase emulators (functions + hosting)
+npm run dev:emulators
+
+# Or start backend development server (standalone)
 npm run dev:api
 
-# Backend API available at http://localhost:3001 (or configured port)
+# Backend API available at http://localhost:5000/api (emulator) or http://localhost:3001 (standalone)
 ```
 
 #### Running All Workspaces
@@ -166,13 +168,14 @@ npm run format
 - Tailwind CSS v4.1.16
 - LaTeX/KaTeX (for math rendering)
 
-### Backend Dependencies (apps/api/)
+### Backend Dependencies (functions/)
 
 - Express 4.18.0
 - TypeScript 5.3.0+
 - @types/express, @types/node
-- Serverless Framework (for AWS Lambda deployment)
-- dotenv (for environment variable management)
+- firebase-admin (for server-side Firebase operations)
+- firebase-functions (for Cloud Functions integration)
+- dotenv (for environment variable management in local development)
 
 ## Build Configuration
 
@@ -197,20 +200,19 @@ npm run format
 - **Output Directory:** `apps/web/dist`
 - **Configuration:** `amplify.yml` (build settings for monorepo)
 
-### Backend Deployment (AWS Lambda)
+### Backend Deployment (Firebase Cloud Functions)
 
-- **Serverless Framework:** `apps/api/serverless.yml`
-- **Lambda Functions:** API endpoints as serverless functions
-- **API Gateway:** Routes requests to Lambda functions
+- **Firebase Functions:** `functions/index.ts` exports Express app as Cloud Function
+- **Firebase Configuration:** `firebase.json` defines functions and hosting
+- **Deployment:** Firebase CLI (`firebase deploy --only functions`)
 
 ### Environment Variables
 
-- **Development:** `.env` files (never committed)
-- **Production:** AWS environment variables or secrets management
+- **Development:** `.env` files in `functions/` directory (never committed)
+- **Production:** Firebase Functions Config or Secret Manager
 - **Required Variables:**
   - API keys (OpenAI, Anthropic)
-  - AWS credentials
-  - Redis connection details
+  - Frontend URL for CORS configuration
 
 ## Code Quality Standards
 
@@ -257,6 +259,6 @@ npm run format
 
 ### Session Management
 
-- **Storage:** In-memory session storage (ElastiCache Redis)
-- **Expiration:** Sessions expire after 30 minutes of inactivity
+- **Storage:** Session storage (Firestore with TTL policies)
+- **Expiration:** Sessions expire after 30 minutes of inactivity via Firestore TTL
 - **Privacy:** No sensitive user data collection (anonymous sessions only)

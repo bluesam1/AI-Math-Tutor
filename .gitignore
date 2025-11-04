@@ -63,6 +63,16 @@ samconfig.toml
 # Serverless
 .serverless/
 
+# Firebase
+.firebase/
+.firebaserc
+firebase-debug.log
+firebase-debug.*.log
+functions/lib/
+functions/.env
+functions/.env.local
+functions/.env.*.local
+
 # Temporary files
 *.tmp
 *.temp

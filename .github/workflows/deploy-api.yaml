@@ -1,16 +1,17 @@
 name: Deploy API to AWS
 
 on:
-  push:
-    branches:
-      - main
-      - develop
-    paths:
-      - 'apps/api/**'
-      - 'packages/shared/**'
-      - '.github/workflows/deploy-api.yaml'
-      - 'package.json'
-      - 'package-lock.json'
+  # Auto-deployment disabled - migrated to Firebase
+  # push:
+  #   branches:
+  #     - main
+  #     - develop
+  #   paths:
+  #     - 'apps/api/**'
+  #     - 'packages/shared/**'
+  #     - '.github/workflows/deploy-api.yaml'
+  #     - 'package.json'
+  #     - 'package-lock.json'
   workflow_dispatch:
     inputs:
       stage:
