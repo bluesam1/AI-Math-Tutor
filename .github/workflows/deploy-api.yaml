@@ -56,20 +56,32 @@ jobs:
         run: |
           # Create local node_modules if it doesn't exist
           mkdir -p node_modules
+          # Find where dependencies are installed (could be root or workspace)
+          ROOT_NM="../../node_modules"
           # Copy production dependencies from root node_modules
           # This ensures dependencies are available for Serverless packaging
           for dep in serverless-http express cors dotenv; do
-            if [ -d "../../node_modules/$dep" ]; then
+            if [ -d "$ROOT_NM/$dep" ]; then
               echo "Linking $dep from root node_modules"
-              ln -sf "../../node_modules/$dep" "node_modules/$dep" || cp -r "../../node_modules/$dep" "node_modules/$dep"
+              ln -sf "$ROOT_NM/$dep" "node_modules/$dep" || cp -r "$ROOT_NM/$dep" "node_modules/$dep"
+            elif [ -d "../node_modules/$dep" ]; then
+              echo "Linking $dep from apps/node_modules"
+              ln -sf "../node_modules/$dep" "node_modules/$dep" || cp -r "../node_modules/$dep" "node_modules/$dep"
+            else
+              echo "WARNING: $dep not found in root or apps node_modules"
+              echo "Checking root node_modules:"
+              ls -la "$ROOT_NM" | grep -i "$dep" || echo "Not found"
+              # Try to install it directly
+              echo "Installing $dep directly..."
+              npm install --no-save "$dep" || echo "Failed to install $dep"
             fi
           done
           # Also copy nested dependencies that might be needed
-          if [ -d "../../node_modules/express" ]; then
+          if [ -d "$ROOT_NM/express" ] || [ -d "node_modules/express" ]; then
             echo "Copying express dependencies..."
             for dep in accepts array-flatten body-parser content-type content-disposition cookie cookie-signature depd destroy ee-first encodeurl escape-html etag finalhandler fresh http-errors inherits ipaddr.js media-typer merge-descriptors methods mime mime-db mime-types ms negotiator on-finished parseurl path-to-regexp proxy-addr qs range-parser raw-body safe-buffer send serve-static setprototypeof statuses type-is unpipe utils-merge vary; do
-              if [ -d "../../node_modules/$dep" ] && [ ! -d "node_modules/$dep" ]; then
-                ln -sf "../../node_modules/$dep" "node_modules/$dep" || cp -r "../../node_modules/$dep" "node_modules/$dep"
+              if [ -d "$ROOT_NM/$dep" ] && [ ! -d "node_modules/$dep" ]; then
+                ln -sf "$ROOT_NM/$dep" "node_modules/$dep" || cp -r "$ROOT_NM/$dep" "node_modules/$dep"
               fi
             done
           fi
