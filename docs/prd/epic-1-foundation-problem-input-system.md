@@ -203,28 +203,32 @@ so that I can efficiently validate system behavior and ensure Socratic complianc
 3: Developers can load test problems with one click from the test problem library, automatically populating the problem input and starting a test session.
 
 4: The testing interface includes a scenario testing panel that allows developers to test specific scenarios including:
-   - Answer detection validation (direct answers, implicit answers)
-   - Progressive help escalation (testing help escalation after stuck turns)
-   - Context management (testing conversation coherence across 10+ messages)
-   - Error handling scenarios (Vision API failures, LLM API failures, rate limits)
+
+- Answer detection validation (direct answers, implicit answers)
+- Progressive help escalation (testing help escalation after stuck turns)
+- Context management (testing conversation coherence across 10+ messages)
+- Error handling scenarios (Vision API failures, LLM API failures, rate limits)
 
 5: Real-time testing indicators display during testing, showing:
-   - Answer detection status (keyword detection, LLM validation results)
-   - Socratic compliance validation (pass/fail status)
-   - Context management status (session state, message history)
-   - Help escalation level (current help level, escalation triggers)
+
+- Answer detection status (keyword detection, LLM validation results)
+- Socratic compliance validation (pass/fail status)
+- Context management status (session state, message history)
+- Help escalation level (current help level, escalation triggers)
 
 6: The testing interface provides quick access to edge case scenarios including:
-   - Direct answer detection patterns ("the answer is", "equals", numeric results)
-   - Implicit answer detection patterns (subtle answer phrasings)
-   - Boundary conditions (empty inputs, invalid problems, session expiration)
-   - Error scenarios (API failures, network errors, timeout errors)
+
+- Direct answer detection patterns ("the answer is", "equals", numeric results)
+- Implicit answer detection patterns (subtle answer phrasings)
+- Boundary conditions (empty inputs, invalid problems, session expiration)
+- Error scenarios (API failures, network errors, timeout errors)
 
 7: A test results dashboard displays visual summary of test results including:
-   - Pass/fail status for each test scenario
-   - Socratic compliance percentage (100% required)
-   - Answer detection accuracy (keyword detection rate, LLM validation rate)
-   - Context management validation (message retention, session state)
+
+- Pass/fail status for each test scenario
+- Socratic compliance percentage (100% required)
+- Answer detection accuracy (keyword detection rate, LLM validation rate)
+- Context management validation (message retention, session state)
 
 8: The testing interface supports batch testing, allowing developers to run multiple test scenarios in sequence or parallel, with automated test execution and results reporting.
 
@@ -235,4 +239,3 @@ so that I can efficiently validate system behavior and ensure Socratic complianc
 11: The testing interface is hidden in production builds and cannot be accessed by end users, ensuring security and privacy.
 
 12: The testing interface integrates with the existing test suite, allowing developers to run both manual and automated tests from the same interface.
-

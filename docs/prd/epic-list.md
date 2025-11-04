@@ -23,4 +23,3 @@ Delivers the visual and mathematical rendering capabilities: LaTeX/KaTeX renderi
 **Epic Sequencing Rationale:**
 
 Epic 1 establishes the foundation and delivers immediate value (problem input and parsing), allowing early testing of core input functionality. Epic 2 builds upon Epic 1 by adding the pedagogical core (Socratic dialogue and guardrails), enabling end-to-end problem-solving workflows. Epic 3 completes the system with visual polish and mathematical rendering, ensuring the product is fully functional and ready for deployment. This sequential approach ensures each epic builds upon previous work while delivering tangible value, allowing for iterative testing and refinement.
-

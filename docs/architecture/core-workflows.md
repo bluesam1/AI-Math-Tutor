@@ -58,4 +58,3 @@ sequenceDiagram
     API Gateway-->>Frontend: Response data
     Frontend->>Frontend: Display response with visual feedback
 ```
-

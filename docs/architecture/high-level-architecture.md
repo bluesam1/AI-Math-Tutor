@@ -9,18 +9,21 @@ AI Math Tutor uses a serverless fullstack architecture with AWS Lambda functions
 **Platform:** AWS Full Stack
 
 **Key Services:**
+
 - **Frontend:** AWS S3 + CloudFront (or AWS Amplify for full-stack deployment)
 - **Backend:** AWS Lambda (serverless) for API endpoints
 - **Session Storage:** AWS ElastiCache (Redis) for in-memory session management (last 10 messages)
 - **API Gateway:** AWS API Gateway for API routing, rate limiting, and request management
 - **CDN:** CloudFront for static asset delivery and edge caching
 
-**Deployment Host and Regions:** 
+**Deployment Host and Regions:**
+
 - Primary: US East (N. Virginia) us-east-1
 - CDN: CloudFront global distribution
 
 **Rationale:**
 The PRD explicitly specifies AWS infrastructure with serverless architecture. AWS provides:
+
 - **Cost-effectiveness for MVP:** Pay-per-use model ideal for initial deployment
 - **Scalability:** Auto-scaling Lambda functions handle variable load
 - **Integration:** Seamless integration between S3, CloudFront, API Gateway, and Lambda
@@ -34,6 +37,7 @@ The PRD explicitly specifies AWS infrastructure with serverless architecture. AW
 **Monorepo Tool:** npm workspaces (lightweight, no additional tooling required)
 
 **Package Organization:**
+
 - Root package.json manages workspace dependencies
 - `apps/web/` - React frontend application
 - `apps/api/` - Node.js/Express backend API
@@ -42,6 +46,7 @@ The PRD explicitly specifies AWS infrastructure with serverless architecture. AW
 
 **Rationale:**
 The PRD explicitly requires a monorepo structure. npm workspaces provides:
+
 - Simple setup without additional tooling complexity
 - Shared TypeScript types between frontend and backend
 - Unified dependency management
@@ -55,33 +60,33 @@ graph TB
     subgraph "Client Layer"
         Browser[Web Browser<br/>React App]
     end
-    
+
     subgraph "AWS Infrastructure"
         subgraph "Frontend"
             S3[S3 Bucket<br/>Static Assets]
             CF[CloudFront<br/>CDN]
         end
-        
+
         subgraph "API Layer"
             APIGW[API Gateway<br/>Routing & Rate Limiting]
         end
-        
+
         subgraph "Backend Services"
             Lambda1[Lambda: Problem Input<br/>Image Parsing]
             Lambda2[Lambda: Socratic Dialogue<br/>LLM Integration]
             Lambda3[Lambda: Answer Detection<br/>Guardrails]
         end
-        
+
         subgraph "Session Storage"
             Redis[ElastiCache Redis<br/>Session Context]
         end
     end
-    
+
     subgraph "External Services"
         VisionAPI[OpenAI Vision API]
         LLMAPI[LLM API<br/>OpenAI GPT-4/Claude]
     end
-    
+
     Browser -->|HTTPS| CF
     CF -->|Static Assets| S3
     Browser -->|API Requests| APIGW
@@ -112,4 +117,3 @@ graph TB
 - **Progressive Help Escalation:** Context-aware hint generation - _Rationale:_ Maintains pedagogical quality while adapting to student needs, prevents student abandonment
 
 - **Session-Based Context Management:** In-memory storage of last 10 messages - _Rationale:_ Fast access, no persistence requirements per PRD, cost-effective for anonymous sessions
-

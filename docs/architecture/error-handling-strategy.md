@@ -40,8 +40,8 @@ interface ApiError {
 ```typescript
 // apps/web/src/services/api/client.ts
 apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
+  response => response,
+  error => {
     if (error.response) {
       // Server responded with error
       const apiError = error.response.data as ApiError;
@@ -85,4 +85,3 @@ export const errorHandler = (error: any): APIGatewayProxyResult => {
   };
 };
 ```
-

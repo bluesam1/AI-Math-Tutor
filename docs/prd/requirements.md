@@ -97,4 +97,3 @@ NFR18: The developer testing interface must be accessible only in development en
 NFR19: The system must provide test fixtures for at least 10 different problem scenarios per problem type (50+ total scenarios), covering common cases and edge cases for comprehensive testing.
 
 NFR20: The developer testing interface must allow developers to test answer detection guardrails with various response patterns (explicit answers, implicit answers, edge cases) with immediate visual feedback.
-

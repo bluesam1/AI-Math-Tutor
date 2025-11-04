@@ -5,6 +5,7 @@
 **Purpose:** Represents a browser session with conversation context and current problem state.
 
 **Key Attributes:**
+
 - `sessionId`: string - Unique session identifier
 - `problem`: Problem | null - Current problem being solved
 - `messages`: Message[] - Last 10 messages (user inputs and system responses)
@@ -12,6 +13,7 @@
 - `lastActivityAt`: Date - Last activity timestamp for expiration
 
 **TypeScript Interface:**
+
 ```typescript
 interface Session {
   sessionId: string;
@@ -23,6 +25,7 @@ interface Session {
 ```
 
 **Relationships:**
+
 - Contains one optional Problem
 - Contains multiple Messages (max 10)
 
@@ -31,6 +34,7 @@ interface Session {
 **Purpose:** Represents a math problem submitted by the student.
 
 **Key Attributes:**
+
 - `id`: string - Unique problem identifier
 - `text`: string - Problem statement text
 - `type`: ProblemType - Problem category (arithmetic, algebra, geometry, word, multi-step)
@@ -39,18 +43,19 @@ interface Session {
 - `createdAt`: Date - Problem submission timestamp
 
 **TypeScript Interface:**
+
 ```typescript
 enum ProblemType {
   ARITHMETIC = 'arithmetic',
   ALGEBRA = 'algebra',
   GEOMETRY = 'geometry',
   WORD = 'word',
-  MULTI_STEP = 'multi-step'
+  MULTI_STEP = 'multi-step',
 }
 
 enum ProblemSource {
   TEXT = 'text',
-  IMAGE = 'image'
+  IMAGE = 'image',
 }
 
 interface Problem {
@@ -64,6 +69,7 @@ interface Problem {
 ```
 
 **Relationships:**
+
 - Belongs to one Session
 - Has multiple Messages in conversation
 
@@ -72,6 +78,7 @@ interface Problem {
 **Purpose:** Represents a single message in the conversation (user input or system response).
 
 **Key Attributes:**
+
 - `id`: string - Unique message identifier
 - `role`: MessageRole - Message sender (user or system)
 - `content`: string - Message text content
@@ -79,10 +86,11 @@ interface Problem {
 - `metadata?`: MessageMetadata - Optional metadata (e.g., help level, validation result)
 
 **TypeScript Interface:**
+
 ```typescript
 enum MessageRole {
   USER = 'user',
-  SYSTEM = 'system'
+  SYSTEM = 'system',
 }
 
 interface MessageMetadata {
@@ -101,6 +109,6 @@ interface Message {
 ```
 
 **Relationships:**
+
 - Belongs to one Session
 - References one Problem
-

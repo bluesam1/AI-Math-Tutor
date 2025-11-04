@@ -15,10 +15,11 @@ so that I can read and understand mathematical notation clearly.
 2: The math rendering library automatically detects LaTeX/KaTeX syntax in problem statements and dialogue responses.
 
 3: Mathematical equations and formulas are rendered with proper formatting, including:
-   - Fractions, exponents, square roots
-   - Variables, constants, operators
-   - Algebraic expressions, equations
-   - Geometric notation (angles, shapes, measurements)
+
+- Fractions, exponents, square roots
+- Variables, constants, operators
+- Algebraic expressions, equations
+- Geometric notation (angles, shapes, measurements)
 
 4: The math rendering works in both the problem display component (left panel) and chat conversation component (right panel).
 
@@ -43,19 +44,22 @@ so that I feel supported and motivated to continue working through problems.
 2: Visual feedback components are created for encouraging messages, displaying positive reinforcement when students make progress or show effort.
 
 3: Visual feedback elements are age-appropriate for 6th grade students (ages 11-12), using:
-   - Friendly colors that are engaging but not overwhelming
-   - Simple icons or emojis that celebrate progress
-   - Brief animations (subtle, not distracting) for encouragement
+
+- Friendly colors that are engaging but not overwhelming
+- Simple icons or emojis that celebrate progress
+- Brief animations (subtle, not distracting) for encouragement
 
 4: Progress indicators are displayed prominently in the interface, showing:
-   - Current step in the problem-solving process
-   - Number of attempts or progress milestones
-   - Visual representation of advancement (e.g., progress bar, step indicators)
+
+- Current step in the problem-solving process
+- Number of attempts or progress milestones
+- Visual representation of advancement (e.g., progress bar, step indicators)
 
 5: Encouraging messages are displayed at appropriate moments:
-   - When students make progress (correct responses, clearer thinking)
-   - When students show effort (attempting problems, asking questions)
-   - When students complete steps or reach milestones
+
+- When students make progress (correct responses, clearer thinking)
+- When students show effort (attempting problems, asking questions)
+- When students complete steps or reach milestones
 
 6: Visual feedback elements are integrated with the chat conversation component, appearing alongside system responses.
 
@@ -74,19 +78,22 @@ so that I can access help from any device I have available.
 1: The interface is fully responsive, adapting to different screen sizes (desktop, tablet, mobile) using Tailwind CSS responsive breakpoints.
 
 2: The side-by-side layout adapts appropriately for smaller screens:
-   - Desktop: Full side-by-side layout (problem left, chat right)
-   - Tablet: Side-by-side layout with adjusted sizing, or stacked layout if needed
-   - Mobile: Stacked layout (problem above, chat below) or collapsible panels
+
+- Desktop: Full side-by-side layout (problem left, chat right)
+- Tablet: Side-by-side layout with adjusted sizing, or stacked layout if needed
+- Mobile: Stacked layout (problem above, chat below) or collapsible panels
 
 3: All interactive elements are touch-friendly on mobile and tablet devices:
-   - Buttons are appropriately sized for touch
-   - Input fields are easily accessible
-   - Drag-and-drop works on touch devices
+
+- Buttons are appropriately sized for touch
+- Input fields are easily accessible
+- Drag-and-drop works on touch devices
 
 4: The responsive design maintains usability across all device types:
-   - Text is readable without zooming
-   - Interactive elements are easily accessible
-   - Visual hierarchy is maintained
+
+- Text is readable without zooming
+- Interactive elements are easily accessible
+- Visual hierarchy is maintained
 
 5: The responsive design is tested across modern browsers (Chrome, Firefox, Safari, Edge) on desktop, tablet, and mobile devices.
 
@@ -107,20 +114,23 @@ so that I feel comfortable using the tutor.
 1: The interface uses Tailwind CSS v4.1.16 for styling, with appropriate Tailwind configuration and design tokens.
 
 2: The styling is age-appropriate for 6th grade students (ages 11-12), using:
-   - Colorful but not overwhelming color palette
-   - Friendly visual elements (emojis, icons, simple animations)
-   - Clear typography that is readable for the age group
-   - Appropriate spacing and visual hierarchy
+
+- Colorful but not overwhelming color palette
+- Friendly visual elements (emojis, icons, simple animations)
+- Clear typography that is readable for the age group
+- Appropriate spacing and visual hierarchy
 
 3: The styling maintains a clean, educational aesthetic:
-   - Minimalist core with plenty of white space
-   - Focus on mathematical content (equations, formulas)
-   - Clear visual hierarchy emphasizing problem and dialogue
+
+- Minimalist core with plenty of white space
+- Focus on mathematical content (equations, formulas)
+- Clear visual hierarchy emphasizing problem and dialogue
 
 4: The styling is consistent throughout the interface:
-   - Consistent color scheme across components
-   - Consistent typography and spacing
-   - Consistent interactive element styling (buttons, inputs, etc.)
+
+- Consistent color scheme across components
+- Consistent typography and spacing
+- Consistent interactive element styling (buttons, inputs, etc.)
 
 5: The styling uses Tailwind CSS utility classes effectively, maintaining design consistency and avoiding custom CSS where possible.
 
@@ -139,51 +149,57 @@ so that I can get help with arithmetic, algebra, geometry, word problems, and mu
 #### Acceptance Criteria
 
 1: The system is tested with arithmetic problems (addition, subtraction, multiplication, division, combinations), validating:
-   - Problem parsing (text input and image upload)
-   - Problem validation and type identification
-   - Socratic dialogue quality
-   - Answer detection guardrail effectiveness
-   - Visual feedback appropriateness
+
+- Problem parsing (text input and image upload)
+- Problem validation and type identification
+- Socratic dialogue quality
+- Answer detection guardrail effectiveness
+- Visual feedback appropriateness
 
 2: The system is tested with algebra problems (solving equations, working with variables, algebraic expressions), validating:
-   - Problem parsing (text input and image upload)
-   - Problem validation and type identification
-   - Socratic dialogue quality
-   - Answer detection guardrail effectiveness
-   - Math rendering for algebraic notation
-   - Visual feedback appropriateness
+
+- Problem parsing (text input and image upload)
+- Problem validation and type identification
+- Socratic dialogue quality
+- Answer detection guardrail effectiveness
+- Math rendering for algebraic notation
+- Visual feedback appropriateness
 
 3: The system is tested with geometry problems (shapes, area, perimeter, angles, geometric relationships), validating:
-   - Problem parsing (text input and image upload)
-   - Problem validation and type identification
-   - Socratic dialogue quality
-   - Answer detection guardrail effectiveness
-   - Math rendering for geometric notation
-   - Visual feedback appropriateness
+
+- Problem parsing (text input and image upload)
+- Problem validation and type identification
+- Socratic dialogue quality
+- Answer detection guardrail effectiveness
+- Math rendering for geometric notation
+- Visual feedback appropriateness
 
 4: The system is tested with word problems (story problems requiring mathematical reasoning), validating:
-   - Problem parsing (text input and image upload)
-   - Problem validation and type identification
-   - Socratic dialogue quality
-   - Answer detection guardrail effectiveness
-   - Context management across multiple turns
-   - Visual feedback appropriateness
+
+- Problem parsing (text input and image upload)
+- Problem validation and type identification
+- Socratic dialogue quality
+- Answer detection guardrail effectiveness
+- Context management across multiple turns
+- Visual feedback appropriateness
 
 5: The system is tested with multi-step problems (problems requiring multiple sequential operations), validating:
-   - Problem parsing (text input and image upload)
-   - Problem validation and type identification
-   - Socratic dialogue quality
-   - Answer detection guardrail effectiveness
-   - Context management across extended conversations (10+ messages)
-   - Progressive help escalation
-   - Visual feedback appropriateness
+
+- Problem parsing (text input and image upload)
+- Problem validation and type identification
+- Socratic dialogue quality
+- Answer detection guardrail effectiveness
+- Context management across extended conversations (10+ messages)
+- Progressive help escalation
+- Visual feedback appropriateness
 
 6: Testing results are documented, including:
-   - Test cases for each problem type
-   - Socratic dialogue quality assessment
-   - Answer detection guardrail validation (100% adherence verified)
-   - Visual feedback appropriateness assessment
-   - Known issues or areas for improvement
+
+- Test cases for each problem type
+- Socratic dialogue quality assessment
+- Answer detection guardrail validation (100% adherence verified)
+- Visual feedback appropriateness assessment
+- Known issues or areas for improvement
 
 7: The system demonstrates 100% adherence to Socratic principles across all 5 problem types, verified through testing.
 
@@ -198,38 +214,42 @@ so that I have a smooth, professional experience when using the tutor.
 #### Acceptance Criteria
 
 1: Final UI polish is applied to the interface, ensuring:
-   - Consistent styling throughout
-   - Smooth transitions and interactions
-   - Professional appearance appropriate for the target age group
-   - Clear visual hierarchy and spacing
+
+- Consistent styling throughout
+- Smooth transitions and interactions
+- Professional appearance appropriate for the target age group
+- Clear visual hierarchy and spacing
 
 2: Error handling is implemented throughout the interface, providing clear, age-appropriate error messages for:
-   - API failures (Vision API, LLM API)
-   - Network errors
-   - Invalid input (empty problems, invalid images)
-   - Session expiration
-   - Rate limit errors
+
+- API failures (Vision API, LLM API)
+- Network errors
+- Invalid input (empty problems, invalid images)
+- Session expiration
+- Rate limit errors
 
 3: Error messages are displayed prominently in the interface, with:
-   - Clear, age-appropriate language (no technical jargon)
-   - Actionable guidance (e.g., "Try again" or "Check your internet connection")
-   - Visual feedback (error icons, colors) appropriate for the age group
+
+- Clear, age-appropriate language (no technical jargon)
+- Actionable guidance (e.g., "Try again" or "Check your internet connection")
+- Visual feedback (error icons, colors) appropriate for the age group
 
 4: Loading states are implemented throughout the interface, showing:
-   - Loading indicators during API calls (Vision API, LLM API)
-   - Progress indicators during image processing
-   - Smooth transitions between states
+
+- Loading indicators during API calls (Vision API, LLM API)
+- Progress indicators during image processing
+- Smooth transitions between states
 
 5: The interface handles edge cases gracefully:
-   - Empty or invalid problem submissions
-   - Image parsing failures
-   - LLM response failures
-   - Session expiration
-   - Network disconnections
+
+- Empty or invalid problem submissions
+- Image parsing failures
+- LLM response failures
+- Session expiration
+- Network disconnections
 
 6: The interface is tested across modern browsers (Chrome, Firefox, Safari, Edge) to ensure compatibility and polish.
 
 7: The interface is tested on different device types (desktop, tablet, mobile) to ensure responsive design and polish.
 
 8: The interface is ready for deployment, with all error handling, loading states, and UI polish completed.
-

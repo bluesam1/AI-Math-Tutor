@@ -5,6 +5,7 @@ Since the system uses in-memory session storage (Redis) with no persistent datab
 ### Redis Schema
 
 **Session Storage (Hash):**
+
 - Key: `session:{sessionId}`
 - Fields:
   - `sessionId`: string
@@ -14,10 +15,12 @@ Since the system uses in-memory session storage (Redis) with no persistent datab
   - `lastActivityAt`: ISO timestamp string
 
 **Session Expiration:**
+
 - TTL: 30 minutes of inactivity (configurable)
 - Automatic cleanup via Redis TTL
 
 **Example Redis Structure:**
+
 ```
 session:abc123
   sessionId: "abc123"
@@ -28,8 +31,8 @@ session:abc123
 ```
 
 **Rationale:**
+
 - No persistent storage required per PRD
 - Fast in-memory access for session context
 - Automatic expiration prevents data accumulation
 - Cost-effective for anonymous sessions
-

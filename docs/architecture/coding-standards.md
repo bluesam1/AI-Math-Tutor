@@ -17,12 +17,11 @@
 
 ### Naming Conventions
 
-| Element | Frontend | Backend | Example |
-|---------|----------|---------|---------|
-| Components | PascalCase | - | `ProblemInput.tsx` |
-| Hooks | camelCase with 'use' | - | `useSession.ts` |
-| API Routes | - | kebab-case | `/api/problem/parse-image` |
-| Functions | camelCase | camelCase | `generateDialogue` |
-| Types/Interfaces | PascalCase | PascalCase | `Problem`, `Session` |
-| Constants | UPPER_SNAKE_CASE | UPPER_SNAKE_CASE | `MAX_MESSAGES = 10` |
-
+| Element          | Frontend             | Backend          | Example                    |
+| ---------------- | -------------------- | ---------------- | -------------------------- |
+| Components       | PascalCase           | -                | `ProblemInput.tsx`         |
+| Hooks            | camelCase with 'use' | -                | `useSession.ts`            |
+| API Routes       | -                    | kebab-case       | `/api/problem/parse-image` |
+| Functions        | camelCase            | camelCase        | `generateDialogue`         |
+| Types/Interfaces | PascalCase           | PascalCase       | `Problem`, `Session`       |
+| Constants        | UPPER_SNAKE_CASE     | UPPER_SNAKE_CASE | `MAX_MESSAGES = 10`        |

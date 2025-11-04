@@ -3,6 +3,7 @@
 ### Repository Structure: Monorepo
 
 The project will use a monorepo structure combining frontend and backend code in a single repository. This approach:
+
 - Simplifies development workflow with shared code and dependencies
 - Enables easier context management across frontend and backend
 - Supports streamlined deployment and testing processes
@@ -14,6 +15,7 @@ The project will use a monorepo structure combining frontend and backend code in
 ### Service Architecture
 
 The system will use a **serverless architecture** with AWS Lambda functions for backend API endpoints, paired with a React frontend deployed as static assets. This architecture:
+
 - **Frontend:** React application built with component-based UI architecture, deployed as static assets to AWS S3 with CloudFront distribution, or using AWS Amplify for full-stack deployment
 - **Backend:** Node.js/Express-based API endpoints deployed as AWS Lambda functions (serverless) or containerized on AWS ECS/ECS Fargate
 - **Session Storage:** AWS ElastiCache (Redis) for in-memory session management (last 10 messages), or AWS DynamoDB for lightweight session storage
@@ -26,6 +28,7 @@ The system will use a **serverless architecture** with AWS Lambda functions for 
 ### Testing Requirements: Unit + Integration
 
 The system will implement:
+
 - **Unit Tests:** Component-level testing for React components, function-level testing for backend logic (answer detection guardrails, context management, problem parsing)
 - **Integration Tests:** API endpoint testing (end-to-end API calls), Vision API integration testing, LLM integration testing with guardrail validation
 - **Manual Testing:** Convenience methods for manual testing of Socratic dialogue quality, visual feedback effectiveness, and cross-browser compatibility
@@ -47,6 +50,7 @@ The system will implement:
 **LLM API:** OpenAI GPT-4, Claude, or similar LLM service for problem understanding and Socratic dialogue generation, with chain-of-thought and progressive disclosure strategies.
 
 **Answer Detection Guardrails:** Two-tier approach:
+
 1. **Keyword-based pattern matching:** Detects common answer patterns (e.g., "the answer is", "equals", numeric results at end of responses)
 2. **LLM-based validation:** Uses a secondary LLM call to analyze response context and detect implicit answers that keyword matching might miss
 
@@ -55,16 +59,19 @@ The system will implement:
 **API Integration:** RESTful API design for frontend-backend communication, with clear error handling and response formatting.
 
 **Deployment Targets:**
+
 - **Frontend:** AWS S3 + CloudFront for static hosting, or AWS Amplify for full-stack deployment
 - **Backend:** AWS Lambda (serverless) for API endpoints, or AWS ECS/ECS Fargate for containerized deployment
 - **Session Storage:** AWS ElastiCache (Redis) or DynamoDB for session management
 - **API Gateway:** AWS API Gateway for API routing and management
 
 **Alternative Hosting:** If AWS is not preferred, Cloud hosting alternatives:
+
 - Frontend: Vercel, Netlify
 - Backend: Railway, Render
 
 **Security:**
+
 - API keys stored securely in environment variables, never exposed in client-side code
 - Input sanitization for all text inputs to prevent security vulnerabilities
 - No sensitive user data collection (anonymous sessions only)
@@ -72,13 +79,14 @@ The system will implement:
 **Browser Support:** Modern browsers (Chrome, Firefox, Safari, Edge) with JavaScript runtime enabled (required for React and application functionality). Note: All source code must be written in TypeScript and compiled to JavaScript for browser execution.
 
 **Performance Requirements:**
+
 - LLM response times: < 3 seconds
 - Smooth visual feedback interactions without noticeable lag
 - Efficient image processing through Vision API integration
 
 **Development Tools:**
+
 - **TypeScript (Required):** All code must be written in TypeScript (no raw JavaScript). TypeScript provides type safety across frontend and backend, ensuring code quality and reducing errors. All source files must use `.ts` or `.tsx` extensions.
 - **Code Linting:** ESLint with TypeScript support is required for code quality and consistency. All TypeScript code must pass linting checks before deployment.
 - Git for version control
 - Prettier for code formatting (integrated with ESLint)
-

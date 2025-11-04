@@ -25,11 +25,11 @@ The system is specifically designed for 6th grade mathematics, focusing on core 
 
 ### Change Log
 
-| Date | Version | Description | Author |
-|------|---------|-------------|--------|
-| 2025-11-03 | 1.0 | Initial PRD created from Project Brief | PM |
-| 2025-01-XX | 1.1 | Scope refined to focus on 6th grade math specifically | PM |
-| 2025-01-XX | 1.2 | Added requirements for streamlined testing workflows and developer testing interface | PM |
+| Date       | Version | Description                                                                          | Author |
+| ---------- | ------- | ------------------------------------------------------------------------------------ | ------ |
+| 2025-11-03 | 1.0     | Initial PRD created from Project Brief                                               | PM     |
+| 2025-01-XX | 1.1     | Scope refined to focus on 6th grade math specifically                                | PM     |
+| 2025-01-XX | 1.2     | Added requirements for streamlined testing workflows and developer testing interface | PM     |
 
 ## Requirements
 
@@ -175,6 +175,7 @@ The developer testing interface is hidden in production builds and only accessib
 ### Accessibility: WCAG AA
 
 The system must meet WCAG AA standards for accessibility, ensuring:
+
 - Color contrast ratios meet WCAG AA requirements (4.5:1 for normal text, 3:1 for large text)
 - Keyboard navigation support for all interactive elements
 - Screen reader compatibility for problem statements and dialogue responses
@@ -185,6 +186,7 @@ The system must meet WCAG AA standards for accessibility, ensuring:
 ### Branding
 
 The interface should maintain a clean, educational aesthetic appropriate for 6th grade students. Visual elements should be:
+
 - **Colorful but not overwhelming:** Use a primary color palette that is engaging but not distracting, with clear visual hierarchy
 - **Friendly and encouraging:** Visual feedback should feel warm and supportive, using age-appropriate icons, emojis, and simple animations
 - **Mathematically focused:** The design should emphasize mathematical content (equations, formulas) with proper rendering and clear typography
@@ -195,6 +197,7 @@ No specific brand guidelines or style guides are provided; the design should pri
 ### Target Device and Platforms: Web Responsive
 
 The system must work effectively across:
+
 - **Desktop browsers:** Full side-by-side layout with optimal screen real estate
 - **Tablet browsers:** Responsive layout that adapts to tablet screens while maintaining usability
 - **Mobile browsers:** Mobile-optimized layout that may stack vertically or adjust the side-by-side layout for smaller screens while maintaining core functionality
@@ -206,6 +209,7 @@ The responsive design should ensure that all core features (text input, image up
 ### Repository Structure: Monorepo
 
 The project will use a monorepo structure combining frontend and backend code in a single repository. This approach:
+
 - Simplifies development workflow with shared code and dependencies
 - Enables easier context management across frontend and backend
 - Supports streamlined deployment and testing processes
@@ -217,6 +221,7 @@ The project will use a monorepo structure combining frontend and backend code in
 ### Service Architecture
 
 The system will use a **serverless architecture** with AWS Lambda functions for backend API endpoints, paired with a React frontend deployed as static assets. This architecture:
+
 - **Frontend:** React application built with component-based UI architecture, deployed as static assets to AWS S3 with CloudFront distribution, or using AWS Amplify for full-stack deployment
 - **Backend:** Node.js/Express-based API endpoints deployed as AWS Lambda functions (serverless) or containerized on AWS ECS/ECS Fargate
 - **Session Storage:** AWS ElastiCache (Redis) for in-memory session management (last 10 messages), or AWS DynamoDB for lightweight session storage
@@ -229,6 +234,7 @@ The system will use a **serverless architecture** with AWS Lambda functions for 
 ### Testing Requirements: Unit + Integration
 
 The system will implement:
+
 - **Unit Tests:** Component-level testing for React components, function-level testing for backend logic (answer detection guardrails, context management, problem parsing)
 - **Integration Tests:** API endpoint testing (end-to-end API calls), Vision API integration testing, LLM integration testing with guardrail validation
 - **Manual Testing:** Convenience methods for manual testing of Socratic dialogue quality, visual feedback effectiveness, and cross-browser compatibility
@@ -250,6 +256,7 @@ The system will implement:
 **LLM API:** OpenAI GPT-4, Claude, or similar LLM service for problem understanding and Socratic dialogue generation, with chain-of-thought and progressive disclosure strategies.
 
 **Answer Detection Guardrails:** Two-tier approach:
+
 1. **Keyword-based pattern matching:** Detects common answer patterns (e.g., "the answer is", "equals", numeric results at end of responses)
 2. **LLM-based validation:** Uses a secondary LLM call to analyze response context and detect implicit answers that keyword matching might miss
 
@@ -258,16 +265,19 @@ The system will implement:
 **API Integration:** RESTful API design for frontend-backend communication, with clear error handling and response formatting.
 
 **Deployment Targets:**
+
 - **Frontend:** AWS S3 + CloudFront for static hosting, or AWS Amplify for full-stack deployment
 - **Backend:** AWS Lambda (serverless) for API endpoints, or AWS ECS/ECS Fargate for containerized deployment
 - **Session Storage:** AWS ElastiCache (Redis) or DynamoDB for session management
 - **API Gateway:** AWS API Gateway for API routing and management
 
 **Alternative Hosting:** If AWS is not preferred, Cloud hosting alternatives:
+
 - Frontend: Vercel, Netlify
 - Backend: Railway, Render
 
 **Security:**
+
 - API keys stored securely in environment variables, never exposed in client-side code
 - Input sanitization for all text inputs to prevent security vulnerabilities
 - No sensitive user data collection (anonymous sessions only)
@@ -275,11 +285,13 @@ The system will implement:
 **Browser Support:** Modern browsers (Chrome, Firefox, Safari, Edge) with JavaScript runtime enabled (required for React and application functionality). Note: All source code must be written in TypeScript and compiled to JavaScript for browser execution.
 
 **Performance Requirements:**
+
 - LLM response times: < 3 seconds
 - Smooth visual feedback interactions without noticeable lag
 - Efficient image processing through Vision API integration
 
 **Development Tools:**
+
 - **TypeScript (Required):** All code must be written in TypeScript (no raw JavaScript). TypeScript provides type safety across frontend and backend, ensuring code quality and reducing errors. All source files must use `.ts` or `.tsx` extensions.
 - **Code Linting:** ESLint with TypeScript support is required for code quality and consistency. All TypeScript code must pass linting checks before deployment.
 - Git for version control
@@ -316,6 +328,7 @@ Epic 1 establishes the foundation and delivers immediate value (problem input an
 ### Cross-Epic Dependencies
 
 **Epic 1 → Epic 2 Dependencies:**
+
 - All Epic 2 stories require Epic 1 infrastructure (monorepo, React app, backend API structure)
 - Epic 2 Story 2.1 (LLM Integration) requires Epic 1 Story 1.3 (Backend API Structure) for API endpoints
 - Epic 2 Story 2.2 (Dialogue Generation) requires Epic 1 Story 1.7 (Problem Validation) for problem type identification
@@ -323,12 +336,14 @@ Epic 1 establishes the foundation and delivers immediate value (problem input an
 - Epic 2 Story 2.7 (Chat UI Component) requires Epic 1 Story 1.2 (React Frontend Shell) for layout structure
 
 **Epic 1 → Epic 3 Dependencies:**
+
 - All Epic 3 stories require Epic 1 infrastructure (React app, Tailwind CSS, component structure)
 - Epic 3 Story 3.1 (Math Rendering) requires Epic 1 Story 1.8 (Problem Display Component) for problem rendering
 - Epic 3 Story 3.2 (Visual Feedback Components) requires Epic 1 Story 1.2 (React Frontend Shell) for layout
 - Epic 3 Story 3.3 (Responsive Design) requires Epic 1 Story 1.2 (React Frontend Shell) for base layout
 
 **Epic 2 → Epic 3 Dependencies:**
+
 - Epic 3 Story 3.1 (Math Rendering) requires Epic 2 Story 2.7 (Chat UI Component) for message rendering
 - Epic 3 Story 3.2 (Visual Feedback Components) requires Epic 2 Story 2.7 (Chat UI Component) for integration
 - Epic 3 Story 3.5 (Comprehensive Testing) requires all Epic 2 stories for full system testing
@@ -348,79 +363,102 @@ Epic 1 (Foundation)
 ### Story-Level Dependencies Within Epic 1
 
 **Story 1.1 (Foundation & Project Setup)** → **All other Epic 1 stories**
+
 - Foundation for all subsequent work
 - Provides: monorepo structure, Git, CI/CD, deployment infrastructure
 
 **Story 1.2 (React Frontend Shell)** → **Stories 1.4, 1.5, 1.8**
+
 - Provides: Side-by-side layout required for problem input and display components
 
 **Story 1.3 (Backend API Structure)** → **Stories 1.6, 1.7**
+
 - Provides: Express API structure required for Vision API and validation endpoints
 
 **Story 1.4 (Text Input)** → **Story 1.7 (Problem Validation)**
+
 - Text input requires validation before problem display
 
 **Story 1.5 (Image Upload UI)** → **Story 1.6 (Vision API Integration)**
+
 - Image upload UI requires Vision API backend endpoint
 
 **Story 1.6 (Vision API Integration)** → **Story 1.7 (Problem Validation)**
+
 - Parsed image text requires validation before problem display
 
 **Story 1.7 (Problem Validation)** → **Story 1.8 (Problem Display)**
+
 - Validated problem required before display
 
 **Story 1.9 (Developer Testing Interface)** → **All Epic 1 stories**
+
 - Testing interface depends on all input, validation, and display functionality
 
 ### Story-Level Dependencies Within Epic 2
 
 **Story 2.1 (LLM Integration Service)** → **Stories 2.2, 2.4, 2.5**
+
 - LLM service required for dialogue generation, validation, and rewriting
 
 **Story 2.2 (Dialogue Generation Endpoint)** → **Stories 2.3, 2.4, 2.5, 2.6, 2.7**
+
 - Dialogue generation requires answer detection, blocking, context management, and chat UI
 
 **Story 2.3 (Keyword-Based Detection)** → **Story 2.5 (Answer Blocking)**
+
 - Keyword detection feeds into answer blocking logic
 
 **Story 2.4 (LLM-Based Validation)** → **Story 2.5 (Answer Blocking)**
+
 - LLM validation feeds into answer blocking logic
 
 **Story 2.5 (Answer Blocking)** → **Story 2.2 (Dialogue Generation)**
+
 - Answer blocking must be applied before sending responses from dialogue generation
 
 **Story 2.6 (Context Management)** → **Story 2.2 (Dialogue Generation)**
+
 - Context management provides conversation history for dialogue generation
 
 **Story 2.8 (Progressive Help Escalation)** → **Story 2.2 (Dialogue Generation)**
+
 - Help escalation modifies prompts for dialogue generation
 
 **Story 2.7 (Chat UI Component)** → **Story 2.2 (Dialogue Generation)**
+
 - Chat UI displays responses from dialogue generation endpoint
 
 ### Story-Level Dependencies Within Epic 3
 
 **Story 3.1 (Math Rendering)** → **Stories 1.8 (Problem Display), 2.7 (Chat UI)**
+
 - Math rendering required for both problem display and chat messages
 
 **Story 3.2 (Visual Feedback Components)** → **Story 2.7 (Chat UI Component)**
+
 - Visual feedback integrates with chat interface
 
 **Story 3.3 (Responsive Design)** → **Stories 1.2 (Frontend Shell), 2.7 (Chat UI)**
+
 - Responsive design applies to all layout components
 
 **Story 3.4 (Age-Appropriate Styling)** → **All Epic 3 stories**
+
 - Styling applies across all visual components
 
 **Story 3.5 (Comprehensive Testing)** → **All Epic 1, 2, and 3 stories**
+
 - Comprehensive testing validates entire system
 
 **Story 3.6 (Final UI Polish)** → **All Epic 3 stories**
+
 - Final polish applies to all visual components
 
 ### Critical Path Dependencies
 
 **Critical Path 1: Problem Input → Validation → Display**
+
 ```
 1.1 (Foundation) → 1.2 (Frontend Shell) → 1.3 (Backend API)
     → 1.4 (Text Input) OR 1.5 (Image Upload) → 1.6 (Vision API) [if image]
@@ -428,6 +466,7 @@ Epic 1 (Foundation)
 ```
 
 **Critical Path 2: Dialogue System → Answer Detection → Chat UI**
+
 ```
 2.1 (LLM Integration) → 2.2 (Dialogue Generation)
     → 2.3 (Keyword Detection) + 2.4 (LLM Validation) → 2.5 (Answer Blocking)
@@ -436,6 +475,7 @@ Epic 1 (Foundation)
 ```
 
 **Critical Path 3: Visual Polish → Math Rendering → Final Testing**
+
 ```
 3.1 (Math Rendering) → 3.2 (Visual Feedback) → 3.3 (Responsive Design)
     → 3.4 (Styling) → 3.5 (Testing) → 3.6 (Final Polish)
@@ -444,11 +484,13 @@ Epic 1 (Foundation)
 ### Dependency Notes
 
 **Parallel Development Opportunities:**
+
 - Stories 1.4 (Text Input) and 1.5 (Image Upload) can be developed in parallel
 - Stories 2.3 (Keyword Detection) and 2.4 (LLM Validation) can be developed in parallel
 - Stories 3.1 (Math Rendering), 3.2 (Visual Feedback), and 3.3 (Responsive Design) can be developed in parallel
 
 **Blocking Dependencies:**
+
 - Story 1.1 (Foundation) blocks all other stories
 - Story 1.2 (Frontend Shell) blocks frontend components (1.4, 1.5, 1.8)
 - Story 1.3 (Backend API) blocks backend endpoints (1.6, 1.7)
@@ -456,6 +498,7 @@ Epic 1 (Foundation)
 - Story 2.2 (Dialogue Generation) blocks chat UI (2.7)
 
 **Technical Dependencies:**
+
 - All stories require TypeScript and ESLint configuration (from 1.1)
 - All frontend stories require Tailwind CSS setup (from 1.2)
 - All backend stories require Express API structure (from 1.3)
@@ -667,28 +710,32 @@ so that I can efficiently validate system behavior and ensure Socratic complianc
 3: Developers can load test problems with one click from the test problem library, automatically populating the problem input and starting a test session.
 
 4: The testing interface includes a scenario testing panel that allows developers to test specific scenarios including:
-   - Answer detection validation (direct answers, implicit answers)
-   - Progressive help escalation (testing help escalation after stuck turns)
-   - Context management (testing conversation coherence across 10+ messages)
-   - Error handling scenarios (Vision API failures, LLM API failures, rate limits)
+
+- Answer detection validation (direct answers, implicit answers)
+- Progressive help escalation (testing help escalation after stuck turns)
+- Context management (testing conversation coherence across 10+ messages)
+- Error handling scenarios (Vision API failures, LLM API failures, rate limits)
 
 5: Real-time testing indicators display during testing, showing:
-   - Answer detection status (keyword detection, LLM validation results)
-   - Socratic compliance validation (pass/fail status)
-   - Context management status (session state, message history)
-   - Help escalation level (current help level, escalation triggers)
+
+- Answer detection status (keyword detection, LLM validation results)
+- Socratic compliance validation (pass/fail status)
+- Context management status (session state, message history)
+- Help escalation level (current help level, escalation triggers)
 
 6: The testing interface provides quick access to edge case scenarios including:
-   - Direct answer detection patterns ("the answer is", "equals", numeric results)
-   - Implicit answer detection patterns (subtle answer phrasings)
-   - Boundary conditions (empty inputs, invalid problems, session expiration)
-   - Error scenarios (API failures, network errors, timeout errors)
+
+- Direct answer detection patterns ("the answer is", "equals", numeric results)
+- Implicit answer detection patterns (subtle answer phrasings)
+- Boundary conditions (empty inputs, invalid problems, session expiration)
+- Error scenarios (API failures, network errors, timeout errors)
 
 7: A test results dashboard displays visual summary of test results including:
-   - Pass/fail status for each test scenario
-   - Socratic compliance percentage (100% required)
-   - Answer detection accuracy (keyword detection rate, LLM validation rate)
-   - Context management validation (message retention, session state)
+
+- Pass/fail status for each test scenario
+- Socratic compliance percentage (100% required)
+- Answer detection accuracy (keyword detection rate, LLM validation rate)
+- Context management validation (message retention, session state)
 
 8: The testing interface supports batch testing, allowing developers to run multiple test scenarios in sequence or parallel, with automated test execution and results reporting.
 
@@ -717,10 +764,11 @@ so that the system can generate guiding questions that help students discover so
 2: The LLM service is configured with appropriate API keys stored securely in environment variables, never exposed in client-side code.
 
 3: The service includes a function for generating Socratic dialogue responses with appropriate prompts that instruct the LLM to:
-   - Generate guiding questions, not direct answers
-   - Use progressive disclosure and chain-of-thought strategies
-   - Break down problems appropriately
-   - Adapt to student understanding level
+
+- Generate guiding questions, not direct answers
+- Use progressive disclosure and chain-of-thought strategies
+- Break down problems appropriately
+- Adapt to student understanding level
 
 4: The service handles API rate limits gracefully, implementing retry logic or queuing when rate limits are reached.
 
@@ -745,11 +793,12 @@ so that I can start working through the solution with guided questions.
 2: The endpoint accepts the current problem statement and student message as input, along with conversation context (last 10 messages if available).
 
 3: The LLM prompt includes:
-   - The current problem statement
-   - The problem type (arithmetic, algebra, geometry, word problems, multi-step)
-   - Conversation history (last 10 messages)
-   - Instructions to generate Socratic guiding questions, never direct answers
-   - Instructions to use progressive disclosure and chain-of-thought strategies
+
+- The current problem statement
+- The problem type (arithmetic, algebra, geometry, word problems, multi-step)
+- Conversation history (last 10 messages)
+- Instructions to generate Socratic guiding questions, never direct answers
+- Instructions to use progressive disclosure and chain-of-thought strategies
 
 4: The endpoint returns the generated Socratic dialogue response to the frontend.
 
@@ -772,9 +821,10 @@ so that I can learn through guided discovery rather than answer-getting.
 1: A backend service module is created for keyword-based answer detection (e.g., `answerDetectionService.ts`) in TypeScript that scans LLM responses for common answer patterns.
 
 2: The keyword-based detection identifies patterns such as:
-   - "the answer is", "the solution is", "equals", "is equal to"
-   - Numeric results at the end of responses (e.g., "42", "x = 5")
-   - Direct answer phrases (e.g., "so the answer would be", "therefore the answer is")
+
+- "the answer is", "the solution is", "equals", "is equal to"
+- Numeric results at the end of responses (e.g., "42", "x = 5")
+- Direct answer phrases (e.g., "so the answer would be", "therefore the answer is")
 
 3: The detection logic uses regex or pattern matching to identify these patterns in LLM responses.
 
@@ -799,8 +849,9 @@ so that the Socratic principles are maintained even when answers are phrased sub
 1: A backend service module is created for LLM-based answer validation (e.g., `answerValidationService.ts`) in TypeScript that uses a secondary LLM call to analyze response context.
 
 2: The validation service sends the LLM-generated response to a secondary LLM call with a prompt asking:
-   - "Does this response contain a direct answer to the math problem?"
-   - "Would this response give away the solution without requiring student thinking?"
+
+- "Does this response contain a direct answer to the math problem?"
+- "Would this response give away the solution without requiring student thinking?"
 
 3: The secondary LLM call analyzes the response context and returns a validation result (contains answer / does not contain answer).
 
@@ -825,14 +876,16 @@ so that I never receive direct answers even if the guardrails detect them.
 1: A backend service module combines keyword-based detection and LLM-based validation to determine if a response contains direct answers.
 
 2: When a response is flagged for containing direct answers (by either detection method), the system:
-   - Blocks the response from being sent to the frontend
-   - Generates a replacement response that maintains Socratic principles (asks a guiding question instead)
-   - Logs the blocked response for monitoring and improvement
+
+- Blocks the response from being sent to the frontend
+- Generates a replacement response that maintains Socratic principles (asks a guiding question instead)
+- Logs the blocked response for monitoring and improvement
 
 3: The replacement response is generated using the LLM service with a prompt instructing it to:
-   - Rewrite the response as a guiding question
-   - Maintain the same pedagogical intent without giving away the answer
-   - Use Socratic questioning techniques
+
+- Rewrite the response as a guiding question
+- Maintain the same pedagogical intent without giving away the answer
+- Use Socratic questioning techniques
 
 4: The system handles cases where rewriting fails (e.g., LLM API error) by returning a generic Socratic question (e.g., "Let's think about this step by step. What do you think we should consider first?").
 
@@ -859,9 +912,10 @@ so that the tutor can provide coherent, contextually relevant guidance.
 3: The service uses AWS ElastiCache (Redis) or DynamoDB for session storage, with session data persisting only within the browser session (no persistence beyond session).
 
 4: The service includes functions to:
-   - Add a new message to the context (user input or system response)
-   - Retrieve the last 10 messages for a session
-   - Clear context when a new problem is started
+
+- Add a new message to the context (user input or system response)
+- Retrieve the last 10 messages for a session
+- Clear context when a new problem is started
 
 5: The context is retrieved and included in LLM prompts for dialogue generation, ensuring coherent conversation flow.
 
@@ -884,9 +938,10 @@ so that I can follow our dialogue and see my progress.
 2: The chat component displays messages in a conversation format, with user messages and system responses clearly distinguished (different styling, alignment, or icons).
 
 3: The chat component includes:
-   - A message list displaying all messages in chronological order
-   - A message input field at the bottom for students to type responses
-   - A send button to submit messages
+
+- A message list displaying all messages in chronological order
+- A message input field at the bottom for students to type responses
+- A send button to submit messages
 
 4: The chat component handles message submission, sending student messages to the backend API endpoint (POST /api/chat/message).
 
@@ -915,9 +970,10 @@ so that I can make progress without receiving direct answers.
 2: The escalation service tracks the number of turns without progress for each problem (e.g., consecutive incorrect or unclear responses).
 
 3: When a student has been stuck for 2+ turns without progress, the system escalates help by:
-   - Providing more concrete hints in the LLM prompt
-   - Instructing the LLM to offer more specific guidance
-   - Maintaining Socratic principles (still asking questions, not giving direct answers)
+
+- Providing more concrete hints in the LLM prompt
+- Instructing the LLM to offer more specific guidance
+- Maintaining Socratic principles (still asking questions, not giving direct answers)
 
 4: The escalation logic is integrated with the dialogue generation endpoint, automatically adjusting LLM prompts based on student progress.
 
@@ -946,10 +1002,11 @@ so that I can read and understand mathematical notation clearly.
 2: The math rendering library automatically detects LaTeX/KaTeX syntax in problem statements and dialogue responses.
 
 3: Mathematical equations and formulas are rendered with proper formatting, including:
-   - Fractions, exponents, square roots
-   - Variables, constants, operators
-   - Algebraic expressions, equations
-   - Geometric notation (angles, shapes, measurements)
+
+- Fractions, exponents, square roots
+- Variables, constants, operators
+- Algebraic expressions, equations
+- Geometric notation (angles, shapes, measurements)
 
 4: The math rendering works in both the problem display component (left panel) and chat conversation component (right panel).
 
@@ -974,19 +1031,22 @@ so that I feel supported and motivated to continue working through problems.
 2: Visual feedback components are created for encouraging messages, displaying positive reinforcement when students make progress or show effort.
 
 3: Visual feedback elements are age-appropriate for 6th grade students (ages 11-12), using:
-   - Friendly colors that are engaging but not overwhelming
-   - Simple icons or emojis that celebrate progress
-   - Brief animations (subtle, not distracting) for encouragement
+
+- Friendly colors that are engaging but not overwhelming
+- Simple icons or emojis that celebrate progress
+- Brief animations (subtle, not distracting) for encouragement
 
 4: Progress indicators are displayed prominently in the interface, showing:
-   - Current step in the problem-solving process
-   - Number of attempts or progress milestones
-   - Visual representation of advancement (e.g., progress bar, step indicators)
+
+- Current step in the problem-solving process
+- Number of attempts or progress milestones
+- Visual representation of advancement (e.g., progress bar, step indicators)
 
 5: Encouraging messages are displayed at appropriate moments:
-   - When students make progress (correct responses, clearer thinking)
-   - When students show effort (attempting problems, asking questions)
-   - When students complete steps or reach milestones
+
+- When students make progress (correct responses, clearer thinking)
+- When students show effort (attempting problems, asking questions)
+- When students complete steps or reach milestones
 
 6: Visual feedback elements are integrated with the chat conversation component, appearing alongside system responses.
 
@@ -1005,19 +1065,22 @@ so that I can access help from any device I have available.
 1: The interface is fully responsive, adapting to different screen sizes (desktop, tablet, mobile) using Tailwind CSS responsive breakpoints.
 
 2: The side-by-side layout adapts appropriately for smaller screens:
-   - Desktop: Full side-by-side layout (problem left, chat right)
-   - Tablet: Side-by-side layout with adjusted sizing, or stacked layout if needed
-   - Mobile: Stacked layout (problem above, chat below) or collapsible panels
+
+- Desktop: Full side-by-side layout (problem left, chat right)
+- Tablet: Side-by-side layout with adjusted sizing, or stacked layout if needed
+- Mobile: Stacked layout (problem above, chat below) or collapsible panels
 
 3: All interactive elements are touch-friendly on mobile and tablet devices:
-   - Buttons are appropriately sized for touch
-   - Input fields are easily accessible
-   - Drag-and-drop works on touch devices
+
+- Buttons are appropriately sized for touch
+- Input fields are easily accessible
+- Drag-and-drop works on touch devices
 
 4: The responsive design maintains usability across all device types:
-   - Text is readable without zooming
-   - Interactive elements are easily accessible
-   - Visual hierarchy is maintained
+
+- Text is readable without zooming
+- Interactive elements are easily accessible
+- Visual hierarchy is maintained
 
 5: The responsive design is tested across modern browsers (Chrome, Firefox, Safari, Edge) on desktop, tablet, and mobile devices.
 
@@ -1038,20 +1101,23 @@ so that I feel comfortable using the tutor.
 1: The interface uses Tailwind CSS v4.1.16 for styling, with appropriate Tailwind configuration and design tokens.
 
 2: The styling is age-appropriate for 6th grade students (ages 11-12), using:
-   - Colorful but not overwhelming color palette
-   - Friendly visual elements (emojis, icons, simple animations)
-   - Clear typography that is readable for the age group
-   - Appropriate spacing and visual hierarchy
+
+- Colorful but not overwhelming color palette
+- Friendly visual elements (emojis, icons, simple animations)
+- Clear typography that is readable for the age group
+- Appropriate spacing and visual hierarchy
 
 3: The styling maintains a clean, educational aesthetic:
-   - Minimalist core with plenty of white space
-   - Focus on mathematical content (equations, formulas)
-   - Clear visual hierarchy emphasizing problem and dialogue
+
+- Minimalist core with plenty of white space
+- Focus on mathematical content (equations, formulas)
+- Clear visual hierarchy emphasizing problem and dialogue
 
 4: The styling is consistent throughout the interface:
-   - Consistent color scheme across components
-   - Consistent typography and spacing
-   - Consistent interactive element styling (buttons, inputs, etc.)
+
+- Consistent color scheme across components
+- Consistent typography and spacing
+- Consistent interactive element styling (buttons, inputs, etc.)
 
 5: The styling uses Tailwind CSS utility classes effectively, maintaining design consistency and avoiding custom CSS where possible.
 
@@ -1070,51 +1136,57 @@ so that I can get help with arithmetic, algebra, geometry, word problems, and mu
 #### Acceptance Criteria
 
 1: The system is tested with arithmetic problems (addition, subtraction, multiplication, division, combinations), validating:
-   - Problem parsing (text input and image upload)
-   - Problem validation and type identification
-   - Socratic dialogue quality
-   - Answer detection guardrail effectiveness
-   - Visual feedback appropriateness
+
+- Problem parsing (text input and image upload)
+- Problem validation and type identification
+- Socratic dialogue quality
+- Answer detection guardrail effectiveness
+- Visual feedback appropriateness
 
 2: The system is tested with algebra problems (solving equations, working with variables, algebraic expressions), validating:
-   - Problem parsing (text input and image upload)
-   - Problem validation and type identification
-   - Socratic dialogue quality
-   - Answer detection guardrail effectiveness
-   - Math rendering for algebraic notation
-   - Visual feedback appropriateness
+
+- Problem parsing (text input and image upload)
+- Problem validation and type identification
+- Socratic dialogue quality
+- Answer detection guardrail effectiveness
+- Math rendering for algebraic notation
+- Visual feedback appropriateness
 
 3: The system is tested with geometry problems (shapes, area, perimeter, angles, geometric relationships), validating:
-   - Problem parsing (text input and image upload)
-   - Problem validation and type identification
-   - Socratic dialogue quality
-   - Answer detection guardrail effectiveness
-   - Math rendering for geometric notation
-   - Visual feedback appropriateness
+
+- Problem parsing (text input and image upload)
+- Problem validation and type identification
+- Socratic dialogue quality
+- Answer detection guardrail effectiveness
+- Math rendering for geometric notation
+- Visual feedback appropriateness
 
 4: The system is tested with word problems (story problems requiring mathematical reasoning), validating:
-   - Problem parsing (text input and image upload)
-   - Problem validation and type identification
-   - Socratic dialogue quality
-   - Answer detection guardrail effectiveness
-   - Context management across multiple turns
-   - Visual feedback appropriateness
+
+- Problem parsing (text input and image upload)
+- Problem validation and type identification
+- Socratic dialogue quality
+- Answer detection guardrail effectiveness
+- Context management across multiple turns
+- Visual feedback appropriateness
 
 5: The system is tested with multi-step problems (problems requiring multiple sequential operations), validating:
-   - Problem parsing (text input and image upload)
-   - Problem validation and type identification
-   - Socratic dialogue quality
-   - Answer detection guardrail effectiveness
-   - Context management across extended conversations (10+ messages)
-   - Progressive help escalation
-   - Visual feedback appropriateness
+
+- Problem parsing (text input and image upload)
+- Problem validation and type identification
+- Socratic dialogue quality
+- Answer detection guardrail effectiveness
+- Context management across extended conversations (10+ messages)
+- Progressive help escalation
+- Visual feedback appropriateness
 
 6: Testing results are documented, including:
-   - Test cases for each problem type
-   - Socratic dialogue quality assessment
-   - Answer detection guardrail validation (100% adherence verified)
-   - Visual feedback appropriateness assessment
-   - Known issues or areas for improvement
+
+- Test cases for each problem type
+- Socratic dialogue quality assessment
+- Answer detection guardrail validation (100% adherence verified)
+- Visual feedback appropriateness assessment
+- Known issues or areas for improvement
 
 7: The system demonstrates 100% adherence to Socratic principles across all 5 problem types, verified through testing.
 
@@ -1129,34 +1201,39 @@ so that I have a smooth, professional experience when using the tutor.
 #### Acceptance Criteria
 
 1: Final UI polish is applied to the interface, ensuring:
-   - Consistent styling throughout
-   - Smooth transitions and interactions
-   - Professional appearance appropriate for the target age group
-   - Clear visual hierarchy and spacing
+
+- Consistent styling throughout
+- Smooth transitions and interactions
+- Professional appearance appropriate for the target age group
+- Clear visual hierarchy and spacing
 
 2: Error handling is implemented throughout the interface, providing clear, age-appropriate error messages for:
-   - API failures (Vision API, LLM API)
-   - Network errors
-   - Invalid input (empty problems, invalid images)
-   - Session expiration
-   - Rate limit errors
+
+- API failures (Vision API, LLM API)
+- Network errors
+- Invalid input (empty problems, invalid images)
+- Session expiration
+- Rate limit errors
 
 3: Error messages are displayed prominently in the interface, with:
-   - Clear, age-appropriate language (no technical jargon)
-   - Actionable guidance (e.g., "Try again" or "Check your internet connection")
-   - Visual feedback (error icons, colors) appropriate for the age group
+
+- Clear, age-appropriate language (no technical jargon)
+- Actionable guidance (e.g., "Try again" or "Check your internet connection")
+- Visual feedback (error icons, colors) appropriate for the age group
 
 4: Loading states are implemented throughout the interface, showing:
-   - Loading indicators during API calls (Vision API, LLM API)
-   - Progress indicators during image processing
-   - Smooth transitions between states
+
+- Loading indicators during API calls (Vision API, LLM API)
+- Progress indicators during image processing
+- Smooth transitions between states
 
 5: The interface handles edge cases gracefully:
-   - Empty or invalid problem submissions
-   - Image parsing failures
-   - LLM response failures
-   - Session expiration
-   - Network disconnections
+
+- Empty or invalid problem submissions
+- Image parsing failures
+- LLM response failures
+- Session expiration
+- Network disconnections
 
 6: The interface is tested across modern browsers (Chrome, Firefox, Safari, Edge) to ensure compatibility and polish.
 
@@ -1166,7 +1243,7 @@ so that I have a smooth, professional experience when using the tutor.
 
 ## Checklist Results Report
 
-*This section will be populated after running the PM checklist to validate the PRD completeness and quality.*
+_This section will be populated after running the PM checklist to validate the PRD completeness and quality._
 
 ## Next Steps
 
@@ -1177,4 +1254,3 @@ Create a UX design system and detailed UI specifications for the AI Math Tutor a
 ### Architect Prompt
 
 Design the system architecture for the AI Math Tutor application based on this PRD. Create detailed architecture diagrams, component specifications, API contracts, and database schemas (if needed). Focus on the serverless architecture with AWS Lambda functions, React frontend, session management, Vision API integration, LLM integration with answer detection guardrails, and context management. Ensure the architecture supports all functional and non-functional requirements, including scalability, security, and performance requirements.
-

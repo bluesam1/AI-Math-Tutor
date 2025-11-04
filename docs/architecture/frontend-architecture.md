@@ -128,6 +128,7 @@ apps/web/src/
 ```
 
 **Route Structure:**
+
 - `/` - Main problem-solving interface (side-by-side layout)
 - `/dev/testing` - Developer testing interface (development only, hidden in production)
 - No additional routes needed for MVP (single-page application)
@@ -144,7 +145,8 @@ N/A - No authentication required per PRD (anonymous sessions only)
 // apps/web/src/services/api/client.ts
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.aimathtutor.com';
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || 'https://api.aimathtutor.com';
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -156,8 +158,8 @@ export const apiClient = axios.create({
 
 // Request interceptor for error handling
 apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
+  response => response,
+  error => {
     // Centralized error handling
     return Promise.reject(error);
   }
@@ -204,7 +206,10 @@ export const testingService = {
     return response.data.fixtures;
   },
 
-  runScenario: async (scenario: string, problemType?: string): Promise<TestResult> => {
+  runScenario: async (
+    scenario: string,
+    problemType?: string
+  ): Promise<TestResult> => {
     const response = await apiClient.post<TestResult>('/api/dev/run-scenario', {
       scenario,
       problemType,
@@ -213,13 +218,15 @@ export const testingService = {
   },
 
   runBatch: async (scenarios: string[]): Promise<BatchTestResult> => {
-    const response = await apiClient.post<BatchTestResult>('/api/dev/run-batch', {
-      scenarios,
-    });
+    const response = await apiClient.post<BatchTestResult>(
+      '/api/dev/run-batch',
+      {
+        scenarios,
+      }
+    );
     return response.data;
   },
 };
 ```
 
 **Note:** The testing service is only available in development environment. Production builds exclude this service and its endpoints return 403 Forbidden.
-

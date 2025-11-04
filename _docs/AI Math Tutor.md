@@ -19,11 +19,13 @@ Build an AI tutor that guides students through math problems using Socratic ques
 ## Stretch Features (If Time Permits)
 
 ### High Value:
+
 - **Interactive Whiteboard:** Shared canvas for visual explanations and diagrams
 - **Step Visualization:** Animated breakdown of solution steps
 - **Voice Interface:** Text-to-speech responses + speech-to-text input
 
 ### Polish:
+
 - **Animated Avatar:** 2D/3D tutor character with expressions
 - **Difficulty Modes:** Adjust scaffolding by grade level
 - **Problem Generation:** Create similar practice problems

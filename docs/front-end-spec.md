@@ -9,6 +9,7 @@ This document defines the user experience goals, information architecture, user 
 #### Target User Personas
 
 **Primary User: 6th Grade Student (Ages 11-12)**
+
 - **Demographic:** 11-12 year old students learning 6th grade mathematics
 - **Technical Ability:** Comfortable with web browsers, basic typing skills, familiar with mobile/tablet interfaces
 - **Learning Context:** Working on homework, practice problems, or seeking help with math concepts
@@ -21,6 +22,7 @@ This document defines the user experience goals, information architecture, user 
   - Responsive design that works on devices they have available (tablet, laptop, mobile)
 
 **Secondary User: Developer (Development Environment Only)**
+
 - **Context:** Testing and validating system behavior during development
 - **Needs:** Efficient testing interface with quick access to test problems, edge case scenarios, and real-time validation indicators
 - **Access:** Development environment only, hidden in production
@@ -46,9 +48,9 @@ This document defines the user experience goals, information architecture, user 
 
 ### Change Log
 
-| Date | Version | Description | Author |
-|------|---------|-------------|--------|
-| 2025-01-XX | 1.0 | Initial UX/Frontend specification created | UX Expert |
+| Date       | Version | Description                               | Author    |
+| ---------- | ------- | ----------------------------------------- | --------- |
+| 2025-01-XX | 1.0     | Initial UX/Frontend specification created | UX Expert |
 
 ## Information Architecture (IA)
 
@@ -60,24 +62,24 @@ graph TD
     B --> C[Problem Input View]
     B --> D[Chat Conversation View]
     B --> E[Visual Feedback Elements]
-    
+
     C --> C1[Text Input Field]
     C --> C2[Image Upload Zone]
     C --> C3[Problem Validation]
-    
+
     D --> D1[Message List]
     D --> D2[Message Input]
     D --> D3[Math Rendering]
     D --> D4[System Responses]
-    
+
     E --> E1[Progress Indicators]
     E --> E2[Encouragement Messages]
     E --> E3[Help Escalation Indicators]
-    
+
     F[Developer Testing Interface] -.Dev Only.-> F1[Test Problem Library]
     F -.Dev Only.-> F2[Scenario Testing Panel]
     F -.Dev Only.-> F3[Test Results Dashboard]
-    
+
     style F fill:#ffcccc
     style F1 fill:#ffcccc
     style F2 fill:#ffcccc
@@ -97,6 +99,7 @@ The application is a single-page application focused on the problem-solving inte
 **Breadcrumb Strategy:** Not applicable - Single-page application with no hierarchical navigation
 
 **Problem State Management:**
+
 - Students can start a new problem at any time by clearing the current problem
 - The interface maintains state for the current problem and conversation history
 - No navigation between different sections is required
@@ -108,11 +111,13 @@ The application is a single-page application focused on the problem-solving inte
 **User Goal:** Submit a math problem by typing or pasting text to begin receiving Socratic guidance
 
 **Entry Points:**
+
 - Initial application load (empty state)
 - After completing a previous problem
 - After clearing current problem
 
 **Success Criteria:**
+
 - Problem text is successfully submitted and validated
 - Problem is displayed in the left panel
 - System responds with initial Socratic question
@@ -133,19 +138,21 @@ graph TD
     H --> I[System generates initial Socratic question]
     I --> J[Display response in chat]
     J --> K[Student can continue dialogue]
-    
+
     style E fill:#fff3cd
     style F fill:#f8d7da
     style G fill:#d4edda
 ```
 
 **Edge Cases & Error Handling:**
+
 - Empty input → Show validation error: "Please enter a math problem"
 - Non-math content → Show error: "This doesn't look like a math problem. Please try again with a math question."
 - API failure → Show error: "Oops! Something went wrong. Please try again."
 - Network error → Show error: "Check your internet connection and try again."
 
-**Notes:** 
+**Notes:**
+
 - Text input should support multi-line input for longer problems
 - Paste functionality should handle formatted text from other sources
 - Validation happens on backend, but frontend can provide immediate feedback for empty input
@@ -155,12 +162,14 @@ graph TD
 **User Goal:** Submit a math problem by uploading an image containing printed text
 
 **Entry Points:**
+
 - Initial application load (empty state)
 - After completing a previous problem
 - After clearing current problem
 - Alternative to text input when problem is in a book or worksheet
 
 **Success Criteria:**
+
 - Image is successfully uploaded and processed
 - Problem text is extracted from image
 - Problem is displayed in the left panel
@@ -188,7 +197,7 @@ graph TD
     M --> N[System generates initial Socratic question]
     N --> O[Display response in chat]
     O --> P[Student can continue dialogue]
-    
+
     style E fill:#fff3cd
     style J fill:#fff3cd
     style F fill:#f8d7da
@@ -197,6 +206,7 @@ graph TD
 ```
 
 **Edge Cases & Error Handling:**
+
 - Invalid file format → Show error: "Please upload a JPG, PNG, or GIF image"
 - File too large → Show error: "Image is too large. Please use an image under 10MB"
 - Vision API parsing failure → Show error: "Couldn't read the problem from your image. Try typing it instead or upload a clearer image."
@@ -204,6 +214,7 @@ graph TD
 - Blurry or unclear image → Offer text input fallback
 
 **Notes:**
+
 - Support drag-and-drop for better UX
 - Show image preview before processing
 - Provide clear visual feedback during processing (loading spinner)
@@ -214,10 +225,12 @@ graph TD
 **User Goal:** Work through the problem step-by-step with guided Socratic questioning
 
 **Entry Points:**
+
 - After problem is submitted and initial question is received
 - Continuation of ongoing dialogue
 
 **Success Criteria:**
+
 - Student can respond to guiding questions
 - System provides appropriate next question based on response
 - Conversation context is maintained across multiple turns
@@ -246,7 +259,7 @@ graph TD
     M -->|Making progress| L
     K --> P[Student continues dialogue]
     P --> D
-    
+
     style H fill:#fff3cd
     style M fill:#fff3cd
     style I fill:#f8d7da
@@ -254,12 +267,14 @@ graph TD
 ```
 
 **Edge Cases & Error Handling:**
+
 - Empty response → Prompt: "I'd love to hear your thoughts! Try typing what you're thinking."
 - LLM API failure → Show error: "Oops! Something went wrong. Please try again."
 - Response timeout → Show error: "This is taking longer than usual. Please try again."
 - Context loss → System should gracefully handle session expiration
 
 **Notes:**
+
 - Maintain last 10 messages in conversation context
 - Visual feedback should celebrate progress and effort
 - Help escalation should maintain Socratic principles (never give direct answers)
@@ -270,11 +285,13 @@ graph TD
 **User Goal:** Feel supported and motivated through visual feedback and encouragement
 
 **Entry Points:**
+
 - Throughout the problem-solving process
 - After each student response
 - When making progress or showing effort
 
 **Success Criteria:**
+
 - Visual feedback appears immediately after actions
 - Encouragement feels age-appropriate and supportive
 - Progress indicators show advancement
@@ -290,25 +307,27 @@ graph TD
     B -->|Makes progress| E[Show celebration]
     B -->|Shows effort| F[Show positive reinforcement]
     B -->|Gets stuck| G[Show supportive message]
-    
+
     C --> H[Display in visual feedback area]
     D --> H
     E --> H
     F --> H
     G --> H
-    
+
     H --> I[Student continues with motivation]
-    
+
     style B fill:#fff3cd
     style H fill:#d4edda
 ```
 
 **Edge Cases & Error Handling:**
+
 - Feedback should be subtle and not distracting
 - Should not interfere with problem display or dialogue
 - Should be dismissible or fade after appropriate time
 
 **Notes:**
+
 - Visual feedback should be age-appropriate (emojis, colors, simple animations)
 - Should feel warm and supportive, not condescending
 - Progress indicators should show advancement without revealing answers
@@ -320,6 +339,7 @@ graph TD
 **Primary Design Files:** Design files will be created in Figma (or similar design tool) based on this specification. The design system will follow the specifications outlined in this document.
 
 **Design File Structure:**
+
 - Main Problem-Solving Interface
 - Problem Input Components
 - Chat Conversation Components
@@ -334,6 +354,7 @@ graph TD
 **Purpose:** Primary interface where students solve math problems with Socratic guidance
 
 **Key Elements:**
+
 - **Left Panel (Problem Display):**
   - Problem statement with LaTeX/KaTeX rendering
   - Problem type badge (Arithmetic, Algebra, Geometry, Word Problem, Multi-step)
@@ -353,6 +374,7 @@ graph TD
   - Submit button
 
 **Interaction Notes:**
+
 - Side-by-side layout maintains problem visibility throughout dialogue
 - Chat auto-scrolls to latest message
 - Visual feedback appears contextually (not blocking main content)
@@ -365,6 +387,7 @@ graph TD
 **Purpose:** Initial state when student first arrives or wants to start a new problem
 
 **Key Elements:**
+
 - Welcome message or instructions
 - Text input field (large, prominent)
 - Image upload button/drop zone (prominent, clear visual)
@@ -372,6 +395,7 @@ graph TD
 - Visual indicators for supported image formats
 
 **Interaction Notes:**
+
 - Clear call-to-action for both input methods
 - Drag-and-drop zone should be visually obvious
 - Input validation provides immediate feedback
@@ -383,6 +407,7 @@ graph TD
 **Purpose:** Display Socratic dialogue between student and system
 
 **Key Elements:**
+
 - Message bubbles (student messages: right-aligned, system messages: left-aligned)
 - Math rendering within messages (LaTeX/KaTeX)
 - Timestamp or visual separation between message groups
@@ -391,6 +416,7 @@ graph TD
 - Auto-scroll to latest message
 
 **Interaction Notes:**
+
 - Messages should be clearly distinguished (different styling, alignment)
 - Math equations should render clearly and be readable
 - Long messages should wrap appropriately
@@ -403,12 +429,14 @@ graph TD
 **Purpose:** Provide encouragement and progress indicators throughout the experience
 
 **Key Elements:**
+
 - Progress indicators (steps, progress bar, or milestone markers)
 - Encouragement messages with emojis or icons
 - Celebration animations for progress milestones
 - Help escalation indicators (subtle, not alarming)
 
 **Interaction Notes:**
+
 - Should not block or distract from main content
 - Should feel warm and age-appropriate
 - Should be dismissible or fade after appropriate time
@@ -421,6 +449,7 @@ graph TD
 **Purpose:** Enable efficient testing of different problem types, scenarios, and edge cases
 
 **Key Elements:**
+
 - Test problem library (organized by problem type)
 - One-click problem loading
 - Scenario testing panel
@@ -429,6 +458,7 @@ graph TD
 - Batch testing controls
 
 **Interaction Notes:**
+
 - Should be accessible only in development environment
 - Should be intuitive for developers to use
 - Should provide immediate visual feedback on test results
@@ -450,6 +480,7 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 - **Maintainability:** Design tokens can be customized in Tailwind config
 
 **Design Tokens:**
+
 - Colors: Defined in Tailwind config for age-appropriate palette
 - Typography: Defined in Tailwind config with appropriate font sizes and weights
 - Spacing: Using Tailwind's default spacing scale
@@ -463,17 +494,20 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 **Purpose:** Display the current math problem in the left panel with proper math rendering
 
 **Variants:**
+
 - Default: Standard problem display
 - Empty state: When no problem is active
 - Loading state: When problem is being processed
 
 **States:**
+
 - Empty: No problem displayed, shows input options
 - Loading: Problem being validated or processed
 - Active: Problem displayed with type badge
 - Error: Error message displayed with retry option
 
 **Usage Guidelines:**
+
 - Always visible in left panel (or top on mobile)
 - Problem text should be clearly readable with appropriate font size
 - Math equations render using LaTeX/KaTeX
@@ -485,17 +519,20 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 **Purpose:** Display conversation history between student and system
 
 **Variants:**
+
 - Student message: Right-aligned, distinct styling
 - System message: Left-aligned, distinct styling
 - Loading message: Shows loading indicator while system generates response
 
 **States:**
+
 - Empty: No messages yet
 - Loading: System response being generated
 - Active: Messages displayed with proper formatting
 - Error: Error message displayed
 
 **Usage Guidelines:**
+
 - Messages should be clearly distinguished by alignment and styling
 - Math equations within messages should render properly
 - Long messages should wrap appropriately
@@ -507,16 +544,19 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 **Purpose:** Allow students to type and submit responses
 
 **Variants:**
+
 - Default: Standard text input
 - Disabled: When system is processing or error state
 
 **States:**
+
 - Default: Ready for input
 - Focused: Active input state
 - Disabled: Cannot input (during processing)
 - Error: Validation error displayed
 
 **Usage Guidelines:**
+
 - Should support multi-line input for longer responses
 - Should have clear send button or Enter key submission
 - Should provide visual feedback during submission
@@ -527,10 +567,12 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 **Purpose:** Allow students to upload images containing math problems
 
 **Variants:**
+
 - Button: Standard upload button
 - Drop zone: Drag-and-drop area
 
 **States:**
+
 - Default: Ready for upload
 - Hover: Visual feedback on hover
 - Dragging: Visual feedback when dragging file over
@@ -539,6 +581,7 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 - Error: Error message displayed
 
 **Usage Guidelines:**
+
 - Should support both click-to-upload and drag-and-drop
 - Should validate file format and size before upload
 - Should show image preview after selection
@@ -550,17 +593,20 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 **Purpose:** Show student advancement through problem-solving process
 
 **Variants:**
+
 - Steps: Step-by-step progress indicators
 - Progress bar: Visual progress bar
 - Milestone markers: Visual milestone celebrations
 
 **States:**
+
 - Initial: Starting state
 - In progress: Active progress indication
 - Milestone reached: Celebration animation
 - Complete: Problem solved (if applicable)
 
 **Usage Guidelines:**
+
 - Should be age-appropriate (colors, simple animations)
 - Should not reveal answers or solution steps
 - Should celebrate effort and progress, not just correct answers
@@ -571,16 +617,19 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 **Purpose:** Provide positive reinforcement and motivation
 
 **Variants:**
+
 - General encouragement: "Great thinking!"
 - Progress celebration: "You're making progress!"
 - Effort recognition: "I can see you're working hard!"
 
 **States:**
+
 - Displaying: Message visible with animation
 - Fading: Message fading out
 - Hidden: Message no longer visible
 
 **Usage Guidelines:**
+
 - Should feel warm and supportive
 - Should use age-appropriate language
 - Should include emojis or icons for visual appeal
@@ -592,15 +641,18 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 **Purpose:** Render mathematical equations and formulas using LaTeX/KaTeX
 
 **Variants:**
+
 - Inline math: Equations within text (e.g., `$x + 5 = 10$`)
 - Block math: Standalone equations (e.g., `$$\frac{a}{b} = c$$`)
 
 **States:**
+
 - Rendering: Equation being processed
 - Rendered: Equation displayed properly
 - Error: Rendering failed (fallback to raw LaTeX)
 
 **Usage Guidelines:**
+
 - Should automatically detect LaTeX/KaTeX syntax
 - Should render in both problem display and chat messages
 - Should be accessible via screen readers (appropriate ARIA labels)
@@ -611,17 +663,20 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 **Purpose:** Display age-appropriate error messages when things go wrong
 
 **Variants:**
+
 - Validation error: Input validation failures
 - API error: Backend API failures
 - Network error: Connection issues
 - Vision API error: Image parsing failures
 
 **States:**
+
 - Displaying: Error message visible
 - Dismissible: User can dismiss error
 - Actionable: Error message includes retry or alternative action
 
 **Usage Guidelines:**
+
 - Should use age-appropriate language (no technical jargon)
 - Should provide actionable guidance (e.g., "Try again" or "Check your internet connection")
 - Should use appropriate visual styling (error colors, icons)
@@ -632,15 +687,18 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 **Purpose:** Show that the system is processing or generating a response
 
 **Variants:**
+
 - Spinner: Circular loading spinner
 - Progress: Progress indicator for longer operations
 - Skeleton: Skeleton screen for content loading
 
 **States:**
+
 - Active: Loading indicator visible
 - Complete: Loading indicator hidden
 
 **Usage Guidelines:**
+
 - Should be clearly visible but not distracting
 - Should provide context about what is loading (e.g., "Thinking..." or "Processing image...")
 - Should have appropriate animation (smooth, not jarring)
@@ -651,16 +709,19 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 **Purpose:** Enable efficient testing workflows for developers
 
 **Variants:**
+
 - Test problem library: List of pre-configured test problems
 - Scenario testing panel: Interface for testing specific scenarios
 - Test results dashboard: Visual summary of test results
 - Real-time indicators: Live status of answer detection, Socratic compliance, etc.
 
 **States:**
+
 - Available: Component accessible in development
 - Hidden: Component hidden in production
 
 **Usage Guidelines:**
+
 - Should be accessible only when `NODE_ENV=development`
 - Should be intuitive for developers to use
 - Should provide immediate visual feedback
@@ -673,6 +734,7 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 **Brand Guidelines:** No existing brand guidelines provided. Design should prioritize clarity, engagement, and educational effectiveness for 6th grade students (ages 11-12).
 
 **Brand Personality:**
+
 - **Patient and Encouraging:** Feels like working with a supportive tutor
 - **Educational but Engaging:** Maintains focus on learning while being visually appealing
 - **Age-Appropriate:** Designed specifically for 11-12 year olds
@@ -680,21 +742,22 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 
 ### Color Palette
 
-| Color Type | Hex Code | Usage |
-|------------|----------|-------|
-| Primary | #4F46E5 (Indigo) | Primary buttons, links, key interactive elements |
-| Secondary | #10B981 (Emerald) | Success states, progress indicators, positive feedback |
-| Accent | #F59E0B (Amber) | Highlights, encouragement elements, attention-drawing |
-| Success | #10B981 (Emerald) | Success messages, correct responses (when appropriate) |
-| Warning | #F59E0B (Amber) | Warnings, caution messages, help escalation |
-| Error | #EF4444 (Red) | Error messages, validation failures |
-| Neutral - Text | #1F2937 (Gray-800) | Primary text, problem statements |
-| Neutral - Text Secondary | #6B7280 (Gray-500) | Secondary text, helper text |
-| Neutral - Background | #FFFFFF (White) | Primary background |
-| Neutral - Background Secondary | #F9FAFB (Gray-50) | Secondary background, chat message backgrounds |
-| Neutral - Border | #E5E7EB (Gray-200) | Borders, dividers |
+| Color Type                     | Hex Code           | Usage                                                  |
+| ------------------------------ | ------------------ | ------------------------------------------------------ |
+| Primary                        | #4F46E5 (Indigo)   | Primary buttons, links, key interactive elements       |
+| Secondary                      | #10B981 (Emerald)  | Success states, progress indicators, positive feedback |
+| Accent                         | #F59E0B (Amber)    | Highlights, encouragement elements, attention-drawing  |
+| Success                        | #10B981 (Emerald)  | Success messages, correct responses (when appropriate) |
+| Warning                        | #F59E0B (Amber)    | Warnings, caution messages, help escalation            |
+| Error                          | #EF4444 (Red)      | Error messages, validation failures                    |
+| Neutral - Text                 | #1F2937 (Gray-800) | Primary text, problem statements                       |
+| Neutral - Text Secondary       | #6B7280 (Gray-500) | Secondary text, helper text                            |
+| Neutral - Background           | #FFFFFF (White)    | Primary background                                     |
+| Neutral - Background Secondary | #F9FAFB (Gray-50)  | Secondary background, chat message backgrounds         |
+| Neutral - Border               | #E5E7EB (Gray-200) | Borders, dividers                                      |
 
 **Rationale:**
+
 - **Primary (Indigo):** Professional yet approachable, commonly used in educational contexts
 - **Secondary (Emerald):** Positive, growth-oriented, good for progress and success
 - **Accent (Amber):** Warm, attention-grabbing, good for encouragement without being alarming
@@ -712,16 +775,17 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 
 #### Type Scale
 
-| Element | Size | Weight | Line Height | Usage |
-|---------|------|--------|------------|-------|
-| H1 | 2rem (32px) | 700 (Bold) | 1.2 | Page titles (if needed) |
-| H2 | 1.5rem (24px) | 600 (Semi-bold) | 1.3 | Section headers |
-| H3 | 1.25rem (20px) | 600 (Semi-bold) | 1.4 | Subsection headers |
-| Body | 1rem (16px) | 400 (Regular) | 1.5 | Primary text, problem statements, messages |
-| Small | 0.875rem (14px) | 400 (Regular) | 1.5 | Helper text, labels, secondary information |
-| Math | 1rem (16px) | 400 (Regular) | 1.5 | Mathematical equations (KaTeX rendering) |
+| Element | Size            | Weight          | Line Height | Usage                                      |
+| ------- | --------------- | --------------- | ----------- | ------------------------------------------ |
+| H1      | 2rem (32px)     | 700 (Bold)      | 1.2         | Page titles (if needed)                    |
+| H2      | 1.5rem (24px)   | 600 (Semi-bold) | 1.3         | Section headers                            |
+| H3      | 1.25rem (20px)  | 600 (Semi-bold) | 1.4         | Subsection headers                         |
+| Body    | 1rem (16px)     | 400 (Regular)   | 1.5         | Primary text, problem statements, messages |
+| Small   | 0.875rem (14px) | 400 (Regular)   | 1.5         | Helper text, labels, secondary information |
+| Math    | 1rem (16px)     | 400 (Regular)   | 1.5         | Mathematical equations (KaTeX rendering)   |
 
 **Rationale:**
+
 - Body text at 16px ensures good readability for the target age group
 - Line height of 1.5 provides comfortable reading experience
 - Weight hierarchy (400/600/700) creates clear visual hierarchy without being overwhelming
@@ -731,6 +795,7 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 **Icon Library:** Heroicons or similar simple, clear icon set
 
 **Usage Guidelines:**
+
 - Use icons sparingly to avoid visual clutter
 - Icons should be simple and clear, appropriate for 6th grade students
 - Use icons to enhance understanding, not replace text
@@ -738,6 +803,7 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 - Size: 20px-24px for standard icons, larger for emphasis
 
 **Common Icons:**
+
 - Upload icon: For image upload button
 - Send icon: For message send button
 - Check icon: For success states
@@ -750,6 +816,7 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 **Grid System:** Flexible layout using CSS Grid and Flexbox (no strict grid system required for MVP)
 
 **Spacing Scale:** Using Tailwind's default spacing scale:
+
 - 0.25rem (4px) - xs
 - 0.5rem (8px) - sm
 - 1rem (16px) - base
@@ -759,6 +826,7 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 - 4rem (64px) - 3xl
 
 **Layout Principles:**
+
 - Side-by-side layout: 50/50 split on desktop, stacks on mobile
 - Generous white space: Prevents visual clutter, maintains focus
 - Consistent padding: 1rem-1.5rem for component padding
@@ -825,6 +893,7 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 ### Testing Strategy
 
 **Accessibility Testing Approach:**
+
 1. **Automated Testing:**
    - Use tools like axe DevTools or WAVE to identify common accessibility issues
    - Run automated tests during development and before deployment
@@ -841,14 +910,15 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 
 ### Breakpoints
 
-| Breakpoint | Min Width | Max Width | Target Devices |
-|------------|-----------|-----------|----------------|
-| Mobile | 320px | 767px | Smartphones (portrait) |
-| Tablet | 768px | 1023px | Tablets (portrait/landscape) |
-| Desktop | 1024px | 1439px | Laptops, desktop monitors |
-| Wide | 1440px | - | Large desktop monitors |
+| Breakpoint | Min Width | Max Width | Target Devices               |
+| ---------- | --------- | --------- | ---------------------------- |
+| Mobile     | 320px     | 767px     | Smartphones (portrait)       |
+| Tablet     | 768px     | 1023px    | Tablets (portrait/landscape) |
+| Desktop    | 1024px    | 1439px    | Laptops, desktop monitors    |
+| Wide       | 1440px    | -         | Large desktop monitors       |
 
 **Rationale:**
+
 - Mobile breakpoint covers most smartphones in portrait orientation
 - Tablet breakpoint covers iPad and similar tablets
 - Desktop breakpoint covers standard laptop and desktop screens
@@ -890,6 +960,7 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 - **Mobile:** Touch interactions, optimized for one-handed use when possible
 
 **Responsive Design Principles:**
+
 - Mobile-first approach: Design for mobile, then enhance for larger screens
 - Touch-friendly: All interactive elements should be easily tappable on mobile
 - Readable text: Text should be readable without zooming on all devices
@@ -900,6 +971,7 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 ### Motion Principles
 
 **Motion Design Philosophy:**
+
 - **Purposeful:** Animations should serve a purpose (feedback, guidance, delight)
 - **Subtle:** Animations should be subtle and not distracting from content
 - **Age-Appropriate:** Animations should be engaging for 6th grade students without being overwhelming
@@ -907,6 +979,7 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 - **Accessible:** Respect `prefers-reduced-motion` media query for users who prefer less animation
 
 **Animation Guidelines:**
+
 - **Duration:** 200ms-300ms for most interactions (fast enough to feel responsive, slow enough to be perceived)
 - **Easing:** Use ease-in-out for most animations (natural feeling)
 - **Scale:** Subtle scale effects (1.05x-1.1x maximum) for hover/press states
@@ -924,6 +997,7 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 - **Image Upload Feedback:** Fade in with scale (300ms, ease-out)
 
 **Accessibility Consideration:**
+
 - All animations should respect `prefers-reduced-motion: reduce`
 - Use `@media (prefers-reduced-motion: reduce) { animation: none; }` to disable animations for users who prefer reduced motion
 
@@ -940,6 +1014,7 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 ### Design Strategies
 
 **Performance Optimization Strategies:**
+
 1. **Code Splitting:**
    - Lazy load components that aren't immediately needed
    - Split developer testing interface into separate bundle (dev-only)
@@ -1009,11 +1084,10 @@ Since the PRD specifies Tailwind CSS v4.1.16 and no existing design system is me
 
 ## Checklist Results
 
-*This section will be populated after running any UI/UX validation checklists against this document.*
+_This section will be populated after running any UI/UX validation checklists against this document._
 
 ---
 
 **Document Status:** Complete - Ready for stakeholder review and visual design creation
 
 **Next Action:** Create high-fidelity visual designs in Figma based on this specification
-

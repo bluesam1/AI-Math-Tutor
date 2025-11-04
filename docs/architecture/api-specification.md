@@ -28,7 +28,7 @@ paths:
                 properties:
                   status:
                     type: string
-                    example: "ok"
+                    example: 'ok'
                   timestamp:
                     type: string
                     format: date-time
@@ -344,4 +344,3 @@ components:
           type: number
           format: float
 ```
-

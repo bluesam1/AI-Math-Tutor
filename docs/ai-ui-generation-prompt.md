@@ -3,6 +3,7 @@
 ## How to Use This Prompt
 
 Copy the prompt below and paste it into:
+
 - **v0.dev** (Vercel): https://v0.dev
 - **Lovable.ai**: https://lovable.dev
 - Or any similar AI UI generation tool
@@ -13,7 +14,7 @@ Copy the prompt below and paste it into:
 
 ## Prompt 1: Main Problem-Solving Interface
 
-```text
+````text
 Create a React + TypeScript application with Tailwind CSS v4.1.16 for an AI Math Tutor interface designed for 6th grade students (ages 11-12). This is a single-page application with a side-by-side layout.
 
 ### High-Level Goal
@@ -124,11 +125,12 @@ interface Session {
   problem: Problem | null;
   messages: Message[];
 }
-```
+````
 
 ### Constraints & Important Notes
 
 **DO:**
+
 - Use only Tailwind CSS utility classes for styling (no custom CSS files)
 - Use TypeScript for all files (.tsx for components, .ts for utilities)
 - Make all interactive elements keyboard accessible
@@ -139,6 +141,7 @@ interface Session {
 - Add error states with age-appropriate error messages
 
 **DON'T:**
+
 - Don't use external UI component libraries (Material-UI, Chakra, etc.)
 - Don't use inline styles or CSS-in-JS
 - Don't use raw JavaScript (only TypeScript)
@@ -150,6 +153,7 @@ interface Session {
 ### File Structure
 
 Create this file structure:
+
 ```plaintext
 src/
   components/
@@ -167,6 +171,7 @@ src/
 ### Scope
 
 **Include:**
+
 - Main layout with side-by-side panels
 - Problem display panel (empty, loading, active states)
 - Chat panel structure (message list and input area)
@@ -175,6 +180,7 @@ src/
 - Accessibility features (ARIA labels, keyboard navigation)
 
 **Exclude (for now):**
+
 - Actual message rendering (we'll add that in next prompt)
 - Math rendering with KaTeX (we'll add that separately)
 - Image upload functionality (we'll add that separately)
@@ -184,6 +190,7 @@ src/
 ### Expected Output
 
 A working React application with:
+
 - Responsive side-by-side layout
 - Problem panel with empty/loading/active states
 - Chat panel with message list area and input field
@@ -193,7 +200,6 @@ A working React application with:
 - Mobile-first responsive design
 
 Start with the mobile layout first, then enhance for tablet and desktop.
-
 
 ---
 
@@ -672,4 +678,3 @@ After generating the UI components, you'll need to:
 ---
 
 **Document Status:** Complete - Ready for use with v0.dev or Lovable.ai
-

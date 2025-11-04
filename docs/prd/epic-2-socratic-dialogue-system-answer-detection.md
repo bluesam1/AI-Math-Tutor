@@ -15,10 +15,11 @@ so that the system can generate guiding questions that help students discover so
 2: The LLM service is configured with appropriate API keys stored securely in environment variables, never exposed in client-side code.
 
 3: The service includes a function for generating Socratic dialogue responses with appropriate prompts that instruct the LLM to:
-   - Generate guiding questions, not direct answers
-   - Use progressive disclosure and chain-of-thought strategies
-   - Break down problems appropriately
-   - Adapt to student understanding level
+
+- Generate guiding questions, not direct answers
+- Use progressive disclosure and chain-of-thought strategies
+- Break down problems appropriately
+- Adapt to student understanding level
 
 4: The service handles API rate limits gracefully, implementing retry logic or queuing when rate limits are reached.
 
@@ -43,11 +44,12 @@ so that I can start working through the solution with guided questions.
 2: The endpoint accepts the current problem statement and student message as input, along with conversation context (last 10 messages if available).
 
 3: The LLM prompt includes:
-   - The current problem statement
-   - The problem type (arithmetic, algebra, geometry, word problems, multi-step)
-   - Conversation history (last 10 messages)
-   - Instructions to generate Socratic guiding questions, never direct answers
-   - Instructions to use progressive disclosure and chain-of-thought strategies
+
+- The current problem statement
+- The problem type (arithmetic, algebra, geometry, word problems, multi-step)
+- Conversation history (last 10 messages)
+- Instructions to generate Socratic guiding questions, never direct answers
+- Instructions to use progressive disclosure and chain-of-thought strategies
 
 4: The endpoint returns the generated Socratic dialogue response to the frontend.
 
@@ -70,9 +72,10 @@ so that I can learn through guided discovery rather than answer-getting.
 1: A backend service module is created for keyword-based answer detection (e.g., `answerDetectionService.ts`) in TypeScript that scans LLM responses for common answer patterns.
 
 2: The keyword-based detection identifies patterns such as:
-   - "the answer is", "the solution is", "equals", "is equal to"
-   - Numeric results at the end of responses (e.g., "42", "x = 5")
-   - Direct answer phrases (e.g., "so the answer would be", "therefore the answer is")
+
+- "the answer is", "the solution is", "equals", "is equal to"
+- Numeric results at the end of responses (e.g., "42", "x = 5")
+- Direct answer phrases (e.g., "so the answer would be", "therefore the answer is")
 
 3: The detection logic uses regex or pattern matching to identify these patterns in LLM responses.
 
@@ -97,8 +100,9 @@ so that the Socratic principles are maintained even when answers are phrased sub
 1: A backend service module is created for LLM-based answer validation (e.g., `answerValidationService.ts`) in TypeScript that uses a secondary LLM call to analyze response context.
 
 2: The validation service sends the LLM-generated response to a secondary LLM call with a prompt asking:
-   - "Does this response contain a direct answer to the math problem?"
-   - "Would this response give away the solution without requiring student thinking?"
+
+- "Does this response contain a direct answer to the math problem?"
+- "Would this response give away the solution without requiring student thinking?"
 
 3: The secondary LLM call analyzes the response context and returns a validation result (contains answer / does not contain answer).
 
@@ -123,14 +127,16 @@ so that I never receive direct answers even if the guardrails detect them.
 1: A backend service module combines keyword-based detection and LLM-based validation to determine if a response contains direct answers.
 
 2: When a response is flagged for containing direct answers (by either detection method), the system:
-   - Blocks the response from being sent to the frontend
-   - Generates a replacement response that maintains Socratic principles (asks a guiding question instead)
-   - Logs the blocked response for monitoring and improvement
+
+- Blocks the response from being sent to the frontend
+- Generates a replacement response that maintains Socratic principles (asks a guiding question instead)
+- Logs the blocked response for monitoring and improvement
 
 3: The replacement response is generated using the LLM service with a prompt instructing it to:
-   - Rewrite the response as a guiding question
-   - Maintain the same pedagogical intent without giving away the answer
-   - Use Socratic questioning techniques
+
+- Rewrite the response as a guiding question
+- Maintain the same pedagogical intent without giving away the answer
+- Use Socratic questioning techniques
 
 4: The system handles cases where rewriting fails (e.g., LLM API error) by returning a generic Socratic question (e.g., "Let's think about this step by step. What do you think we should consider first?").
 
@@ -157,9 +163,10 @@ so that the tutor can provide coherent, contextually relevant guidance.
 3: The service uses AWS ElastiCache (Redis) or DynamoDB for session storage, with session data persisting only within the browser session (no persistence beyond session).
 
 4: The service includes functions to:
-   - Add a new message to the context (user input or system response)
-   - Retrieve the last 10 messages for a session
-   - Clear context when a new problem is started
+
+- Add a new message to the context (user input or system response)
+- Retrieve the last 10 messages for a session
+- Clear context when a new problem is started
 
 5: The context is retrieved and included in LLM prompts for dialogue generation, ensuring coherent conversation flow.
 
@@ -182,9 +189,10 @@ so that I can follow our dialogue and see my progress.
 2: The chat component displays messages in a conversation format, with user messages and system responses clearly distinguished (different styling, alignment, or icons).
 
 3: The chat component includes:
-   - A message list displaying all messages in chronological order
-   - A message input field at the bottom for students to type responses
-   - A send button to submit messages
+
+- A message list displaying all messages in chronological order
+- A message input field at the bottom for students to type responses
+- A send button to submit messages
 
 4: The chat component handles message submission, sending student messages to the backend API endpoint (POST /api/chat/message).
 
@@ -213,9 +221,10 @@ so that I can make progress without receiving direct answers.
 2: The escalation service tracks the number of turns without progress for each problem (e.g., consecutive incorrect or unclear responses).
 
 3: When a student has been stuck for 2+ turns without progress, the system escalates help by:
-   - Providing more concrete hints in the LLM prompt
-   - Instructing the LLM to offer more specific guidance
-   - Maintaining Socratic principles (still asking questions, not giving direct answers)
+
+- Providing more concrete hints in the LLM prompt
+- Instructing the LLM to offer more specific guidance
+- Maintaining Socratic principles (still asking questions, not giving direct answers)
 
 4: The escalation logic is integrated with the dialogue generation endpoint, automatically adjusting LLM prompts based on student progress.
 
@@ -226,4 +235,3 @@ so that I can make progress without receiving direct answers.
 7: The escalation logic is configurable, allowing for adjustment of thresholds (e.g., 2 turns, 3 turns) based on testing and feedback.
 
 8: The escalation service includes logging for monitoring and improvement, tracking escalation rates and student progress patterns.
-

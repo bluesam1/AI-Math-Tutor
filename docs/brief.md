@@ -17,6 +17,7 @@
 ## Problem Statement
 
 **Current State & Pain Points:**
+
 - Students struggle with math problems and need personalized guidance
 - Traditional resources (textbooks, videos) either give away answers too quickly or lack interactivity
 - Human tutors are expensive and not always available
@@ -24,12 +25,14 @@
 - Students need adaptive scaffolding that adjusts to their understanding level
 
 **Impact of the Problem:**
+
 - Students become dependent on answers rather than developing problem-solving skills
 - Learning retention is poor when solutions are given directly
 - Students lose confidence when they can't work through problems independently
 - One-size-fits-all approaches don't adapt to individual learning needs
 
 **Why Existing Solutions Fall Short:**
+
 - **Answer-Key Resources:** Provide solutions without teaching the reasoning process
 - **Video Tutorials:** Passive learning, no interactive adaptation to student responses
 - **AI Chatbots:** Often give direct answers, violating Socratic teaching principles
@@ -37,6 +40,7 @@
 
 **Urgency & Importance:**
 Solving this now is critical because:
+
 - Math education is foundational for STEM learning
 - Students need tools that develop thinking skills, not just answer-getting skills
 - The success criteria require guiding through 5+ problem types without giving direct answers
@@ -48,6 +52,7 @@ Solving this now is critical because:
 AI Math Tutor is a web application that accepts math problems via text input or image upload, uses Vision APIs to parse printed text, and employs an LLM-based dialogue system with answer detection guardrails to guide students through Socratic questioning. The system never gives direct answers but breaks down problems appropriately to nudge users toward correct solutions through progressive disclosure and chain-of-thought strategies.
 
 **Key Differentiators from Existing Solutions:**
+
 - **Socratic Enforcement:** Answer detection guardrails ensure the system never provides direct answers, maintaining genuine learning value
 - **Dual Input Methods:** Text entry and image upload with Vision API parsing for accessibility
 - **Visual Feedback:** Prominent, interactive visual feedback appropriate for children
@@ -56,6 +61,7 @@ AI Math Tutor is a web application that accepts math problems via text input or 
 - **Context-Aware:** Maintains conversation context (last 10 messages) to provide coherent, adaptive guidance
 
 **Why This Solution Will Succeed Where Others Haven't:**
+
 - **Enforced Pedagogy:** Guardrails ensure adherence to Socratic principles, not just intent
 - **Adaptive Scaffolding:** LLM with chain-of-thought + progressive disclosure strategies adapts to student understanding level
 - **Visual Engagement:** Side-by-side layout (problem left, chat right) with prominent visual feedback keeps children engaged
@@ -69,12 +75,14 @@ A patient, encouraging AI tutor that feels like working with a skilled human tut
 ### Primary User Segment: Students Learning Mathematics
 
 **Demographic/Firmographic Profile:**
+
 - Students in grades K-12 (elementary through high school)
 - Age range: approximately 6-18 years old
 - Students who need math help but are motivated to learn
 - Access to devices with internet (web browser capability)
 
 **Current Behaviors & Workflows:**
+
 - Use textbooks, worksheets, or online resources for math practice
 - May seek help from parents, teachers, or tutors when stuck
 - Turn to answer keys or solution websites when frustrated
@@ -82,6 +90,7 @@ A patient, encouraging AI tutor that feels like working with a skilled human tut
 - Watch video tutorials for step-by-step explanations
 
 **Specific Needs & Pain Points:**
+
 - Need personalized guidance that adapts to their understanding level
 - Struggle with working through problems independently
 - Want immediate help when stuck on homework or practice problems
@@ -91,6 +100,7 @@ A patient, encouraging AI tutor that feels like working with a skilled human tut
 - Need help understanding "why" not just "how"
 
 **Goals They're Trying to Achieve:**
+
 - Successfully solve math problems independently
 - Understand the reasoning behind solutions, not just memorize steps
 - Build confidence in their problem-solving abilities
@@ -154,6 +164,7 @@ A patient, encouraging AI tutor that feels like working with a skilled human tut
 ### MVP Success Criteria
 
 The MVP successfully guides students through 5+ problem types without giving direct answers, maintains conversation context across turns, and adapts to student understanding level. The system demonstrates:
+
 - Reliable problem parsing (text + image with Vision APIs)
 - Enforced Socratic dialogue (never gives direct answers via guardrails)
 - Visual feedback appropriate for children
@@ -197,7 +208,7 @@ A comprehensive math learning platform that combines Socratic tutoring with prac
 
 - **Target Platforms:** Web application (responsive design for desktop, tablet, mobile browsers)
 - **Browser/OS Support:** Modern browsers (Chrome, Firefox, Safari, Edge) with JavaScript enabled
-- **Performance Requirements:** 
+- **Performance Requirements:**
   - Fast response times (< 3 seconds for LLM responses)
   - Smooth visual feedback interactions
   - Efficient image processing (Vision API integration)
@@ -207,7 +218,7 @@ A comprehensive math learning platform that combines Socratic tutoring with prac
 - **Frontend:** React for component-based UI with side-by-side layout
 - **Backend:** Node.js/Express for API endpoints handling LLM integration and Vision API calls
 - **Database:** Lightweight solution for session management (AWS ElastiCache for Redis, or DynamoDB for session storage)
-- **Hosting/Infrastructure:** 
+- **Hosting/Infrastructure:**
   - **AWS Infrastructure:**
     - Frontend: AWS S3 + CloudFront for static hosting, or AWS Amplify for full-stack deployment
     - Backend: AWS Lambda (serverless) or EC2/ECS for API endpoints
@@ -219,7 +230,7 @@ A comprehensive math learning platform that combines Socratic tutoring with prac
 ### Architecture Considerations
 
 - **Repository Structure:** Monorepo or separate frontend/backend repos depending on team preferences
-- **Service Architecture:** 
+- **Service Architecture:**
   - **Frontend:** UI components (problem display, chat interface, math rendering)
   - **Problem Input Handler:** Routes text/image inputs appropriately
   - **Image Parser:** Vision API integration (OpenAI Vision, Google Vision, or similar)
@@ -227,11 +238,11 @@ A comprehensive math learning platform that combines Socratic tutoring with prac
   - **Dialogue System:** LLM service with answer detection guardrails (post-processing)
   - **Context Manager:** Session storage (last 10 messages + problem understanding)
   - **Math Rendering:** LaTeX/KaTeX library integration
-- **Integration Requirements:** 
+- **Integration Requirements:**
   - Vision API for image parsing (printed text)
   - LLM API for problem understanding and dialogue generation
   - Answer detection logic (could be rule-based or LLM-based)
-- **Security/Compliance:** 
+- **Security/Compliance:**
   - No sensitive user data collection (anonymous sessions)
   - API key management for external services
   - Input sanitization for text inputs
@@ -247,7 +258,7 @@ A comprehensive math learning platform that combines Socratic tutoring with prac
 - **Timeline:** 3-day development window for MVP
   - Must prioritize core features over stretch features
   - Trade-offs between polish and feature completeness
-- **Resources:** 
+- **Resources:**
   - Single developer or small team
   - Limited time for extensive testing and refinement
 - **Technical:**
@@ -311,6 +322,7 @@ A comprehensive math learning platform that combines Socratic tutoring with prac
 ### A. Research Summary
 
 **Brainstorming Session Results:**
+
 - Conducted structured brainstorming session covering features, UX, technical architecture, and implementation approach
 - Key techniques used: First Principles Thinking, Constraint-Based Ideation, Morphological Analysis, SCAMPER Method
 - Identified essential components: Problem input (text + image), Socratic dialogue system, visual feedback, math rendering, context management
@@ -319,6 +331,7 @@ A comprehensive math learning platform that combines Socratic tutoring with prac
 - UI Layout: Side-by-side (problem left, chat right)
 
 **Key Insights:**
+
 - LLM + guardrails approach (post-processing answer detection) balances control and flexibility
 - Vision APIs simplify image parsing path within 3-day timeline
 - Progressive disclosure + chain-of-thought strategies adapt well to Socratic dialogue
@@ -326,6 +339,7 @@ A comprehensive math learning platform that combines Socratic tutoring with prac
 - Generic system approach allows handling 5+ problem types without per-type specialization
 
 **Adaptation Opportunities:**
+
 - Khan Academy techniques can be automated for more adaptive assistance
 - Pragmatic gamification appropriate for educational context
 - Assessment features (testing with similar problems) deferred to post-MVP
@@ -333,11 +347,13 @@ A comprehensive math learning platform that combines Socratic tutoring with prac
 ### B. Stakeholder Input
 
 **Original Project Brief:** "AI Math Tutor - Socratic Learning Assistant"
+
 - Timeline: 3-5 days core + optional stretch features
 - Success Criteria: Guides students through 5+ problem types without giving direct answers; maintains conversation context; adapts to student understanding level
 - Evaluation: Pedagogical Quality (35%), Technical Implementation (30%), User Experience (20%), Innovation (15%)
 
 **Requirements from Original Spec:**
+
 - Problem Input: Text entry + image upload with OCR/Vision LLM parsing
 - Socratic Dialogue: Multi-turn conversation that asks guiding questions, validates responses, provides hints (never direct answers)
 - Math Rendering: Display equations properly (LaTeX/KaTeX)
@@ -385,4 +401,3 @@ A comprehensive math learning platform that combines Socratic tutoring with prac
 ### PM Handoff
 
 This Project Brief provides the full context for **AI Math Tutor**. Please start in 'PRD Generation Mode', review the brief thoroughly to work with the user to create the PRD section by section as the template indicates, asking for any necessary clarification or suggesting improvements.
-

@@ -10,6 +10,7 @@
 ### Key Metrics
 
 **Frontend Metrics:**
+
 - Core Web Vitals (LCP, FID, CLS)
 - JavaScript errors (via error boundary)
 - API response times
@@ -17,9 +18,9 @@
 - Developer testing interface usage (development only): test scenarios run, test results, answer detection accuracy
 
 **Backend Metrics:**
+
 - Request rate (API Gateway)
 - Error rate (4xx, 5xx responses)
 - Response time (Lambda duration + API Gateway latency)
 - External API usage (OpenAI Vision API, LLM API calls)
 - Developer testing metrics (development only): scenarios run, test execution time, Socratic compliance rate
-

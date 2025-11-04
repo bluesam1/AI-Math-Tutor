@@ -66,7 +66,7 @@ export const handler = async (
 ): Promise<APIGatewayProxyResult> => {
   try {
     const { sessionId, message, problemId } = JSON.parse(event.body || '{}');
-    
+
     // Validate input
     if (!sessionId || !message) {
       return {
@@ -130,7 +130,7 @@ export class ContextService {
   }
 
   async addMessage(sessionId: string, message: Message): Promise<void> {
-    const session = await this.getContext(sessionId) || {
+    const session = (await this.getContext(sessionId)) || {
       sessionId,
       problem: null,
       messages: [],
@@ -169,6 +169,7 @@ N/A - No authentication required per PRD (anonymous sessions only). Session mana
 #### Developer Testing Interface Access Control
 
 **Environment-Based Access Control:**
+
 - **Development Environment:** Developer testing interface fully accessible via `/dev/testing` route
 - **Production Environment:** Developer testing interface completely excluded from build
 - **Access Check:** Frontend checks `NODE_ENV === 'development'` before rendering testing interface
@@ -176,6 +177,7 @@ N/A - No authentication required per PRD (anonymous sessions only). Session mana
 - **Build-Time Exclusion:** Developer testing components and services excluded via conditional compilation or environment checks
 
 **Implementation:**
+
 ```typescript
 // apps/web/src/components/DeveloperTesting/DeveloperTestingInterface.tsx
 if (import.meta.env.MODE !== 'development') {
@@ -186,8 +188,9 @@ if (import.meta.env.MODE !== 'development') {
 if (process.env.NODE_ENV === 'production') {
   return {
     statusCode: 403,
-    body: JSON.stringify({ error: 'Testing endpoints not available in production' }),
+    body: JSON.stringify({
+      error: 'Testing endpoints not available in production',
+    }),
   };
 }
 ```
-

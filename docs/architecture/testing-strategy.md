@@ -27,6 +27,7 @@ Thorough testing and ease of testing different scenarios are **fundamental to th
 ### Test Organization
 
 **Frontend Tests:**
+
 ```
 apps/web/tests/
 ├── components/
@@ -49,6 +50,7 @@ apps/web/tests/
 ```
 
 **Backend Tests:**
+
 ```
 apps/api/tests/
 ├── functions/
@@ -89,6 +91,7 @@ apps/api/tests/
 ```
 
 **Test Fixtures and Utilities:**
+
 ```
 tests/
 ├── fixtures/
@@ -124,14 +127,22 @@ tests/
 // tests/fixtures/problems/arithmetic.fixtures.ts
 export const arithmeticProblems = {
   basicAddition: {
-    text: "What is 15 + 27?",
-    type: "arithmetic",
-    expectedSteps: ["What operation are we performing?", "What is 15 + 20?", "What is 35 + 7?"],
+    text: 'What is 15 + 27?',
+    type: 'arithmetic',
+    expectedSteps: [
+      'What operation are we performing?',
+      'What is 15 + 20?',
+      'What is 35 + 7?',
+    ],
   },
   subtraction: {
-    text: "Solve 43 - 18",
-    type: "arithmetic",
-    expectedSteps: ["What operation are we doing?", "Can you break down 18?", "What is 43 - 10?"],
+    text: 'Solve 43 - 18',
+    type: 'arithmetic',
+    expectedSteps: [
+      'What operation are we doing?',
+      'Can you break down 18?',
+      'What is 43 - 10?',
+    ],
   },
   // ... more arithmetic problems
 };
@@ -139,9 +150,13 @@ export const arithmeticProblems = {
 // tests/fixtures/problems/algebra.fixtures.ts
 export const algebraProblems = {
   linearEquation: {
-    text: "Solve 2x + 5 = 13",
-    type: "algebra",
-    expectedSteps: ["What are we trying to find?", "What operations do we need to undo?", "What should we do first?"],
+    text: 'Solve 2x + 5 = 13',
+    type: 'algebra',
+    expectedSteps: [
+      'What are we trying to find?',
+      'What operations do we need to undo?',
+      'What should we do first?',
+    ],
   },
   // ... more algebra problems
 };
@@ -152,7 +167,10 @@ export const algebraProblems = {
 ```typescript
 // tests/utils/scenarioRunner.ts
 export class ScenarioRunner {
-  async runProblemScenario(problem: Problem, expectedBehavior: ScenarioExpectations) {
+  async runProblemScenario(
+    problem: Problem,
+    expectedBehavior: ScenarioExpectations
+  ) {
     // Run full problem-solving scenario
     // Validate Socratic responses
     // Check answer detection
@@ -201,6 +219,7 @@ npm run test:manual -- --scenario basic-addition
 ### Critical Test Coverage Requirements
 
 **Mandatory Coverage Targets:**
+
 - **Answer Detection Service:** 100% coverage (critical for Socratic compliance)
 - **Context Management Service:** >95% coverage (critical for conversation coherence)
 - **Problem Validation:** >90% coverage (critical for all problem types)
@@ -209,6 +228,7 @@ npm run test:manual -- --scenario basic-addition
 - **Overall Frontend Components:** >75% coverage
 
 **Test Priority Matrix:**
+
 1. **P0 - Critical:** Answer detection guardrails, context management, problem validation
 2. **P1 - High:** Socratic dialogue generation, LLM integration, OpenAI Vision API integration
 3. **P2 - Medium:** UI components, state management, error handling
@@ -217,6 +237,7 @@ npm run test:manual -- --scenario basic-addition
 ### Test Examples
 
 **Frontend Component Test:**
+
 ```typescript
 // apps/web/tests/components/ProblemInput.test.tsx
 import { render, screen, fireEvent } from '@testing-library/react';
@@ -226,11 +247,11 @@ describe('ProblemInput', () => {
   it('submits problem text when entered', () => {
     const onProblemSubmit = jest.fn();
     render(<ProblemInput onProblemSubmit={onProblemSubmit} />);
-    
+
     const input = screen.getByPlaceholderText('Enter math problem');
     fireEvent.change(input, { target: { value: 'Solve 2x + 5 = 13' } });
     fireEvent.click(screen.getByText('Submit'));
-    
+
     expect(onProblemSubmit).toHaveBeenCalledWith(
       expect.objectContaining({ text: 'Solve 2x + 5 = 13' })
     );
@@ -239,6 +260,7 @@ describe('ProblemInput', () => {
 ```
 
 **Backend Answer Detection Test (CRITICAL):**
+
 ```typescript
 // apps/api/tests/services/answerDetection/scenarios/directAnswer.test.ts
 import { detectAnswer } from '../../../../src/services/answerDetection';
@@ -291,6 +313,7 @@ describe('Answer Detection - Direct Answers', () => {
 ```
 
 **Scenario-Based Test for Problem Type:**
+
 ```typescript
 // apps/api/tests/scenarios/algebra/linearEquations.test.ts
 import { ScenarioRunner } from '../../../../utils/scenarioRunner';
@@ -328,6 +351,7 @@ describe('Algebra - Linear Equations', () => {
 ```
 
 **Integration Test for Full Socratic Dialogue:**
+
 ```typescript
 // apps/api/tests/integration/socraticDialogue.test.ts
 import { handler } from '../../src/functions/socraticDialogue/handler';
@@ -352,17 +376,17 @@ describe('Socratic Dialogue Integration', () => {
 
       const result = await handler(event);
       expect(result.statusCode).toBe(200);
-      
+
       const body = JSON.parse(result.body);
-      
+
       // CRITICAL: Verify no direct answers
       expect(body.message).not.toContain('the answer is');
       expect(body.message).not.toContain('equals');
       expect(body.message).not.toMatch(/\d+$/); // No numeric answers at end
-      
+
       // Verify Socratic question format
       expect(body.message).toMatch(/[?]/); // Contains question mark
-      
+
       messages.push(body.message);
     }
   });
@@ -370,6 +394,7 @@ describe('Socratic Dialogue Integration', () => {
 ```
 
 **Test for All 5 Problem Types:**
+
 ```typescript
 // apps/api/tests/scenarios/allProblemTypes.test.ts
 import { ScenarioRunner } from '../../../../utils/scenarioRunner';
@@ -410,4 +435,3 @@ describe('All Problem Types - Socratic Compliance', () => {
   });
 });
 ```
-

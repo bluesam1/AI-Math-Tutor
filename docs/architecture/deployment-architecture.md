@@ -3,12 +3,14 @@
 ### Deployment Strategy
 
 **Frontend Deployment:**
+
 - **Platform:** AWS S3 + CloudFront
 - **Build Command:** `npm run build:web`
 - **Output Directory:** `apps/web/dist`
 - **CDN/Edge:** CloudFront distribution for global content delivery
 
 **Backend Deployment:**
+
 - **Platform:** AWS Lambda (serverless)
 - **Build Command:** `npm run build:api`
 - **Deployment Method:** Serverless Framework or AWS CDK
@@ -58,9 +60,8 @@ jobs:
 
 ### Environments
 
-| Environment | Frontend URL | Backend URL | Purpose |
-|------------|--------------|-------------|---------|
-| Development | http://localhost:5173 | http://localhost:3000 | Local development |
-| Staging | https://staging.aimathtutor.com | https://api-staging.aimathtutor.com | Pre-production testing |
-| Production | https://aimathtutor.com | https://api.aimathtutor.com | Live environment |
-
+| Environment | Frontend URL                    | Backend URL                         | Purpose                |
+| ----------- | ------------------------------- | ----------------------------------- | ---------------------- |
+| Development | http://localhost:5173           | http://localhost:3000               | Local development      |
+| Staging     | https://staging.aimathtutor.com | https://api-staging.aimathtutor.com | Pre-production testing |
+| Production  | https://aimathtutor.com         | https://api.aimathtutor.com         | Live environment       |

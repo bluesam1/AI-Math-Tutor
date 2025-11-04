@@ -14,10 +14,10 @@ The PRD specifies a monorepo structure combining frontend and backend code in a 
 
 ### Change Log
 
-| Date | Version | Description | Author |
-|------|---------|-------------|--------|
-| 2025-01-XX | 1.0 | Initial architecture document created | Architect |
-| 2025-01-XX | 1.1 | Updated scope to 6th grade math, added developer testing interface | Architect |
+| Date       | Version | Description                                                        | Author    |
+| ---------- | ------- | ------------------------------------------------------------------ | --------- |
+| 2025-01-XX | 1.0     | Initial architecture document created                              | Architect |
+| 2025-01-XX | 1.1     | Updated scope to 6th grade math, added developer testing interface | Architect |
 
 ## High Level Architecture
 
@@ -30,18 +30,21 @@ AI Math Tutor uses a serverless fullstack architecture with AWS Lambda functions
 **Platform:** AWS Full Stack
 
 **Key Services:**
+
 - **Frontend:** AWS S3 + CloudFront (or AWS Amplify for full-stack deployment)
 - **Backend:** AWS Lambda (serverless) for API endpoints
 - **Session Storage:** AWS ElastiCache (Redis) for in-memory session management (last 10 messages)
 - **API Gateway:** AWS API Gateway for API routing, rate limiting, and request management
 - **CDN:** CloudFront for static asset delivery and edge caching
 
-**Deployment Host and Regions:** 
+**Deployment Host and Regions:**
+
 - Primary: US East (N. Virginia) us-east-1
 - CDN: CloudFront global distribution
 
 **Rationale:**
 The PRD explicitly specifies AWS infrastructure with serverless architecture. AWS provides:
+
 - **Cost-effectiveness for MVP:** Pay-per-use model ideal for initial deployment
 - **Scalability:** Auto-scaling Lambda functions handle variable load
 - **Integration:** Seamless integration between S3, CloudFront, API Gateway, and Lambda
@@ -55,6 +58,7 @@ The PRD explicitly specifies AWS infrastructure with serverless architecture. AW
 **Monorepo Tool:** npm workspaces (lightweight, no additional tooling required)
 
 **Package Organization:**
+
 - Root package.json manages workspace dependencies
 - `apps/web/` - React frontend application
 - `apps/api/` - Node.js/Express backend API
@@ -63,6 +67,7 @@ The PRD explicitly specifies AWS infrastructure with serverless architecture. AW
 
 **Rationale:**
 The PRD explicitly requires a monorepo structure. npm workspaces provides:
+
 - Simple setup without additional tooling complexity
 - Shared TypeScript types between frontend and backend
 - Unified dependency management
@@ -76,33 +81,33 @@ graph TB
     subgraph "Client Layer"
         Browser[Web Browser<br/>React App]
     end
-    
+
     subgraph "AWS Infrastructure"
         subgraph "Frontend"
             S3[S3 Bucket<br/>Static Assets]
             CF[CloudFront<br/>CDN]
         end
-        
+
         subgraph "API Layer"
             APIGW[API Gateway<br/>Routing & Rate Limiting]
         end
-        
+
         subgraph "Backend Services"
             Lambda1[Lambda: Problem Input<br/>Image Parsing]
             Lambda2[Lambda: Socratic Dialogue<br/>LLM Integration]
             Lambda3[Lambda: Answer Detection<br/>Guardrails]
         end
-        
+
         subgraph "Session Storage"
             Redis[ElastiCache Redis<br/>Session Context]
         end
     end
-    
+
     subgraph "External Services"
         VisionAPI[OpenAI Vision API]
         LLMAPI[LLM API<br/>OpenAI GPT-4/Claude]
     end
-    
+
     Browser -->|HTTPS| CF
     CF -->|Static Assets| S3
     Browser -->|API Requests| APIGW
@@ -138,29 +143,29 @@ graph TB
 
 ### Technology Stack Table
 
-| Category | Technology | Version | Purpose | Rationale |
-|----------|-----------|---------|---------|-----------|
-| Frontend Language | TypeScript | Latest | Type-safe frontend development | PRD requirement - all code must be TypeScript for type safety |
-| Frontend Framework | React | Latest stable | Component-based UI with side-by-side layout | PRD requirement - React with functional components and Hooks |
-| UI Component Library | None (custom) | - | Built-in components | PRD doesn't specify a UI library, custom components with Tailwind |
-| State Management | React Hooks (useState, useContext) | Built-in | Client-side state management | Simple state needs for MVP, no complex state management required |
-| Backend Language | TypeScript | Latest | Type-safe backend development | PRD requirement - all code must be TypeScript |
-| Backend Framework | Express.js | Latest | REST API endpoints | PRD requirement - Node.js/Express for API endpoints |
-| API Style | REST | - | Frontend-backend communication | PRD requirement - RESTful API design |
-| Database | N/A | - | No persistent storage | PRD specifies session-only storage (no persistence) |
-| Cache | AWS ElastiCache (Redis) | Latest | Session context storage | PRD requirement - in-memory session management (last 10 messages) |
-| File Storage | N/A | - | No file persistence | Images processed then discarded, no storage needed |
-| Authentication | None | - | Anonymous sessions | PRD requirement - anonymous sessions only, no auth needed |
-| Frontend Testing | Jest + React Testing Library | Latest | Component and unit testing | Standard React testing stack |
-| Backend Testing | Jest + Supertest | Latest | API endpoint testing | Standard Node.js testing stack |
-| E2E Testing | Deferred | - | Post-MVP | PRD specifies Unit + Integration only for MVP |
-| Build Tool | Vite | Latest | Frontend build tool | Fast, modern build tool for React |
-| Bundler | Vite (Rollup) | Latest | Code bundling | Included with Vite |
-| IaC Tool | AWS CDK or SAM | Latest | Infrastructure as Code | AWS-native IaC tools |
-| CI/CD | GitHub Actions | - | Automated testing and deployment | Standard CI/CD for GitHub repositories |
-| Monitoring | CloudWatch | AWS native | Application monitoring | AWS-native monitoring solution |
-| Logging | CloudWatch Logs | AWS native | Application logging | AWS-native logging solution |
-| CSS Framework | Tailwind CSS | v4.1.16 | Utility-first styling | PRD requirement - Tailwind CSS v4.1.16 for responsive design |
+| Category             | Technology                         | Version       | Purpose                                     | Rationale                                                         |
+| -------------------- | ---------------------------------- | ------------- | ------------------------------------------- | ----------------------------------------------------------------- |
+| Frontend Language    | TypeScript                         | Latest        | Type-safe frontend development              | PRD requirement - all code must be TypeScript for type safety     |
+| Frontend Framework   | React                              | Latest stable | Component-based UI with side-by-side layout | PRD requirement - React with functional components and Hooks      |
+| UI Component Library | None (custom)                      | -             | Built-in components                         | PRD doesn't specify a UI library, custom components with Tailwind |
+| State Management     | React Hooks (useState, useContext) | Built-in      | Client-side state management                | Simple state needs for MVP, no complex state management required  |
+| Backend Language     | TypeScript                         | Latest        | Type-safe backend development               | PRD requirement - all code must be TypeScript                     |
+| Backend Framework    | Express.js                         | Latest        | REST API endpoints                          | PRD requirement - Node.js/Express for API endpoints               |
+| API Style            | REST                               | -             | Frontend-backend communication              | PRD requirement - RESTful API design                              |
+| Database             | N/A                                | -             | No persistent storage                       | PRD specifies session-only storage (no persistence)               |
+| Cache                | AWS ElastiCache (Redis)            | Latest        | Session context storage                     | PRD requirement - in-memory session management (last 10 messages) |
+| File Storage         | N/A                                | -             | No file persistence                         | Images processed then discarded, no storage needed                |
+| Authentication       | None                               | -             | Anonymous sessions                          | PRD requirement - anonymous sessions only, no auth needed         |
+| Frontend Testing     | Jest + React Testing Library       | Latest        | Component and unit testing                  | Standard React testing stack                                      |
+| Backend Testing      | Jest + Supertest                   | Latest        | API endpoint testing                        | Standard Node.js testing stack                                    |
+| E2E Testing          | Deferred                           | -             | Post-MVP                                    | PRD specifies Unit + Integration only for MVP                     |
+| Build Tool           | Vite                               | Latest        | Frontend build tool                         | Fast, modern build tool for React                                 |
+| Bundler              | Vite (Rollup)                      | Latest        | Code bundling                               | Included with Vite                                                |
+| IaC Tool             | AWS CDK or SAM                     | Latest        | Infrastructure as Code                      | AWS-native IaC tools                                              |
+| CI/CD                | GitHub Actions                     | -             | Automated testing and deployment            | Standard CI/CD for GitHub repositories                            |
+| Monitoring           | CloudWatch                         | AWS native    | Application monitoring                      | AWS-native monitoring solution                                    |
+| Logging              | CloudWatch Logs                    | AWS native    | Application logging                         | AWS-native logging solution                                       |
+| CSS Framework        | Tailwind CSS                       | v4.1.16       | Utility-first styling                       | PRD requirement - Tailwind CSS v4.1.16 for responsive design      |
 
 ### Technical Dependency Matrix
 
@@ -168,34 +173,36 @@ This section documents all technical dependencies, their versions, compatibility
 
 #### Runtime Environment Requirements
 
-| Requirement | Minimum Version | Recommended Version | Purpose | Notes |
-|------------|----------------|---------------------|---------|-------|
-| Node.js | v18.0.0 | v18.x LTS or v20.x LTS | JavaScript runtime | Required for both frontend and backend |
-| npm | v9.0.0 | v10.x or latest | Package manager | Included with Node.js, used for monorepo workspaces |
-| TypeScript | v5.0.0 | v5.3.x or latest | Type checking and compilation | Required for all code (PRD requirement) |
+| Requirement | Minimum Version | Recommended Version    | Purpose                       | Notes                                               |
+| ----------- | --------------- | ---------------------- | ----------------------------- | --------------------------------------------------- |
+| Node.js     | v18.0.0         | v18.x LTS or v20.x LTS | JavaScript runtime            | Required for both frontend and backend              |
+| npm         | v9.0.0          | v10.x or latest        | Package manager               | Included with Node.js, used for monorepo workspaces |
+| TypeScript  | v5.0.0          | v5.3.x or latest       | Type checking and compilation | Required for all code (PRD requirement)             |
 
 **Node.js Version Compatibility:**
+
 - **Supported:** Node.js 18.x LTS, 20.x LTS
 - **Not Supported:** Node.js 16.x or earlier (TypeScript 5.x requires Node 18+)
 - **Rationale:** TypeScript 5.x and modern tooling require Node 18+
 
 #### Frontend Dependencies
 
-| Package | Version | Purpose | Dependencies | Notes |
-|---------|---------|---------|--------------|-------|
-| react | ^18.2.0 | UI framework | - | Latest stable React 18.x |
-| react-dom | ^18.2.0 | React DOM bindings | react | Must match React version |
-| typescript | ^5.3.0 | Type checking | - | Required for all .ts/.tsx files |
-| vite | ^5.0.0 | Build tool | - | Fast build tool for React |
-| @vitejs/plugin-react | ^4.2.0 | Vite React plugin | vite, react | Required for React in Vite |
-| tailwindcss | v4.1.16 | CSS framework | - | PRD requirement - exact version |
-| katex | ^0.16.0 | Math rendering | - | LaTeX/KaTeX rendering for equations |
-| react-katex | ^3.0.0 | React KaTeX wrapper | react, katex | React integration for KaTeX |
-| @types/react | ^18.2.0 | TypeScript types | react, typescript | Must match React version |
-| @types/react-dom | ^18.2.0 | TypeScript types | react-dom, typescript | Must match React version |
-| @types/node | ^20.0.0 | Node.js types | typescript | Node.js type definitions |
+| Package              | Version | Purpose             | Dependencies          | Notes                               |
+| -------------------- | ------- | ------------------- | --------------------- | ----------------------------------- |
+| react                | ^18.2.0 | UI framework        | -                     | Latest stable React 18.x            |
+| react-dom            | ^18.2.0 | React DOM bindings  | react                 | Must match React version            |
+| typescript           | ^5.3.0  | Type checking       | -                     | Required for all .ts/.tsx files     |
+| vite                 | ^5.0.0  | Build tool          | -                     | Fast build tool for React           |
+| @vitejs/plugin-react | ^4.2.0  | Vite React plugin   | vite, react           | Required for React in Vite          |
+| tailwindcss          | v4.1.16 | CSS framework       | -                     | PRD requirement - exact version     |
+| katex                | ^0.16.0 | Math rendering      | -                     | LaTeX/KaTeX rendering for equations |
+| react-katex          | ^3.0.0  | React KaTeX wrapper | react, katex          | React integration for KaTeX         |
+| @types/react         | ^18.2.0 | TypeScript types    | react, typescript     | Must match React version            |
+| @types/react-dom     | ^18.2.0 | TypeScript types    | react-dom, typescript | Must match React version            |
+| @types/node          | ^20.0.0 | Node.js types       | typescript            | Node.js type definitions            |
 
 **Frontend Dependency Compatibility Notes:**
+
 - React 18.x is required for concurrent features and modern hooks
 - TypeScript 5.x requires Node 18+ and provides better type inference
 - Vite 5.x requires Node 18+ and provides fast HMR
@@ -205,29 +212,30 @@ This section documents all technical dependencies, their versions, compatibility
 
 #### Backend Dependencies
 
-| Package | Version | Purpose | Dependencies | Notes |
-|---------|---------|---------|--------------|-------|
-| express | ^4.18.0 | Web framework | - | Latest stable Express 4.x |
-| typescript | ^5.3.0 | Type checking | - | Shared with frontend |
-| @types/express | ^4.17.0 | TypeScript types | express, typescript | Express type definitions |
-| @types/node | ^20.0.0 | Node.js types | typescript | Node.js type definitions |
-| aws-sdk | ^2.1500.0 | AWS SDK v2 | - | AWS service integration |
-| @aws-sdk/client-s3 | ^3.0.0 | AWS S3 client | - | Alternative: AWS SDK v3 (modular) |
-| @aws-sdk/client-lambda | ^3.0.0 | AWS Lambda client | - | Alternative: AWS SDK v3 (modular) |
-| @aws-sdk/client-elasticache | ^3.0.0 | AWS ElastiCache client | - | Alternative: AWS SDK v3 (modular) |
-| ioredis | ^5.3.0 | Redis client | - | For ElastiCache (Redis) connection |
-| @types/ioredis | ^5.0.0 | TypeScript types | ioredis, typescript | Redis type definitions |
-| openai | ^4.0.0 | OpenAI API client | - | For Vision API and LLM API |
-| @anthropic-ai/sdk | ^0.9.0 | Anthropic Claude API | - | Alternative LLM provider |
-| cors | ^2.8.5 | CORS middleware | express | Required for frontend-backend communication |
-| multer | ^1.4.5 | File upload middleware | express | For image upload handling |
-| @types/multer | ^1.4.0 | TypeScript types | multer, typescript | Multer type definitions |
-| @types/cors | ^2.8.0 | TypeScript types | cors, typescript | CORS type definitions |
-| dotenv | ^16.3.0 | Environment variables | - | For local development config |
+| Package                     | Version   | Purpose                | Dependencies        | Notes                                       |
+| --------------------------- | --------- | ---------------------- | ------------------- | ------------------------------------------- |
+| express                     | ^4.18.0   | Web framework          | -                   | Latest stable Express 4.x                   |
+| typescript                  | ^5.3.0    | Type checking          | -                   | Shared with frontend                        |
+| @types/express              | ^4.17.0   | TypeScript types       | express, typescript | Express type definitions                    |
+| @types/node                 | ^20.0.0   | Node.js types          | typescript          | Node.js type definitions                    |
+| aws-sdk                     | ^2.1500.0 | AWS SDK v2             | -                   | AWS service integration                     |
+| @aws-sdk/client-s3          | ^3.0.0    | AWS S3 client          | -                   | Alternative: AWS SDK v3 (modular)           |
+| @aws-sdk/client-lambda      | ^3.0.0    | AWS Lambda client      | -                   | Alternative: AWS SDK v3 (modular)           |
+| @aws-sdk/client-elasticache | ^3.0.0    | AWS ElastiCache client | -                   | Alternative: AWS SDK v3 (modular)           |
+| ioredis                     | ^5.3.0    | Redis client           | -                   | For ElastiCache (Redis) connection          |
+| @types/ioredis              | ^5.0.0    | TypeScript types       | ioredis, typescript | Redis type definitions                      |
+| openai                      | ^4.0.0    | OpenAI API client      | -                   | For Vision API and LLM API                  |
+| @anthropic-ai/sdk           | ^0.9.0    | Anthropic Claude API   | -                   | Alternative LLM provider                    |
+| cors                        | ^2.8.5    | CORS middleware        | express             | Required for frontend-backend communication |
+| multer                      | ^1.4.5    | File upload middleware | express             | For image upload handling                   |
+| @types/multer               | ^1.4.0    | TypeScript types       | multer, typescript  | Multer type definitions                     |
+| @types/cors                 | ^2.8.0    | TypeScript types       | cors, typescript    | CORS type definitions                       |
+| dotenv                      | ^16.3.0   | Environment variables  | -                   | For local development config                |
 
 **Backend Dependency Compatibility Notes:**
+
 - Express 4.x is stable and well-tested
-- AWS SDK: Choose either v2 (aws-sdk) or v3 (modular @aws-sdk/client-* packages)
+- AWS SDK: Choose either v2 (aws-sdk) or v3 (modular @aws-sdk/client-\* packages)
   - **Recommendation:** Use AWS SDK v3 for better tree-shaking and smaller bundle size
 - ioredis 5.x is latest stable for Redis connections
 - OpenAI SDK 4.x is latest for GPT-4 and Vision API
@@ -235,36 +243,38 @@ This section documents all technical dependencies, their versions, compatibility
 
 #### Testing Dependencies
 
-| Package | Version | Purpose | Scope | Notes |
-|---------|---------|---------|-------|-------|
-| jest | ^29.7.0 | Testing framework | Frontend + Backend | Latest Jest with ESM support |
-| @testing-library/react | ^14.1.0 | React testing utilities | Frontend | React component testing |
-| @testing-library/jest-dom | ^6.1.0 | Jest DOM matchers | Frontend | Additional DOM matchers |
-| @testing-library/user-event | ^14.5.0 | User interaction testing | Frontend | User event simulation |
-| supertest | ^6.3.0 | HTTP assertion library | Backend | API endpoint testing |
-| @types/jest | ^29.5.0 | TypeScript types | Frontend + Backend | Jest type definitions |
-| @types/supertest | ^6.0.0 | TypeScript types | Backend | Supertest type definitions |
-| ts-jest | ^29.1.0 | TypeScript Jest transformer | Frontend + Backend | TypeScript support in Jest |
+| Package                     | Version | Purpose                     | Scope              | Notes                        |
+| --------------------------- | ------- | --------------------------- | ------------------ | ---------------------------- |
+| jest                        | ^29.7.0 | Testing framework           | Frontend + Backend | Latest Jest with ESM support |
+| @testing-library/react      | ^14.1.0 | React testing utilities     | Frontend           | React component testing      |
+| @testing-library/jest-dom   | ^6.1.0  | Jest DOM matchers           | Frontend           | Additional DOM matchers      |
+| @testing-library/user-event | ^14.5.0 | User interaction testing    | Frontend           | User event simulation        |
+| supertest                   | ^6.3.0  | HTTP assertion library      | Backend            | API endpoint testing         |
+| @types/jest                 | ^29.5.0 | TypeScript types            | Frontend + Backend | Jest type definitions        |
+| @types/supertest            | ^6.0.0  | TypeScript types            | Backend            | Supertest type definitions   |
+| ts-jest                     | ^29.1.0 | TypeScript Jest transformer | Frontend + Backend | TypeScript support in Jest   |
 
 **Testing Dependency Compatibility Notes:**
+
 - Jest 29.x requires Node 18+ and supports ESM modules
 - Testing Library 14.x is latest with React 18 support
 - ts-jest 29.x must match Jest version for compatibility
 
 #### Development Dependencies
 
-| Package | Version | Purpose | Scope | Notes |
-|---------|---------|---------|-------|-------|
-| eslint | ^8.55.0 | Linter | Frontend + Backend | Code quality enforcement |
-| @typescript-eslint/parser | ^6.15.0 | TypeScript ESLint parser | Frontend + Backend | TypeScript linting |
-| @typescript-eslint/eslint-plugin | ^6.15.0 | TypeScript ESLint rules | Frontend + Backend | TypeScript-specific rules |
-| eslint-plugin-react | ^7.33.0 | React ESLint rules | Frontend | React-specific linting |
-| eslint-plugin-react-hooks | ^4.6.0 | React Hooks linting | Frontend | React Hooks rules |
-| prettier | ^3.1.0 | Code formatter | Frontend + Backend | Code formatting |
-| eslint-config-prettier | ^9.1.0 | Prettier ESLint config | Frontend + Backend | Prevents ESLint/Prettier conflicts |
-| @types/node | ^20.0.0 | Node.js types | Frontend + Backend | Shared Node.js types |
+| Package                          | Version | Purpose                  | Scope              | Notes                              |
+| -------------------------------- | ------- | ------------------------ | ------------------ | ---------------------------------- |
+| eslint                           | ^8.55.0 | Linter                   | Frontend + Backend | Code quality enforcement           |
+| @typescript-eslint/parser        | ^6.15.0 | TypeScript ESLint parser | Frontend + Backend | TypeScript linting                 |
+| @typescript-eslint/eslint-plugin | ^6.15.0 | TypeScript ESLint rules  | Frontend + Backend | TypeScript-specific rules          |
+| eslint-plugin-react              | ^7.33.0 | React ESLint rules       | Frontend           | React-specific linting             |
+| eslint-plugin-react-hooks        | ^4.6.0  | React Hooks linting      | Frontend           | React Hooks rules                  |
+| prettier                         | ^3.1.0  | Code formatter           | Frontend + Backend | Code formatting                    |
+| eslint-config-prettier           | ^9.1.0  | Prettier ESLint config   | Frontend + Backend | Prevents ESLint/Prettier conflicts |
+| @types/node                      | ^20.0.0 | Node.js types            | Frontend + Backend | Shared Node.js types               |
 
 **Development Dependency Compatibility Notes:**
+
 - ESLint 8.x is stable and supports TypeScript 5.x
 - TypeScript ESLint 6.x supports TypeScript 5.x
 - Prettier 3.x is latest with improved formatting
@@ -272,18 +282,19 @@ This section documents all technical dependencies, their versions, compatibility
 
 #### Infrastructure Dependencies
 
-| Service | Version/Region | Purpose | Dependencies | Notes |
-|---------|----------------|---------|--------------|-------|
-| AWS S3 | Latest | Static asset hosting | - | Frontend deployment |
-| AWS CloudFront | Latest | CDN distribution | AWS S3 | Global content delivery |
-| AWS Lambda | Latest | Serverless functions | AWS API Gateway | Backend API endpoints |
-| AWS API Gateway | Latest | API routing | AWS Lambda | API request routing |
-| AWS ElastiCache (Redis) | Latest | Session storage | - | In-memory session context |
-| AWS IAM | Latest | Access control | All AWS services | Security and permissions |
-| OpenAI API | Latest | Vision + LLM APIs | - | Image parsing and dialogue |
-| Anthropic Claude API | Latest | Alternative LLM | - | Alternative LLM provider |
+| Service                 | Version/Region | Purpose              | Dependencies     | Notes                      |
+| ----------------------- | -------------- | -------------------- | ---------------- | -------------------------- |
+| AWS S3                  | Latest         | Static asset hosting | -                | Frontend deployment        |
+| AWS CloudFront          | Latest         | CDN distribution     | AWS S3           | Global content delivery    |
+| AWS Lambda              | Latest         | Serverless functions | AWS API Gateway  | Backend API endpoints      |
+| AWS API Gateway         | Latest         | API routing          | AWS Lambda       | API request routing        |
+| AWS ElastiCache (Redis) | Latest         | Session storage      | -                | In-memory session context  |
+| AWS IAM                 | Latest         | Access control       | All AWS services | Security and permissions   |
+| OpenAI API              | Latest         | Vision + LLM APIs    | -                | Image parsing and dialogue |
+| Anthropic Claude API    | Latest         | Alternative LLM      | -                | Alternative LLM provider   |
 
 **Infrastructure Dependency Compatibility Notes:**
+
 - All AWS services use latest versions (managed services)
 - AWS SDK must be compatible with service APIs
 - OpenAI and Anthropic APIs are versioned independently
@@ -291,14 +302,15 @@ This section documents all technical dependencies, their versions, compatibility
 
 #### Shared Dependencies (Monorepo Root)
 
-| Package | Version | Purpose | Scope | Notes |
-|---------|---------|---------|-------|-------|
-| typescript | ^5.3.0 | Type checking | Shared | Root TypeScript config |
-| eslint | ^8.55.0 | Linter | Shared | Root ESLint config |
-| prettier | ^3.1.0 | Formatter | Shared | Root Prettier config |
-| jest | ^29.7.0 | Testing | Shared | Root Jest config |
+| Package    | Version | Purpose       | Scope  | Notes                  |
+| ---------- | ------- | ------------- | ------ | ---------------------- |
+| typescript | ^5.3.0  | Type checking | Shared | Root TypeScript config |
+| eslint     | ^8.55.0 | Linter        | Shared | Root ESLint config     |
+| prettier   | ^3.1.0  | Formatter     | Shared | Root Prettier config   |
+| jest       | ^29.7.0 | Testing       | Shared | Root Jest config       |
 
 **Shared Dependency Rationale:**
+
 - TypeScript, ESLint, Prettier, and Jest are shared across frontend and backend
 - Root-level configuration ensures consistency
 - Package versions must match across all workspaces
@@ -308,7 +320,7 @@ This section documents all technical dependencies, their versions, compatibility
 **Known Conflicts and Resolutions:**
 
 1. **AWS SDK v2 vs v3:**
-   - **Conflict:** Can't use both aws-sdk (v2) and @aws-sdk/client-* (v3) simultaneously
+   - **Conflict:** Can't use both aws-sdk (v2) and @aws-sdk/client-\* (v3) simultaneously
    - **Resolution:** Choose one approach:
      - **Option A:** Use AWS SDK v2 (`aws-sdk`) - simpler, larger bundle
      - **Option B:** Use AWS SDK v3 (`@aws-sdk/client-*`) - modular, smaller bundle
@@ -332,17 +344,20 @@ This section documents all technical dependencies, their versions, compatibility
 #### Version Pinning Strategy
 
 **Pinned Versions (Exact):**
+
 - `tailwindcss: v4.1.16` - PRD requirement, exact version
 - `typescript: ^5.3.0` - Shared dependency, consistent version
 - `react: ^18.2.0` - Core framework, stable version
 - `node: ^18.0.0` - Runtime requirement, minimum version
 
 **Version Ranges (Caret):**
+
 - Most other packages use `^` (caret) for patch and minor updates
 - Allows security patches and bug fixes
 - Prevents breaking major version changes
 
 **Lock File Strategy:**
+
 - Use `package-lock.json` (npm) for deterministic installs
 - Commit lock file to repository
 - CI/CD uses `npm ci` for reproducible builds
@@ -350,12 +365,14 @@ This section documents all technical dependencies, their versions, compatibility
 #### Dependency Update Policy
 
 **Monthly Updates:**
+
 - Security patches: Immediate
 - Bug fixes: Within 1 week
 - Minor updates: Within 1 month
 - Major updates: Require architecture review
 
 **Update Process:**
+
 1. Check for security vulnerabilities: `npm audit`
 2. Review changelog for breaking changes
 3. Test in development environment
@@ -365,11 +382,13 @@ This section documents all technical dependencies, their versions, compatibility
 #### Dependency Installation Order
 
 **Root Dependencies (First):**
+
 ```bash
 npm install  # Install root dependencies and create workspaces
 ```
 
 **Workspace Dependencies (Second):**
+
 ```bash
 npm install --workspace=apps/web  # Frontend dependencies
 npm install --workspace=apps/api  # Backend dependencies
@@ -377,20 +396,22 @@ npm install --workspace=packages/shared  # Shared dependencies
 ```
 
 **Or Install All:**
+
 ```bash
 npm install  # Installs all workspace dependencies automatically
 ```
 
 #### Compatibility Matrix
 
-| Node.js | TypeScript | React | Express | Jest | Status |
-|---------|------------|-------|---------|------|--------|
-| 18.x | 5.3.x | 18.2.x | 4.18.x | 29.7.x | ✅ Supported |
-| 20.x | 5.3.x | 18.2.x | 4.18.x | 29.7.x | ✅ Supported |
-| 16.x | 5.3.x | 18.2.x | 4.18.x | 29.7.x | ❌ Not Supported (TypeScript 5.x requires Node 18+) |
-| 18.x | 4.9.x | 18.2.x | 4.18.x | 29.7.x | ⚠️ Not Recommended (TypeScript 4.x is outdated) |
+| Node.js | TypeScript | React  | Express | Jest   | Status                                              |
+| ------- | ---------- | ------ | ------- | ------ | --------------------------------------------------- |
+| 18.x    | 5.3.x      | 18.2.x | 4.18.x  | 29.7.x | ✅ Supported                                        |
+| 20.x    | 5.3.x      | 18.2.x | 4.18.x  | 29.7.x | ✅ Supported                                        |
+| 16.x    | 5.3.x      | 18.2.x | 4.18.x  | 29.7.x | ❌ Not Supported (TypeScript 5.x requires Node 18+) |
+| 18.x    | 4.9.x      | 18.2.x | 4.18.x  | 29.7.x | ⚠️ Not Recommended (TypeScript 4.x is outdated)     |
 
 **Recommended Configuration:**
+
 - Node.js: 18.x LTS or 20.x LTS
 - TypeScript: 5.3.x
 - React: 18.2.x
@@ -404,6 +425,7 @@ npm install  # Installs all workspace dependencies automatically
 **Purpose:** Represents a browser session with conversation context and current problem state.
 
 **Key Attributes:**
+
 - `sessionId`: string - Unique session identifier
 - `problem`: Problem | null - Current problem being solved
 - `messages`: Message[] - Last 10 messages (user inputs and system responses)
@@ -411,6 +433,7 @@ npm install  # Installs all workspace dependencies automatically
 - `lastActivityAt`: Date - Last activity timestamp for expiration
 
 **TypeScript Interface:**
+
 ```typescript
 interface Session {
   sessionId: string;
@@ -422,6 +445,7 @@ interface Session {
 ```
 
 **Relationships:**
+
 - Contains one optional Problem
 - Contains multiple Messages (max 10)
 
@@ -430,6 +454,7 @@ interface Session {
 **Purpose:** Represents a math problem submitted by the student.
 
 **Key Attributes:**
+
 - `id`: string - Unique problem identifier
 - `text`: string - Problem statement text
 - `type`: ProblemType - Problem category (arithmetic, algebra, geometry, word, multi-step)
@@ -438,18 +463,19 @@ interface Session {
 - `createdAt`: Date - Problem submission timestamp
 
 **TypeScript Interface:**
+
 ```typescript
 enum ProblemType {
   ARITHMETIC = 'arithmetic',
   ALGEBRA = 'algebra',
   GEOMETRY = 'geometry',
   WORD = 'word',
-  MULTI_STEP = 'multi-step'
+  MULTI_STEP = 'multi-step',
 }
 
 enum ProblemSource {
   TEXT = 'text',
-  IMAGE = 'image'
+  IMAGE = 'image',
 }
 
 interface Problem {
@@ -463,6 +489,7 @@ interface Problem {
 ```
 
 **Relationships:**
+
 - Belongs to one Session
 - Has multiple Messages in conversation
 
@@ -471,6 +498,7 @@ interface Problem {
 **Purpose:** Represents a single message in the conversation (user input or system response).
 
 **Key Attributes:**
+
 - `id`: string - Unique message identifier
 - `role`: MessageRole - Message sender (user or system)
 - `content`: string - Message text content
@@ -478,10 +506,11 @@ interface Problem {
 - `metadata?`: MessageMetadata - Optional metadata (e.g., help level, validation result)
 
 **TypeScript Interface:**
+
 ```typescript
 enum MessageRole {
   USER = 'user',
-  SYSTEM = 'system'
+  SYSTEM = 'system',
 }
 
 interface MessageMetadata {
@@ -500,6 +529,7 @@ interface Message {
 ```
 
 **Relationships:**
+
 - Belongs to one Session
 - References one Problem
 
@@ -533,7 +563,7 @@ paths:
                 properties:
                   status:
                     type: string
-                    example: "ok"
+                    example: 'ok'
                   timestamp:
                     type: string
                     format: date-time
@@ -859,6 +889,7 @@ components:
 **Responsibility:** Handles problem input via text entry and image upload
 
 **Key Interfaces:**
+
 - `onProblemSubmit(problem: Problem): void` - Callback when problem is submitted
 - `onImageUpload(file: File): Promise<string>` - Handles image upload and parsing
 
@@ -871,6 +902,7 @@ components:
 **Responsibility:** Displays current problem on left side of interface with math rendering
 
 **Key Interfaces:**
+
 - `problem: Problem | null` - Current problem to display
 - `onNewProblem(): void` - Callback to start new problem
 
@@ -883,6 +915,7 @@ components:
 **Responsibility:** Displays conversation messages and handles user input
 
 **Key Interfaces:**
+
 - `messages: Message[]` - Conversation messages
 - `onMessageSend(message: string): void` - Callback when user sends message
 - `sessionId: string` - Current session identifier
@@ -896,6 +929,7 @@ components:
 **Responsibility:** Displays age-appropriate visual feedback (progress indicators, encouragement) for 6th grade students (ages 11-12)
 
 **Key Interfaces:**
+
 - `progress: number` - Progress indicator value
 - `encouragement: string | null` - Encouraging message to display
 - `helpLevel: number` - Current help escalation level
@@ -909,6 +943,7 @@ components:
 **Responsibility:** Provides streamlined testing interface for developers to test different problem types, scenarios, and edge cases
 
 **Key Interfaces:**
+
 - `loadTestProblem(problemType: ProblemType, scenario: string): void` - Load test problem from fixtures
 - `runScenarioTest(scenario: TestScenario): Promise<TestResult>` - Run specific scenario test
 - `runBatchTests(scenarios: TestScenario[]): Promise<BatchTestResult>` - Run multiple scenarios in batch
@@ -927,6 +962,7 @@ components:
 **Responsibility:** Processes text input and image uploads, validates problems
 
 **Key Interfaces:**
+
 - `POST /api/problem/parse-image` - Image parsing endpoint
 - `POST /api/problem/validate` - Problem validation endpoint
 
@@ -939,6 +975,7 @@ components:
 **Responsibility:** Generates Socratic dialogue responses using LLM
 
 **Key Interfaces:**
+
 - `POST /api/chat/message` - Chat message endpoint
 
 **Dependencies:** LLM API client, Context management service, Answer detection service
@@ -950,6 +987,7 @@ components:
 **Responsibility:** Two-tier answer detection guardrails (keyword + LLM validation)
 
 **Key Interfaces:**
+
 - `detectAnswer(response: string): Promise<DetectionResult>` - Checks for direct answers
 
 **Dependencies:** LLM API client for validation
@@ -961,6 +999,7 @@ components:
 **Responsibility:** Manages session context (last 10 messages + problem state)
 
 **Key Interfaces:**
+
 - `getContext(sessionId: string): Promise<Session>` - Retrieve session context
 - `addMessage(sessionId: string, message: Message): Promise<void>` - Add message to context
 - `setProblem(sessionId: string, problem: Problem): Promise<void>` - Set current problem
@@ -974,6 +1013,7 @@ components:
 **Responsibility:** Provides testing utilities and endpoints for streamlined testing workflows
 
 **Key Interfaces:**
+
 - `GET /api/dev/test-fixtures` - Retrieve test problem fixtures organized by problem type
 - `POST /api/dev/run-scenario` - Run specific test scenario programmatically
 - `POST /api/dev/run-batch` - Run batch of test scenarios
@@ -996,20 +1036,20 @@ graph TB
         VF[VisualFeedback]
         DTI[DeveloperTestingInterface<br/>Dev Only]
     end
-    
+
     subgraph "Backend (Lambda)"
         PIH[ProblemInputHandler]
         SDH[SocraticDialogueHandler]
         ADS[AnswerDetectionService]
         CMS[ContextManagementService]
     end
-    
+
     subgraph "External Services"
         VisionAPI[OpenAI Vision API]
         LLMAPI[LLM API]
         Redis[ElastiCache Redis]
     end
-    
+
     PI -->|POST /api/problem/parse-image| PIH
     PI -->|POST /api/problem/validate| PIH
     CI -->|POST /api/chat/message| SDH
@@ -1035,9 +1075,11 @@ graph TB
 - **Rate Limits:** Varies by tier (typically 10,000 tokens/minute)
 
 **Key Endpoints Used:**
+
 - `POST /v1/chat/completions` - Image parsing with vision model (GPT-4 Vision or GPT-4o)
 
-**Integration Notes:** 
+**Integration Notes:**
+
 - Image preprocessing may be required (resize, format conversion)
 - Error handling for parsing failures with fallback to text input
 - Cost optimization: Only parse when image upload is selected
@@ -1046,7 +1088,7 @@ graph TB
 ### OpenAI GPT-4 API (or Claude API)
 
 - **Purpose:** Problem validation, type identification, and Socratic dialogue generation
-- **Documentation:** 
+- **Documentation:**
   - OpenAI: https://platform.openai.com/docs/api-reference
   - Anthropic: https://docs.anthropic.com/claude/reference
 - **Base URL(s):**
@@ -1058,10 +1100,12 @@ graph TB
   - Anthropic: Varies by tier
 
 **Key Endpoints Used:**
+
 - `POST /v1/chat/completions` (OpenAI) - Chat completion for dialogue generation
 - `POST /v1/messages` (Anthropic) - Message completion for dialogue generation
 
 **Integration Notes:**
+
 - Two-tier usage: Primary for dialogue generation, secondary for answer validation
 - Prompt engineering critical for Socratic compliance
 - Response time optimization: Use streaming for faster perceived response times
@@ -1135,6 +1179,7 @@ Since the system uses in-memory session storage (Redis) with no persistent datab
 ### Redis Schema
 
 **Session Storage (Hash):**
+
 - Key: `session:{sessionId}`
 - Fields:
   - `sessionId`: string
@@ -1144,10 +1189,12 @@ Since the system uses in-memory session storage (Redis) with no persistent datab
   - `lastActivityAt`: ISO timestamp string
 
 **Session Expiration:**
+
 - TTL: 30 minutes of inactivity (configurable)
 - Automatic cleanup via Redis TTL
 
 **Example Redis Structure:**
+
 ```
 session:abc123
   sessionId: "abc123"
@@ -1158,6 +1205,7 @@ session:abc123
 ```
 
 **Rationale:**
+
 - No persistent storage required per PRD
 - Fast in-memory access for session context
 - Automatic expiration prevents data accumulation
@@ -1293,6 +1341,7 @@ apps/web/src/
 ```
 
 **Route Structure:**
+
 - `/` - Main problem-solving interface (side-by-side layout)
 - `/dev/testing` - Developer testing interface (development only, hidden in production)
 - No additional routes needed for MVP (single-page application)
@@ -1309,7 +1358,8 @@ N/A - No authentication required per PRD (anonymous sessions only)
 // apps/web/src/services/api/client.ts
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.aimathtutor.com';
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || 'https://api.aimathtutor.com';
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -1321,8 +1371,8 @@ export const apiClient = axios.create({
 
 // Request interceptor for error handling
 apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
+  response => response,
+  error => {
     // Centralized error handling
     return Promise.reject(error);
   }
@@ -1369,7 +1419,10 @@ export const testingService = {
     return response.data.fixtures;
   },
 
-  runScenario: async (scenario: string, problemType?: string): Promise<TestResult> => {
+  runScenario: async (
+    scenario: string,
+    problemType?: string
+  ): Promise<TestResult> => {
     const response = await apiClient.post<TestResult>('/api/dev/run-scenario', {
       scenario,
       problemType,
@@ -1378,9 +1431,12 @@ export const testingService = {
   },
 
   runBatch: async (scenarios: string[]): Promise<BatchTestResult> => {
-    const response = await apiClient.post<BatchTestResult>('/api/dev/run-batch', {
-      scenarios,
-    });
+    const response = await apiClient.post<BatchTestResult>(
+      '/api/dev/run-batch',
+      {
+        scenarios,
+      }
+    );
     return response.data;
   },
 };
@@ -1456,7 +1512,7 @@ export const handler = async (
 ): Promise<APIGatewayProxyResult> => {
   try {
     const { sessionId, message, problemId } = JSON.parse(event.body || '{}');
-    
+
     // Validate input
     if (!sessionId || !message) {
       return {
@@ -1520,7 +1576,7 @@ export class ContextService {
   }
 
   async addMessage(sessionId: string, message: Message): Promise<void> {
-    const session = await this.getContext(sessionId) || {
+    const session = (await this.getContext(sessionId)) || {
       sessionId,
       problem: null,
       messages: [],
@@ -1559,6 +1615,7 @@ N/A - No authentication required per PRD (anonymous sessions only). Session mana
 #### Developer Testing Interface Access Control
 
 **Environment-Based Access Control:**
+
 - **Development Environment:** Developer testing interface fully accessible via `/dev/testing` route
 - **Production Environment:** Developer testing interface completely excluded from build
 - **Access Check:** Frontend checks `NODE_ENV === 'development'` before rendering testing interface
@@ -1566,6 +1623,7 @@ N/A - No authentication required per PRD (anonymous sessions only). Session mana
 - **Build-Time Exclusion:** Developer testing components and services excluded via conditional compilation or environment checks
 
 **Implementation:**
+
 ```typescript
 // apps/web/src/components/DeveloperTesting/DeveloperTestingInterface.tsx
 if (import.meta.env.MODE !== 'development') {
@@ -1576,7 +1634,9 @@ if (import.meta.env.MODE !== 'development') {
 if (process.env.NODE_ENV === 'production') {
   return {
     statusCode: 403,
-    body: JSON.stringify({ error: 'Testing endpoints not available in production' }),
+    body: JSON.stringify({
+      error: 'Testing endpoints not available in production',
+    }),
   };
 }
 ```
@@ -1773,12 +1833,14 @@ REGION=us-east-1
 ### Deployment Strategy
 
 **Frontend Deployment:**
+
 - **Platform:** AWS S3 + CloudFront
 - **Build Command:** `npm run build:web`
 - **Output Directory:** `apps/web/dist`
 - **CDN/Edge:** CloudFront distribution for global content delivery
 
 **Backend Deployment:**
+
 - **Platform:** AWS Lambda (serverless)
 - **Build Command:** `npm run build:api`
 - **Deployment Method:** Serverless Framework or AWS CDK
@@ -1828,27 +1890,30 @@ jobs:
 
 ### Environments
 
-| Environment | Frontend URL | Backend URL | Purpose |
-|------------|--------------|-------------|---------|
-| Development | http://localhost:5173 | http://localhost:3000 | Local development |
-| Staging | https://staging.aimathtutor.com | https://api-staging.aimathtutor.com | Pre-production testing |
-| Production | https://aimathtutor.com | https://api.aimathtutor.com | Live environment |
+| Environment | Frontend URL                    | Backend URL                         | Purpose                |
+| ----------- | ------------------------------- | ----------------------------------- | ---------------------- |
+| Development | http://localhost:5173           | http://localhost:3000               | Local development      |
+| Staging     | https://staging.aimathtutor.com | https://api-staging.aimathtutor.com | Pre-production testing |
+| Production  | https://aimathtutor.com         | https://api.aimathtutor.com         | Live environment       |
 
 ## Security and Performance
 
 ### Security Requirements
 
 **Frontend Security:**
+
 - CSP Headers: Content Security Policy restricting inline scripts and external resources
 - XSS Prevention: Input sanitization for all user inputs, React's built-in XSS protection
 - Secure Storage: No sensitive data stored in localStorage (session IDs only)
 
 **Backend Security:**
+
 - Input Validation: Validate all inputs using middleware before processing
 - Rate Limiting: API Gateway rate limiting (100 requests/minute per IP)
 - CORS Policy: Restrict CORS to frontend domain only
 
 **Authentication Security:**
+
 - Token Storage: N/A (no authentication per PRD)
 - Session Management: Session IDs generated on frontend, no sensitive data
 - Password Policy: N/A (no authentication per PRD)
@@ -1856,12 +1921,14 @@ jobs:
 ### Performance Optimization
 
 **Frontend Performance:**
+
 - Bundle Size Target: < 500KB initial bundle (gzipped) (developer testing interface excluded from production build)
 - Loading Strategy: Code splitting for routes, lazy loading for heavy components
 - Caching Strategy: CloudFront caching for static assets, service worker for offline support (future)
 - Developer Testing Interface: Excluded from production build via conditional compilation/environment checks
 
 **Backend Performance:**
+
 - Response Time Target: < 3 seconds for LLM responses (PRD requirement)
 - Database Optimization: N/A (Redis in-memory, no queries)
 - Caching Strategy: Redis caching for session context, LLM response caching where appropriate (future)
@@ -1895,6 +1962,7 @@ Thorough testing and ease of testing different scenarios are **fundamental to th
 ### Test Organization
 
 **Frontend Tests:**
+
 ```
 apps/web/tests/
 ├── components/
@@ -1917,6 +1985,7 @@ apps/web/tests/
 ```
 
 **Backend Tests:**
+
 ```
 apps/api/tests/
 ├── functions/
@@ -1957,6 +2026,7 @@ apps/api/tests/
 ```
 
 **Test Fixtures and Utilities:**
+
 ```
 tests/
 ├── fixtures/
@@ -1992,14 +2062,22 @@ tests/
 // tests/fixtures/problems/arithmetic.fixtures.ts
 export const arithmeticProblems = {
   basicAddition: {
-    text: "What is 15 + 27?",
-    type: "arithmetic",
-    expectedSteps: ["What operation are we performing?", "What is 15 + 20?", "What is 35 + 7?"],
+    text: 'What is 15 + 27?',
+    type: 'arithmetic',
+    expectedSteps: [
+      'What operation are we performing?',
+      'What is 15 + 20?',
+      'What is 35 + 7?',
+    ],
   },
   subtraction: {
-    text: "Solve 43 - 18",
-    type: "arithmetic",
-    expectedSteps: ["What operation are we doing?", "Can you break down 18?", "What is 43 - 10?"],
+    text: 'Solve 43 - 18',
+    type: 'arithmetic',
+    expectedSteps: [
+      'What operation are we doing?',
+      'Can you break down 18?',
+      'What is 43 - 10?',
+    ],
   },
   // ... more arithmetic problems
 };
@@ -2007,9 +2085,13 @@ export const arithmeticProblems = {
 // tests/fixtures/problems/algebra.fixtures.ts
 export const algebraProblems = {
   linearEquation: {
-    text: "Solve 2x + 5 = 13",
-    type: "algebra",
-    expectedSteps: ["What are we trying to find?", "What operations do we need to undo?", "What should we do first?"],
+    text: 'Solve 2x + 5 = 13',
+    type: 'algebra',
+    expectedSteps: [
+      'What are we trying to find?',
+      'What operations do we need to undo?',
+      'What should we do first?',
+    ],
   },
   // ... more algebra problems
 };
@@ -2020,7 +2102,10 @@ export const algebraProblems = {
 ```typescript
 // tests/utils/scenarioRunner.ts
 export class ScenarioRunner {
-  async runProblemScenario(problem: Problem, expectedBehavior: ScenarioExpectations) {
+  async runProblemScenario(
+    problem: Problem,
+    expectedBehavior: ScenarioExpectations
+  ) {
     // Run full problem-solving scenario
     // Validate Socratic responses
     // Check answer detection
@@ -2069,6 +2154,7 @@ npm run test:manual -- --scenario basic-addition
 ### Critical Test Coverage Requirements
 
 **Mandatory Coverage Targets:**
+
 - **Answer Detection Service:** 100% coverage (critical for Socratic compliance)
 - **Context Management Service:** >95% coverage (critical for conversation coherence)
 - **Problem Validation:** >90% coverage (critical for all problem types)
@@ -2077,6 +2163,7 @@ npm run test:manual -- --scenario basic-addition
 - **Overall Frontend Components:** >75% coverage
 
 **Test Priority Matrix:**
+
 1. **P0 - Critical:** Answer detection guardrails, context management, problem validation
 2. **P1 - High:** Socratic dialogue generation, LLM integration, OpenAI Vision API integration
 3. **P2 - Medium:** UI components, state management, error handling
@@ -2085,6 +2172,7 @@ npm run test:manual -- --scenario basic-addition
 ### Test Examples
 
 **Frontend Component Test:**
+
 ```typescript
 // apps/web/tests/components/ProblemInput.test.tsx
 import { render, screen, fireEvent } from '@testing-library/react';
@@ -2094,11 +2182,11 @@ describe('ProblemInput', () => {
   it('submits problem text when entered', () => {
     const onProblemSubmit = jest.fn();
     render(<ProblemInput onProblemSubmit={onProblemSubmit} />);
-    
+
     const input = screen.getByPlaceholderText('Enter math problem');
     fireEvent.change(input, { target: { value: 'Solve 2x + 5 = 13' } });
     fireEvent.click(screen.getByText('Submit'));
-    
+
     expect(onProblemSubmit).toHaveBeenCalledWith(
       expect.objectContaining({ text: 'Solve 2x + 5 = 13' })
     );
@@ -2107,6 +2195,7 @@ describe('ProblemInput', () => {
 ```
 
 **Backend Answer Detection Test (CRITICAL):**
+
 ```typescript
 // apps/api/tests/services/answerDetection/scenarios/directAnswer.test.ts
 import { detectAnswer } from '../../../../src/services/answerDetection';
@@ -2159,6 +2248,7 @@ describe('Answer Detection - Direct Answers', () => {
 ```
 
 **Scenario-Based Test for Problem Type:**
+
 ```typescript
 // apps/api/tests/scenarios/algebra/linearEquations.test.ts
 import { ScenarioRunner } from '../../../../utils/scenarioRunner';
@@ -2196,6 +2286,7 @@ describe('Algebra - Linear Equations', () => {
 ```
 
 **Integration Test for Full Socratic Dialogue:**
+
 ```typescript
 // apps/api/tests/integration/socraticDialogue.test.ts
 import { handler } from '../../src/functions/socraticDialogue/handler';
@@ -2220,17 +2311,17 @@ describe('Socratic Dialogue Integration', () => {
 
       const result = await handler(event);
       expect(result.statusCode).toBe(200);
-      
+
       const body = JSON.parse(result.body);
-      
+
       // CRITICAL: Verify no direct answers
       expect(body.message).not.toContain('the answer is');
       expect(body.message).not.toContain('equals');
       expect(body.message).not.toMatch(/\d+$/); // No numeric answers at end
-      
+
       // Verify Socratic question format
       expect(body.message).toMatch(/[?]/); // Contains question mark
-      
+
       messages.push(body.message);
     }
   });
@@ -2238,6 +2329,7 @@ describe('Socratic Dialogue Integration', () => {
 ```
 
 **Test for All 5 Problem Types:**
+
 ```typescript
 // apps/api/tests/scenarios/allProblemTypes.test.ts
 import { ScenarioRunner } from '../../../../utils/scenarioRunner';
@@ -2309,6 +2401,7 @@ While automated tests ensure technical correctness, manual testing is **critical
    - Ensure student is never abandoned
 
 **Manual Testing Tools:**
+
 ```bash
 # Interactive manual testing helper
 npm run test:manual
@@ -2339,14 +2432,14 @@ npm run test:manual -- --scenario basic-addition --verbose
 
 ### Naming Conventions
 
-| Element | Frontend | Backend | Example |
-|---------|----------|---------|---------|
-| Components | PascalCase | - | `ProblemInput.tsx` |
-| Hooks | camelCase with 'use' | - | `useSession.ts` |
-| API Routes | - | kebab-case | `/api/problem/parse-image` |
-| Functions | camelCase | camelCase | `generateDialogue` |
-| Types/Interfaces | PascalCase | PascalCase | `Problem`, `Session` |
-| Constants | UPPER_SNAKE_CASE | UPPER_SNAKE_CASE | `MAX_MESSAGES = 10` |
+| Element          | Frontend             | Backend          | Example                    |
+| ---------------- | -------------------- | ---------------- | -------------------------- |
+| Components       | PascalCase           | -                | `ProblemInput.tsx`         |
+| Hooks            | camelCase with 'use' | -                | `useSession.ts`            |
+| API Routes       | -                    | kebab-case       | `/api/problem/parse-image` |
+| Functions        | camelCase            | camelCase        | `generateDialogue`         |
+| Types/Interfaces | PascalCase           | PascalCase       | `Problem`, `Session`       |
+| Constants        | UPPER_SNAKE_CASE     | UPPER_SNAKE_CASE | `MAX_MESSAGES = 10`        |
 
 ## Error Handling Strategy
 
@@ -2390,8 +2483,8 @@ interface ApiError {
 ```typescript
 // apps/web/src/services/api/client.ts
 apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
+  response => response,
+  error => {
     if (error.response) {
       // Server responded with error
       const apiError = error.response.data as ApiError;
@@ -2448,6 +2541,7 @@ export const errorHandler = (error: any): APIGatewayProxyResult => {
 ### Key Metrics
 
 **Frontend Metrics:**
+
 - Core Web Vitals (LCP, FID, CLS)
 - JavaScript errors (via error boundary)
 - API response times
@@ -2455,6 +2549,7 @@ export const errorHandler = (error: any): APIGatewayProxyResult => {
 - Developer testing interface usage (development only): test scenarios run, test results, answer detection accuracy
 
 **Backend Metrics:**
+
 - Request rate (API Gateway)
 - Error rate (4xx, 5xx responses)
 - Response time (Lambda duration + API Gateway latency)
@@ -2470,6 +2565,7 @@ The Developer Testing Interface is a comprehensive testing infrastructure design
 ### Architecture Components
 
 **Frontend Testing Interface:**
+
 - **Test Problem Library:** Organized by problem type (arithmetic, algebra, geometry, word problems, multi-step) with 10+ test fixtures per type
 - **Scenario Testing Panel:** Interactive interface for testing specific scenarios (answer detection, progressive help escalation, context management)
 - **Edge Case Testing:** Quick access to edge cases (direct answers, implicit answers, boundary conditions, error scenarios)
@@ -2477,6 +2573,7 @@ The Developer Testing Interface is a comprehensive testing infrastructure design
 - **Batch Testing:** Run multiple test scenarios in sequence or parallel with automated reporting
 
 **Backend Testing Service:**
+
 - **Test Fixtures API:** Endpoints for retrieving test problem fixtures organized by problem type
 - **Scenario Runner:** Programmatic execution of test scenarios with validation
 - **Test Validator:** Validates test results, Socratic compliance, answer detection accuracy
@@ -2511,11 +2608,13 @@ sequenceDiagram
 ### Test Fixture Structure
 
 **Test Fixtures Organization:**
+
 - **50+ Test Scenarios:** Minimum 10 scenarios per problem type (arithmetic, algebra, geometry, word problems, multi-step)
 - **Edge Case Coverage:** Direct answer detection, implicit answer detection, boundary conditions, error scenarios
 - **Expected Behavior:** Each fixture includes expected Socratic steps, must-not-contain patterns, and validation criteria
 
 **Example Test Fixture:**
+
 ```typescript
 // tests/fixtures/problems/arithmetic.fixtures.ts
 export const arithmeticProblems = {
@@ -2547,6 +2646,7 @@ export const arithmeticProblems = {
 ### Real-Time Testing Indicators
 
 **Visual Feedback During Testing:**
+
 - **Answer Detection Status:** Shows keyword detection and LLM validation results in real-time
 - **Socratic Compliance:** Percentage indicator (100% required) with pass/fail status
 - **Context Management Status:** Visual representation of session state, message history, and context retention
@@ -2556,12 +2656,14 @@ export const arithmeticProblems = {
 ### Batch Testing Capabilities
 
 **Batch Test Execution:**
+
 - **Parallel Processing:** Run multiple test scenarios in parallel for faster execution
 - **Sequential Processing:** Run scenarios sequentially for dependency testing
 - **Selective Execution:** Run specific problem types or scenario categories
 - **Automated Reporting:** Generate comprehensive test reports with metrics and compliance validation
 
 **Batch Test Results:**
+
 - Total scenarios run
 - Pass/fail counts
 - Socratic compliance rate (aggregate across all scenarios)

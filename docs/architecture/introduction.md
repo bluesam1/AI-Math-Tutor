@@ -12,8 +12,7 @@ The PRD specifies a monorepo structure combining frontend and backend code in a 
 
 ### Change Log
 
-| Date | Version | Description | Author |
-|------|---------|-------------|--------|
-| 2025-01-XX | 1.0 | Initial architecture document created | Architect |
-| 2025-01-XX | 1.1 | Updated scope to 6th grade math, added developer testing interface | Architect |
-
+| Date       | Version | Description                                                        | Author    |
+| ---------- | ------- | ------------------------------------------------------------------ | --------- |
+| 2025-01-XX | 1.0     | Initial architecture document created                              | Architect |
+| 2025-01-XX | 1.1     | Updated scope to 6th grade math, added developer testing interface | Architect |
