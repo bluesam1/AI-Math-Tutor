@@ -13,3 +13,19 @@ export interface ApiErrorResponse {
   message: string;
   statusCode: number;
 }
+
+/**
+ * Parse Image API Response Types
+ */
+
+export interface ParseImageResponse {
+  success: true;
+  problemText: string;
+}
+
+export interface ParseImageErrorResponse {
+  success: false;
+  error: string;
+  message: string;
+  code?: string;
+}
