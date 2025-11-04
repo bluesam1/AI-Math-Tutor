@@ -9,6 +9,7 @@ interface LayoutComponentProps extends LayoutProps {
   problemType?: string;
   messages?: ChatPanelProps['messages'];
   emptyState?: boolean;
+  onProblemSubmit?: (problem: string) => void;
 }
 
 const Layout: React.FC<LayoutComponentProps> = ({
@@ -16,6 +17,7 @@ const Layout: React.FC<LayoutComponentProps> = ({
   problemType,
   messages,
   emptyState = false,
+  onProblemSubmit,
 }) => {
   return (
     <main className="h-screen w-full overflow-hidden relative">
@@ -25,7 +27,11 @@ const Layout: React.FC<LayoutComponentProps> = ({
       <div className="h-full flex flex-col lg:flex-row">
         {/* Problem Display Panel - Left side on desktop, top on mobile */}
         <div className="w-full lg:w-1/2 h-1/2 lg:h-full border-b lg:border-b-0 lg:border-r border-border overflow-y-auto">
-          <ProblemPanel problem={problem} problemType={problemType} />
+          <ProblemPanel 
+            problem={problem} 
+            problemType={problemType}
+            onProblemSubmit={onProblemSubmit}
+          />
         </div>
 
         {/* Chat Conversation Panel - Right side on desktop, bottom on mobile */}
