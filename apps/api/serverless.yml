@@ -45,7 +45,7 @@ provider:
 
 functions:
   api:
-    handler: src/functions/handler.handler
+    handler: dist/functions/handler.handler
     events:
       - httpApi:
           path: /{proxy+}
@@ -54,9 +54,8 @@ functions:
           path: /
           method: ANY
 
-# serverless-esbuild handles TypeScript compilation AND bundling
-# This solves the monorepo hoisting issue by bundling everything into a single file
-# No need for separate TypeScript compilation step
+# serverless-plugin-monorepo creates symlinks to hoisted dependencies
+# This solves the npm workspaces hoisting issue
 
 package:
   patterns:
@@ -65,26 +64,16 @@ package:
     - '!*.ts'
     - '!*.md'
     - '!*.tsbuildinfo'
-    - '!dist/**'
+    - 'dist/**'
     - 'package.json'
   excludeDevDependencies: true
   individually: false
 
 plugins:
-  - serverless-esbuild
+  - serverless-plugin-monorepo
   - serverless-offline
 
 custom:
-  esbuild:
-    bundle: true
-    minify: false
-    sourcemap: false
-    target: node20
-    platform: node
-    exclude:
-      - '@aws-sdk/*'
-    # Bundle from TypeScript source directly
-    packager: npm
   serverless-offline:
     httpPort: 3001
     host: localhost
