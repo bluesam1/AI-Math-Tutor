@@ -34,6 +34,7 @@ This starts the serverless-offline plugin, simulating AWS Lambda and API Gateway
 3. **Configure AWS CLI**: See [docs/AWS_CLI_SETUP.md](docs/AWS_CLI_SETUP.md)
 
 For detailed setup instructions, see:
+
 - [docs/AWS_SETUP.md](docs/AWS_SETUP.md) - Complete AWS setup guide
 - [docs/AWS_SETUP_CHECKLIST.md](docs/AWS_SETUP_CHECKLIST.md) - Setup checklist
 - [docs/AWS_READY_TO_DEPLOY.md](docs/AWS_READY_TO_DEPLOY.md) - Pre-deployment guide
@@ -41,16 +42,19 @@ For detailed setup instructions, see:
 ### Deploy to AWS
 
 Build and deploy to development stage:
+
 ```bash
 npm run deploy:dev
 ```
 
 Build and deploy to production stage:
+
 ```bash
 npm run deploy:prod
 ```
 
 Deploy to a specific stage:
+
 ```bash
 npm run build
 serverless deploy --stage staging
@@ -59,6 +63,7 @@ serverless deploy --stage staging
 ### Remove Deployment
 
 Remove the deployed stack:
+
 ```bash
 npm run remove
 ```
@@ -86,25 +91,28 @@ GET /api/health
 ```
 
 Returns API status and environment information.
+
 ```
 
 ## Project Structure
 
 ```
+
 apps/api/
 ├── src/
-│   ├── config/          # Configuration files
-│   ├── controllers/     # Route controllers
-│   ├── functions/       # Lambda function handlers
-│   ├── middleware/      # Express middleware
-│   ├── routes/          # API route definitions
-│   ├── services/        # Business logic
-│   ├── types/           # TypeScript type definitions
-│   ├── utils/           # Utility functions
-│   └── server.ts        # Express server entry point
-├── serverless.yml       # Serverless Framework configuration
-├── tsconfig.json        # TypeScript configuration
-└── package.json         # Dependencies and scripts
+│ ├── config/ # Configuration files
+│ ├── controllers/ # Route controllers
+│ ├── functions/ # Lambda function handlers
+│ ├── middleware/ # Express middleware
+│ ├── routes/ # API route definitions
+│ ├── services/ # Business logic
+│ ├── types/ # TypeScript type definitions
+│ ├── utils/ # Utility functions
+│ └── server.ts # Express server entry point
+├── serverless.yml # Serverless Framework configuration
+├── tsconfig.json # TypeScript configuration
+└── package.json # Dependencies and scripts
+
 ```
 
 ## Architecture
@@ -129,3 +137,4 @@ Detailed documentation is available in the `docs/` folder:
 - **[Deployment Fixes](docs/DEPLOYMENT_FIX.md)** - Common deployment issues and fixes
 - **[Context7 Guidance](docs/CONTEXT7_GUIDANCE.md)** - Best practices from Context7 documentation
 
+```

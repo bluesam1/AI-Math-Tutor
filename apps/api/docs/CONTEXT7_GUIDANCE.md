@@ -31,14 +31,18 @@ export const handler = serverless(app);
 Key patterns from Context7:
 
 #### Package Configuration
+
 Exclude dev dependencies from deployment (default behavior):
+
 ```yaml
 package:
-  excludeDevDependencies: true  # Default, but can be explicit
+  excludeDevDependencies: true # Default, but can be explicit
 ```
 
 #### HTTP API Events
+
 Proper pattern for catch-all routes:
+
 ```yaml
 functions:
   api:
@@ -55,7 +59,9 @@ functions:
 **Current Implementation**: ✅ Already correct
 
 #### CORS Configuration
+
 Configure CORS at both API Gateway level (serverless.yml) and Express app level:
+
 - API Gateway CORS: Handles preflight OPTIONS requests
 - Express CORS: Handles actual request headers
 
@@ -64,6 +70,7 @@ Configure CORS at both API Gateway level (serverless.yml) and Express app level:
 ### 4. Environment Variables
 
 Best practice: Define in serverless.yml and access via `process.env`:
+
 ```yaml
 provider:
   environment:
@@ -76,6 +83,7 @@ provider:
 ### 5. Local Development
 
 Use `serverless-offline` plugin for local testing:
+
 ```yaml
 plugins:
   - serverless-offline
@@ -101,6 +109,7 @@ custom:
 ### 7. TypeScript Configuration
 
 Ensure `tsconfig.json` compiles to `dist/` directory:
+
 ```json
 {
   "compilerOptions": {
@@ -113,6 +122,7 @@ Ensure `tsconfig.json` compiles to `dist/` directory:
 ### 8. Express App Configuration
 
 Key points:
+
 - Remove `app.listen()` when running in Lambda (serverless-http handles it)
 - Keep CORS middleware for proper header handling
 - Use environment variables for configuration
@@ -130,6 +140,7 @@ npm install --save-dev serverless@^3.40.0
 ### 2. Add Package Configuration (Optional)
 
 Add explicit package configuration to `serverless.yml`:
+
 ```yaml
 package:
   patterns:
@@ -143,6 +154,7 @@ package:
 ### 3. Add Deployment Bucket Configuration (Optional)
 
 For production deployments, configure deployment bucket:
+
 ```yaml
 provider:
   deploymentBucket:
@@ -153,6 +165,7 @@ provider:
 ### 4. Add Logging Configuration
 
 Configure CloudWatch Logs retention:
+
 ```yaml
 provider:
   logs:
@@ -179,11 +192,13 @@ curl http://localhost:3001/api/health
 ## Deployment to AWS
 
 1. **Configure AWS credentials**:
+
    ```bash
    aws configure
    ```
 
 2. **Build and deploy**:
+
    ```bash
    npm run deploy:dev
    ```
@@ -196,18 +211,22 @@ curl http://localhost:3001/api/health
 ## Troubleshooting
 
 ### "You must sign in" Error
+
 - **Cause**: Using Serverless Framework v4+
 - **Fix**: Downgrade to v3.40.0
 
 ### Handler Not Found
+
 - **Cause**: Handler path incorrect or build output wrong
 - **Fix**: Verify `dist/functions/handler.handler` exists after build
 
 ### CORS Issues
+
 - **Cause**: CORS not configured at API Gateway level
 - **Fix**: Ensure CORS is configured in `serverless.yml` under `httpApi.cors`
 
 ### Cold Start Performance
+
 - **Cause**: Large bundle size
 - **Fix**: Exclude dev dependencies, use `excludeDevDependencies: true`
 
@@ -216,4 +235,3 @@ curl http://localhost:3001/api/health
 - Serverless Framework v3.40.0: `/serverless/serverless/v3.40.0`
 - Serverless Express: `/codegenieapp/serverless-express`
 - AWS Lambda Web Adapter: `/awslabs/aws-lambda-web-adapter`
-

@@ -2,7 +2,11 @@ import React from 'react';
 
 const LoadingMessage: React.FC = () => {
   return (
-    <div className="flex justify-start" role="status" aria-label="Tutor is thinking">
+    <div
+      className="flex justify-start"
+      role="status"
+      aria-label="Tutor is thinking"
+    >
       <div className="max-w-[80%] p-4 bg-gray-50 text-gray-500 mr-auto rounded-lg rounded-tl-sm">
         <div className="flex items-center gap-2">
           <svg

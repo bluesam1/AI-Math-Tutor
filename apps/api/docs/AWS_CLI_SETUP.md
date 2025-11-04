@@ -14,6 +14,7 @@ The AWS CLI was installed but the Scripts directory is not in your PATH. Here ar
 ### Option 1: Add to PATH for Current Session (Temporary)
 
 Add this to your current terminal session:
+
 ```bash
 export PATH="$PATH:/c/Users/SamExel/AppData/Roaming/Python/Python313/Scripts"
 ```
@@ -38,6 +39,7 @@ export PATH="$PATH:/c/Users/SamExel/AppData/Roaming/Python/Python313/Scripts"
 ### Option 3: Use Python Module Syntax
 
 You can also use AWS CLI without adding to PATH:
+
 ```bash
 python -m awscli --version
 python -m awscli configure
@@ -46,11 +48,13 @@ python -m awscli configure
 ## Verify Installation
 
 After adding to PATH, verify AWS CLI works:
+
 ```bash
 aws --version
 ```
 
 You should see:
+
 ```
 aws-cli/1.42.65 Python/3.13.7 Windows/10 botocore/1.40.65
 ```
@@ -64,14 +68,16 @@ aws configure
 ```
 
 You'll be prompted for:
+
 - **AWS Access Key ID**: Your AWS access key
-- **AWS Secret Access Key**: Your AWS secret key  
+- **AWS Secret Access Key**: Your AWS secret key
 - **Default region name**: `us-east-1` (or your preferred region)
 - **Default output format**: `json`
 
 ## Test AWS Configuration
 
 After configuring, test your AWS connection:
+
 ```bash
 aws sts get-caller-identity
 ```
@@ -101,6 +107,7 @@ If you don't have AWS credentials yet:
 Once AWS CLI is configured:
 
 1. **Test the configuration**:
+
    ```bash
    aws sts get-caller-identity
    ```
@@ -114,20 +121,24 @@ Once AWS CLI is configured:
 ## Troubleshooting
 
 ### "aws: command not found"
+
 - **Cause**: Scripts directory not in PATH
 - **Fix**: Add `C:\Users\SamExel\AppData\Roaming\Python\Python313\Scripts` to PATH (see above)
 
 ### "aws: command not found" after adding to PATH
+
 - **Cause**: Terminal session not refreshed
 - **Fix**: Close and reopen your terminal/command prompt
 
 ### "Access Denied" during deployment
+
 - **Cause**: AWS credentials incorrect or missing permissions
 - **Fix**: Verify credentials with `aws sts get-caller-identity` and check IAM permissions
 
 ## Alternative: Use Python Module Syntax
 
 If you don't want to add to PATH, you can always use:
+
 ```bash
 python -m awscli configure
 python -m awscli sts get-caller-identity
@@ -139,4 +150,3 @@ python -m awscli deploy  # (if using AWS SAM)
 - AWS CLI Documentation: https://docs.aws.amazon.com/cli/
 - AWS CLI User Guide: https://docs.aws.amazon.com/cli/latest/userguide/
 - AWS Setup Guide: See `AWS_SETUP.md` in this directory
-

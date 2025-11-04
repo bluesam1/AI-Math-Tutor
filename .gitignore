@@ -18,6 +18,7 @@ out/
 *.js.map
 !*.config.js
 !*.min.js
+!scripts/*.js
 
 # Environment variables
 .env

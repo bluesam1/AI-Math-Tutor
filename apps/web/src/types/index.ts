@@ -1,4 +1,9 @@
-export type ProblemType = 'arithmetic' | 'algebra' | 'geometry' | 'word' | 'multi-step';
+export type ProblemType =
+  | 'arithmetic'
+  | 'algebra'
+  | 'geometry'
+  | 'word'
+  | 'multi-step';
 
 export interface Problem {
   id: string;

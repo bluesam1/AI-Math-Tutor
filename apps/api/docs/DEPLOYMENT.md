@@ -17,6 +17,7 @@ This document describes how to deploy the AI Math Tutor API to AWS Lambda using 
 ## Environment Setup
 
 1. Copy `.env.example` to `.env` and fill in your values:
+
    ```bash
    cp .env.example .env
    ```
@@ -93,6 +94,7 @@ After deployment, you'll receive:
 - **CloudWatch Logs**: Log group for monitoring
 
 Example output:
+
 ```
 Service Information
 service: ai-math-tutor-api
@@ -142,11 +144,13 @@ serverless info
 ### Common Issues
 
 1. **Build Errors**: Ensure TypeScript compiles successfully
+
    ```bash
    npm run build
    ```
 
 2. **Deployment Timeout**: Increase timeout in `serverless.yml`
+
    ```yaml
    timeout: 60
    ```
@@ -180,4 +184,3 @@ For automated deployment, add to your CI/CD pipeline:
     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 ```
-

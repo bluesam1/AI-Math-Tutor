@@ -23,9 +23,10 @@ const getEnvConfig = (): EnvConfig => {
     anthropicApiKey: process.env.ANTHROPIC_API_KEY,
     awsRegion: process.env.AWS_REGION,
     redisHost: process.env.REDIS_HOST,
-    redisPort: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT, 10) : undefined,
+    redisPort: process.env.REDIS_PORT
+      ? parseInt(process.env.REDIS_PORT, 10)
+      : undefined,
   };
 };
 
 export const env = getEnvConfig();
-

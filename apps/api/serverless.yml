@@ -56,14 +56,15 @@ functions:
 
 package:
   patterns:
-    - '!node_modules/**'
     - '!src/**'
     - '!tests/**'
     - '!*.ts'
     - '!*.md'
+    - '!*.tsbuildinfo'
     - 'dist/**'
     - 'package.json'
   excludeDevDependencies: true
+  individually: false
 
 plugins:
   - serverless-offline
@@ -72,4 +73,3 @@ custom:
   serverless-offline:
     httpPort: 3001
     host: localhost
-

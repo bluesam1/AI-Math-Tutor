@@ -12,4 +12,3 @@ export interface EnvConfig {
   redisHost?: string;
   redisPort?: number;
 }
-

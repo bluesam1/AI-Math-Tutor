@@ -7,17 +7,17 @@ interface MessageItemProps {
 
 const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
   const isStudent = message.role === 'student';
-  
+
   const formatTimestamp = (timestamp: Date | string): string => {
     if (typeof timestamp === 'string') {
       return timestamp;
     }
-    return timestamp.toLocaleTimeString('en-US', { 
-      hour: 'numeric', 
-      minute: '2-digit' 
+    return timestamp.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
     });
   };
-  
+
   return (
     <div
       className={`flex ${isStudent ? 'justify-end' : 'justify-start'}`}

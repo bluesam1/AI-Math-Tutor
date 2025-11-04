@@ -17,18 +17,20 @@ You only need AWS credentials to deploy. Serverless Framework will use your AWS 
 ### Option 1: Using AWS CLI (Recommended)
 
 1. **Install AWS CLI** (if not already installed):
+
    ```bash
    # Windows (using Chocolatey)
    choco install awscli
-   
+
    # Or download from: https://aws.amazon.com/cli/
    ```
 
 2. **Configure AWS credentials**:
+
    ```bash
    aws configure
    ```
-   
+
    You'll be prompted for:
    - **AWS Access Key ID**: Your AWS access key
    - **AWS Secret Access Key**: Your AWS secret key
@@ -55,6 +57,7 @@ export AWS_REGION=us-east-1
 ```
 
 Or on Windows (PowerShell):
+
 ```powershell
 $env:AWS_ACCESS_KEY_ID="your-access-key"
 $env:AWS_SECRET_ACCESS_KEY="your-secret-key"
@@ -93,6 +96,7 @@ When running serverless commands, if prompted to login:
    ```
 
 Or add to your `serverless.yml`:
+
 ```yaml
 org: null
 app: null
@@ -109,6 +113,7 @@ Your AWS user/role needs these permissions:
 - **CloudWatch Logs**: Create log groups
 
 **Minimum IAM Policy**:
+
 ```json
 {
   "Version": "2012-10-17",
@@ -134,12 +139,14 @@ Your AWS user/role needs these permissions:
 Once AWS is configured:
 
 1. **Build the project**:
+
    ```bash
    cd apps/api
    npm run build
    ```
 
 2. **Deploy to AWS**:
+
    ```bash
    npm run deploy:dev
    ```
@@ -152,16 +159,18 @@ Once AWS is configured:
 ## Troubleshooting
 
 ### "Access Denied" Errors
+
 - Verify AWS credentials are correct
 - Check IAM permissions for your user
 - Ensure you have Lambda/API Gateway permissions
 
 ### "Serverless Dashboard Login" Prompt
+
 - Skip the login prompt
 - Use `--no-org` flag
 - Or set `org: null` in serverless.yml
 
 ### "Region not specified"
+
 - Set `AWS_REGION` environment variable
 - Or configure in `aws configure`
-

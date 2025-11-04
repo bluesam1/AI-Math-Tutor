@@ -148,6 +148,7 @@ The project uses GitHub Actions for CI/CD:
 ### Frontend Deployment (AWS Amplify)
 
 The frontend is deployed to AWS Amplify:
+
 - **Build Command**: `npm run build:web`
 - **Output Directory**: `apps/web/dist`
 - **Configuration**: `amplify.yml` (build settings for monorepo)
@@ -163,6 +164,7 @@ The frontend is deployed to AWS Amplify:
    - Amplify will automatically detect `amplify.yml` and configure the build
 
 2. **Manual Deployment (Optional):**
+
    ```bash
    npm install -g @aws-amplify/cli
    amplify init

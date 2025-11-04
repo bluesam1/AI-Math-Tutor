@@ -37,10 +37,11 @@ This checklist helps you verify everything is set up correctly for AWS deploymen
 ### Step 2: Configure AWS CLI
 
 - [ ] **Run AWS Configure**:
+
   ```bash
   python -m awscli configure
   ```
-  
+
   You'll be prompted for:
   1. AWS Access Key ID: `[paste your Access Key ID]`
   2. AWS Secret Access Key: `[paste your Secret Access Key]`
@@ -48,25 +49,28 @@ This checklist helps you verify everything is set up correctly for AWS deploymen
   4. Default output format: `json`
 
 - [ ] **Verify Configuration**:
+
   ```bash
   python -m awscli configure list
   ```
-  
+
   Should show your credentials (partially masked)
 
 ### Step 3: Test AWS Connection
 
 - [ ] **Test AWS Credentials**:
+
   ```bash
   python -m awscli sts get-caller-identity
   ```
-  
+
   Should return:
+
   ```json
   {
-      "UserId": "AIDAXXXXXXXXXXXXXXXXX",
-      "Account": "123456789012",
-      "Arn": "arn:aws:iam::123456789012:user/your-username"
+    "UserId": "AIDAXXXXXXXXXXXXXXXXX",
+    "Account": "123456789012",
+    "Arn": "arn:aws:iam::123456789012:user/your-username"
   }
   ```
 
@@ -76,35 +80,39 @@ This checklist helps you verify everything is set up correctly for AWS deploymen
 ### Step 4: Verify Serverless Configuration
 
 - [ ] **Check Serverless Framework**:
+
   ```bash
   cd apps/api
   npm run build
   ```
-  
+
   Should compile TypeScript successfully
 
 - [ ] **Test Serverless Offline**:
+
   ```bash
   npm run dev:offline
   ```
-  
+
   Should start on `http://localhost:3001`
 
 - [ ] **Test Health Endpoint** (in another terminal):
+
   ```bash
   curl http://localhost:3001/api/health
   ```
-  
+
   Should return health status
 
 ### Step 5: Deploy to AWS
 
 - [ ] **Deploy to AWS (Dev Stage)**:
+
   ```bash
   cd apps/api
   npm run deploy:dev
   ```
-  
+
   This will:
   - Build TypeScript
   - Package application
@@ -117,10 +125,11 @@ This checklist helps you verify everything is set up correctly for AWS deploymen
   - Save this URL for frontend configuration
 
 - [ ] **Test Deployed API**:
+
   ```bash
   curl https://[your-deployment-url]/api/health
   ```
-  
+
   Should return health status
 
 ### Step 6: Configure Environment Variables (Optional)
@@ -128,6 +137,7 @@ This checklist helps you verify everything is set up correctly for AWS deploymen
 For production, you may want to set environment variables:
 
 - [ ] **Set Frontend URL**:
+
   ```bash
   export FRONTEND_URL=https://your-frontend-domain.com
   npm run deploy:prod
@@ -168,22 +178,27 @@ npm run deploy:dev
 ## 🚨 Common Issues
 
 ### "Unable to locate credentials"
+
 - **Cause**: AWS credentials not configured
 - **Fix**: Run `python -m awscli configure`
 
 ### "Access Denied"
+
 - **Cause**: IAM user doesn't have required permissions
 - **Fix**: Attach required policies in IAM Console
 
 ### "InvalidAccessKeyId"
+
 - **Cause**: Access Key ID is incorrect
 - **Fix**: Verify credentials with `aws configure list`
 
 ### "SignatureDoesNotMatch"
+
 - **Cause**: Secret Access Key is incorrect
 - **Fix**: Recreate access key in IAM Console
 
 ### "Serverless Framework authentication required"
+
 - **Cause**: Using Serverless Framework v4+
 - **Fix**: Already fixed - using v3.40.0
 
@@ -201,6 +216,7 @@ Once deployed successfully:
    - Chat API: `POST /api/chat`
 
 3. **Monitor Logs**:
+
    ```bash
    python -m awscli logs tail /aws/lambda/ai-math-tutor-api-dev-api --follow
    ```
@@ -219,12 +235,14 @@ Once deployed successfully:
 ## ✅ Ready to Deploy?
 
 Once you've completed:
+
 - ✅ AWS credentials configured
 - ✅ AWS connection tested
 - ✅ Serverless Framework configured
 - ✅ Local testing successful
 
 You're ready to deploy! Run:
+
 ```bash
 cd apps/api
 npm run deploy:dev
@@ -233,8 +251,8 @@ npm run deploy:dev
 ## 🆘 Need Help?
 
 If you encounter issues:
+
 1. Check the error message
 2. Review the troubleshooting section above
 3. Check AWS Console → CloudWatch Logs for errors
 4. Verify IAM permissions are correct
-

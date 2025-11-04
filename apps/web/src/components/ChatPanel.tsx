@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
-import type { ChatPanelProps, Message } from '../types';
+import type { ChatPanelProps } from '../types';
 import MessageList from './MessageList';
 import LoadingMessage from './LoadingMessage';
 
-const ChatPanel: React.FC<ChatPanelProps> = ({ messages = [], emptyState = false }) => {
+const ChatPanel: React.FC<ChatPanelProps> = ({ messages = [] }) => {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -13,7 +13,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ messages = [], emptyState = false
     // In a real app, this would call an API
     setInputValue('');
     setIsLoading(true);
-    
+
     // Simulate tutor response after a short delay
     setTimeout(() => {
       setIsLoading(false);
@@ -28,7 +28,11 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ messages = [], emptyState = false
   };
 
   return (
-    <div className="flex h-full flex-col bg-white" role="region" aria-label="Chat conversation">
+    <div
+      className="flex h-full flex-col bg-white"
+      role="region"
+      aria-label="Chat conversation"
+    >
       {/* Header */}
       <div className="border-b border-border p-4 lg:p-6">
         <h2 className="text-text-primary">Chat with Tutor</h2>
@@ -38,7 +42,12 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ messages = [], emptyState = false
       </div>
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto p-4 lg:p-6" role="log" aria-live="polite" aria-label="Chat messages">
+      <div
+        className="flex-1 overflow-y-auto p-4 lg:p-6"
+        role="log"
+        aria-live="polite"
+        aria-label="Chat messages"
+      >
         <MessageList messages={messages} />
         {isLoading && <LoadingMessage />}
       </div>
@@ -50,7 +59,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ messages = [], emptyState = false
             ref={inputRef}
             type="text"
             value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
+            onChange={e => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Type your question here..."
             className="flex-1 px-4 py-3 rounded-xl border border-input bg-white text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"

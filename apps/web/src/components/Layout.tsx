@@ -1,7 +1,7 @@
 import React from 'react';
 import ProblemPanel from './ProblemPanel';
 import ChatPanel from './ChatPanel';
-import type { LayoutProps, ProblemPanelProps, ChatPanelProps } from '../types';
+import type { LayoutProps, ChatPanelProps } from '../types';
 
 interface LayoutComponentProps extends LayoutProps {
   problem?: string;

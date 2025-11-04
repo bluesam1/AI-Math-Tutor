@@ -11,6 +11,7 @@ This is the easiest method and doesn't require administrator privileges if you i
 1. **Download the MSI installer**:
    - Go to: https://awscli.amazonaws.com/AWSCLIV2.msi
    - Or download directly:
+
    ```bash
    # Download using curl (if available)
    curl -o AWSCLIV2.msi https://awscli.amazonaws.com/AWSCLIV2.msi
@@ -18,9 +19,11 @@ This is the easiest method and doesn't require administrator privileges if you i
 
 2. **Run the installer**:
    - Double-click `AWSCLIV2.msi` or run from command line:
+
    ```bash
    msiexec.exe /i AWSCLIV2.msi
    ```
+
    - Follow the installation wizard
    - Choose "Install for all users" (requires admin) or "Install for current user" (no admin needed)
 
@@ -36,6 +39,7 @@ Since you have Python 3.13.7 installed, you can use pip:
 ### Steps:
 
 1. **Install AWS CLI**:
+
    ```bash
    pip install awscli
    ```
@@ -46,6 +50,7 @@ Since you have Python 3.13.7 installed, you can use pip:
    ```
 
 **Note**: If `pip` is not found, try:
+
 ```bash
 python -m pip install awscli
 # or
@@ -61,6 +66,7 @@ If you want to use Chocolatey, you'll need to run PowerShell or Command Prompt a
    - Or search "PowerShell" → Right-click → "Run as administrator"
 
 2. **Install AWS CLI**:
+
    ```powershell
    choco install awscli -y
    ```
@@ -81,6 +87,7 @@ winget install Amazon.AWSCLI
 ## Recommended: Method 1 (MSI Installer)
 
 The MSI installer is the official method and provides:
+
 - Automatic PATH configuration
 - Easy updates
 - No Python dependency
@@ -95,6 +102,7 @@ aws --version
 ```
 
 You should see output like:
+
 ```
 aws-cli/2.31.27 Python/3.13.7 Windows/10 exe/AMD64
 ```
@@ -108,6 +116,7 @@ aws configure
 ```
 
 You'll be prompted for:
+
 - **AWS Access Key ID**: Your AWS access key
 - **AWS Secret Access Key**: Your AWS secret key
 - **Default region**: `us-east-1` (or your preferred region)
@@ -116,14 +125,17 @@ You'll be prompted for:
 ## Troubleshooting
 
 ### "aws: command not found"
+
 - **Cause**: PATH not updated
 - **Fix**: Restart your terminal/command prompt, or manually add AWS CLI to PATH
 
 ### "Access denied" during installation
+
 - **Cause**: Need administrator privileges
 - **Fix**: Use Method 1 (MSI) with "Install for current user" option, or run as administrator
 
 ### pip installation fails
+
 - **Cause**: pip not installed or not in PATH
 - **Fix**: Install pip first, or use `python -m pip install awscli`
 
@@ -150,4 +162,3 @@ If you don't have AWS credentials yet:
 - AWS CLI Documentation: https://docs.aws.amazon.com/cli/
 - AWS CLI User Guide: https://docs.aws.amazon.com/cli/latest/userguide/
 - AWS Setup Guide: See `AWS_SETUP.md` in this directory
-

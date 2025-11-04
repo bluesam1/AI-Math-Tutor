@@ -14,4 +14,3 @@ export const configureCors = (app: Express): void => {
 
   app.use(cors(corsOptions));
 };
-

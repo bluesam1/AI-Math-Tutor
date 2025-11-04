@@ -45,6 +45,7 @@ This guide walks you through creating AWS credentials for programmatic access.
    - ✅ **CloudWatchLogsFullAccess** - Full access to CloudWatch Logs (for Lambda logs)
 
 **Alternative (Simpler but Less Secure)**: For development/testing, you can use:
+
 - ✅ **AdministratorAccess** - Full access (not recommended for production)
 
 4. Click **"Next"** button
@@ -77,6 +78,7 @@ This guide walks you through creating AWS credentials for programmatic access.
 ## What You Should Have
 
 You now have:
+
 - **Access Key ID**: Looks like `AKIAIOSFODNN7EXAMPLE`
 - **Secret Access Key**: Looks like `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`
 
@@ -109,6 +111,7 @@ aws configure
 ```
 
 You'll be prompted for:
+
 1. **AWS Access Key ID**: Paste your Access Key ID
 2. **AWS Secret Access Key**: Paste your Secret Access Key
 3. **Default region name**: Enter `us-east-1` (or your preferred region)
@@ -127,17 +130,19 @@ aws sts get-caller-identity
 ```
 
 You should see output like:
+
 ```json
 {
-    "UserId": "AIDAXXXXXXXXXXXXXXXXX",
-    "Account": "123456789012",
-    "Arn": "arn:aws:iam::123456789012:user/your-username"
+  "UserId": "AIDAXXXXXXXXXXXXXXXXX",
+  "Account": "123456789012",
+  "Arn": "arn:aws:iam::123456789012:user/your-username"
 }
 ```
 
 ## Security Best Practices
 
 ### ✅ DO:
+
 - Use IAM users with minimal required permissions
 - Rotate access keys regularly (every 90 days)
 - Use different access keys for different projects
@@ -145,6 +150,7 @@ You should see output like:
 - Use IAM roles when possible (for EC2, Lambda, etc.)
 
 ### ❌ DON'T:
+
 - Commit credentials to Git repositories
 - Share credentials publicly or in chat/Slack
 - Use root account credentials for programmatic access
@@ -158,6 +164,7 @@ You should see output like:
 **Cause**: Your IAM user doesn't have the required permissions
 
 **Fix**:
+
 1. Go to IAM → Users → Your User → Permissions
 2. Attach the required policies (see Step 4 above)
 3. Wait a few minutes for permissions to propagate
@@ -167,6 +174,7 @@ You should see output like:
 **Cause**: Access Key ID is incorrect or doesn't exist
 
 **Fix**:
+
 1. Verify the Access Key ID is correct (starts with `AKIA...`)
 2. Check if the access key was deleted
 3. Create a new access key if needed
@@ -176,6 +184,7 @@ You should see output like:
 **Cause**: Secret Access Key is incorrect
 
 **Fix**:
+
 1. Verify the Secret Access Key is correct (no extra spaces)
 2. If you lost the secret key, you must create a new access key pair
 3. You cannot retrieve an existing secret key
@@ -185,6 +194,7 @@ You should see output like:
 **Cause**: Access key expired or was disabled
 
 **Fix**:
+
 1. Check if the access key is active in IAM → Users → Security credentials
 2. Create a new access key if needed
 
@@ -193,6 +203,7 @@ You should see output like:
 After configuring AWS credentials:
 
 1. **Test the configuration**:
+
    ```bash
    python -m awscli sts get-caller-identity
    ```
@@ -213,8 +224,8 @@ After configuring AWS credentials:
 ## Need Help?
 
 If you encounter issues:
+
 1. Check the AWS Console → IAM → Users → Your User → Security credentials
 2. Verify the access key is active
 3. Check IAM permissions are correctly attached
 4. Review CloudWatch Logs for deployment errors
-

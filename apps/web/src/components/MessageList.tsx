@@ -16,16 +16,14 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
   if (messages.length === 0) {
     return (
       <div className="flex items-center justify-center h-full text-gray-500">
-        <p className="text-center">
-          No messages yet. Start the conversation!
-        </p>
+        <p className="text-center">No messages yet. Start the conversation!</p>
       </div>
     );
   }
 
   return (
     <div className="flex flex-col gap-4 scroll-smooth">
-      {messages.map((message) => (
+      {messages.map(message => (
         <MessageItem key={message.id} message={message} />
       ))}
       <div ref={messagesEndRef} />
@@ -34,4 +32,3 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
 };
 
 export default MessageList;
-

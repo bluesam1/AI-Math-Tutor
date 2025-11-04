@@ -1,0 +1,146 @@
+name: Deploy API to AWS
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'apps/api/**'
+      - 'packages/shared/**'
+      - '.github/workflows/deploy-api.yaml'
+      - 'package.json'
+      - 'package-lock.json'
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: 'Deployment stage'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - prod
+
+jobs:
+  deploy-api:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: apps/api
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install API dependencies
+        working-directory: apps/api
+        run: npm ci
+
+      - name: Build API
+        working-directory: apps/api
+        run: npm run build
+
+      - name: Ensure production dependencies are local
+        working-directory: apps/api
+        run: |
+          # Install production dependencies locally to ensure they're in apps/api/node_modules
+          # This is needed because npm workspaces hoist dependencies to root
+          # Remove node_modules first to force local installation
+          rm -rf node_modules
+          npm install --production --no-save
+
+      - name: Verify production dependencies are installed
+        working-directory: apps/api
+        run: |
+          # Verify serverless-http is in local node_modules
+          if [ ! -d "node_modules/serverless-http" ]; then
+            echo "ERROR: serverless-http not found in apps/api/node_modules"
+            ls -la node_modules/ | head -20
+            exit 1
+          fi
+          echo "✓ serverless-http found in node_modules"
+          ls node_modules/ | grep -E "(serverless-http|express|cors|dotenv)"
+
+      - name: Install Serverless Framework (v3)
+        working-directory: apps/api
+        run: |
+          # Install serverless locally since it's needed for deployment but was removed by --production
+          npm install --no-save serverless@^3.40.0
+
+      - name: Determine deployment stage
+        id: stage
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "stage=${{ github.event.inputs.stage }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "stage=prod" >> $GITHUB_OUTPUT
+          else
+            echo "stage=dev" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION || 'us-east-2' }}
+
+      - name: Deploy API to AWS Lambda
+        working-directory: apps/api
+        env:
+          NODE_ENV: ${{ steps.stage.outputs.stage }}
+          FRONTEND_URL: ${{ secrets.FRONTEND_URL || 'http://localhost:3000' }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
+          REDIS_PORT: ${{ secrets.REDIS_PORT || '6379' }}
+        run: |
+          if [ "${{ steps.stage.outputs.stage }}" == "prod" ]; then
+            npm exec -- serverless deploy --stage prod
+          else
+            npm exec -- serverless deploy --stage dev
+          fi
+
+      - name: Get deployment info
+        working-directory: apps/api
+        id: deployment
+        continue-on-error: true
+        run: |
+          echo "Fetching deployment information..."
+          if [ "${{ steps.stage.outputs.stage }}" == "prod" ]; then
+            STAGE_ARG="--stage prod"
+          else
+            STAGE_ARG="--stage dev"
+          fi
+
+          # Try to get serverless info (may require AWS credentials to be configured)
+          npm exec -- serverless info $STAGE_ARG 2>&1 || echo "Note: Deployment info not available. Check AWS Console for deployment status."
+
+      - name: Deployment summary
+        run: |
+          echo "## 🚀 API Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Stage:** ${{ steps.stage.outputs.stage }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Region:** ${{ secrets.AWS_REGION || 'us-east-2' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. Check AWS Lambda Console for deployment status" >> $GITHUB_STEP_SUMMARY
+          echo "2. Review CloudFormation stack: \`ai-math-tutor-api-${{ steps.stage.outputs.stage }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "3. Get API endpoint from API Gateway Console" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### View Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "- [AWS Lambda Console](https://console.aws.amazon.com/lambda/home?region=${{ secrets.AWS_REGION || 'us-east-2' }})" >> $GITHUB_STEP_SUMMARY
+          echo "- [API Gateway Console](https://console.aws.amazon.com/apigateway/home?region=${{ secrets.AWS_REGION || 'us-east-2' }})" >> $GITHUB_STEP_SUMMARY

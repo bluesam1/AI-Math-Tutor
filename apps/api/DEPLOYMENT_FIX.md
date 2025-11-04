@@ -3,9 +3,10 @@
 ## Issue
 
 The deployment failed with this error:
+
 ```
-Lambda was unable to configure your environment variables because the environment 
-variables you have provided contains reserved keys that are currently not supported 
+Lambda was unable to configure your environment variables because the environment
+variables you have provided contains reserved keys that are currently not supported
 for modification. Reserved keys used in this request: AWS_REGION
 ```
 
@@ -18,6 +19,7 @@ for modification. Reserved keys used in this request: AWS_REGION
 ✅ **Removed `AWS_REGION` from `serverless.yml`**
 
 The `AWS_REGION` line has been removed from the environment variables section:
+
 ```yaml
 # Before (WRONG):
 environment:
@@ -42,6 +44,7 @@ environment:
 ## Next Steps
 
 1. **Clean up failed stack** (if needed):
+
    ```bash
    cd apps/api
    serverless remove --stage dev
@@ -55,6 +58,7 @@ environment:
 ## Reserved Lambda Environment Variables
 
 AWS Lambda automatically provides these environment variables (you cannot set them):
+
 - `AWS_REGION` - The AWS region where the function is running
 - `AWS_EXECUTION_ENV` - The execution environment
 - `AWS_LAMBDA_FUNCTION_NAME` - The function name
@@ -74,6 +78,7 @@ AWS Lambda automatically provides these environment variables (you cannot set th
 ## Verification
 
 After deployment, verify the environment variables:
+
 ```bash
 python -m awscli lambda get-function-configuration \
   --function-name ai-math-tutor-api-dev-api \
@@ -82,4 +87,3 @@ python -m awscli lambda get-function-configuration \
 ```
 
 You should see your custom variables, but **not** `AWS_REGION` (it's automatically provided).
-

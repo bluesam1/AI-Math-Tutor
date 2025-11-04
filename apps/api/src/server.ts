@@ -1,4 +1,9 @@
-import express, { json, type Express, type Request, type Response } from 'express';
+import express, {
+  json,
+  type Express,
+  type Request,
+  type Response,
+} from 'express';
 import { config } from 'dotenv';
 import { env } from './config/env';
 import { configureCors } from './middleware/cors';
@@ -7,8 +12,11 @@ import healthRoutes from './routes/health';
 import problemRoutes from './routes/problem';
 import chatRoutes from './routes/chat';
 
-// Load environment variables
-config();
+// Load environment variables (only in local development, not in Lambda)
+// Lambda environment variables are set directly, no need for dotenv
+if (!process.env.LAMBDA_TASK_ROOT && process.env.NODE_ENV !== 'production') {
+  config();
+}
 
 const app: Express = express();
 
@@ -40,4 +48,3 @@ if (process.env.IS_OFFLINE !== 'true' && !process.env.LAMBDA_TASK_ROOT) {
 }
 
 export default app;
-

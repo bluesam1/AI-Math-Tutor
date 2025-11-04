@@ -7,8 +7,6 @@ Great news! You've completed most of the AWS setup:
 - ✅ **AWS CLI Installed**: Version 1.42.65
 - ✅ **AWS Credentials Configured**: Access key and secret key set
 - ✅ **AWS Connection Verified**: Can authenticate with AWS
-  - Account ID: `971422717446`
-  - User: `[Your Email]`
   - Region: `us-east-2`
 - ✅ **TypeScript Build**: Compiles successfully
 - ✅ **Serverless Framework**: Configured for v3.40.0
@@ -16,6 +14,7 @@ Great news! You've completed most of the AWS setup:
 ## ⚠️ Configuration Note
 
 **Region Mismatch Detected**:
+
 - Your AWS credentials are configured for: **`us-east-2`**
 - Your `serverless.yml` defaults to: **`us-east-1`**
 
@@ -54,8 +53,9 @@ Your IAM user needs these permissions for deployment:
 - ✅ `CloudWatchLogsFullAccess` - Create log groups
 
 **To check permissions**:
+
 1. Go to: https://console.aws.amazon.com/iam/
-2. Click "Users" → `[Your Email]`
+2. Click "Users" → [Your IAM User Name]
 3. Click "Permissions" tab
 4. Verify required policies are attached
 
@@ -82,6 +82,7 @@ curl http://localhost:3001/api/health
 ```
 
 Should return:
+
 ```json
 {
   "status": "UP",
@@ -105,6 +106,7 @@ npm run deploy:dev
 ```
 
 **First deployment may take 5-10 minutes** as it:
+
 - Creates Lambda function
 - Creates API Gateway
 - Creates CloudFormation stack
@@ -115,12 +117,14 @@ npm run deploy:dev
 
 Once deployment completes, you'll see:
 
-1. **Deployment URL**: 
+1. **Deployment URL**:
+
    ```
    https://xxxxxxxxxx.execute-api.us-east-2.amazonaws.com/
    ```
 
 2. **Test the deployed API**:
+
    ```bash
    curl https://[your-deployment-url]/api/health
    ```
@@ -134,7 +138,8 @@ Once deployment completes, you'll see:
 **Cause**: Missing IAM permissions
 
 **Fix**:
-1. Go to IAM Console → Users → `[Your Email]`
+
+1. Go to IAM Console → Users → [Your IAM User Name]
 2. Attach missing policies (see list above)
 3. Wait 2-3 minutes for permissions to propagate
 4. Try deployment again
@@ -171,6 +176,7 @@ Once deployment completes, you'll see:
    - Chat: `POST /api/chat`
 
 3. **Monitor Logs**:
+
    ```bash
    python -m awscli logs tail /aws/lambda/ai-math-tutor-api-dev-api --follow
    ```
@@ -195,4 +201,3 @@ Or if you prefer to update serverless.yml:
 2. Run: `npm run deploy:dev`
 
 Good luck! 🚀
-
