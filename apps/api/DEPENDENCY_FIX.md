@@ -1,56 +1,45 @@
-# Fixing serverless-http Not Found Error
+# Fixing `serverless-http` Not Found Error
 
 ## The Problem
 
-The error `Cannot find package 'serverless-http'` occurs because:
-
-1. **npm workspaces hoisting**: Dependencies are hoisted to the root `node_modules` directory
-2. **Serverless packaging**: Serverless Framework packages from `apps/api` directory
-3. **Missing dependencies**: When Serverless packages, it looks for `apps/api/node_modules`, but dependencies are in root `node_modules`
-
-## The Solution
-
-Install dependencies **locally** in the workspace before packaging:
-
-```bash
-cd apps/api
-npm install --production --no-save
+```
+Cannot find package 'serverless-http' imported from /var/task/dist/functions/handler.js
 ```
 
-This installs dependencies in `apps/api/node_modules` (not hoisted), so Serverless can find them when packaging.
+### Why This Happened
 
-## How It Works
+1. **npm workspace hoisting** moves shared dependencies (including `serverless-http`) to the repository root.
+2. **Serverless packaging** only zipped the `apps/api/dist` output and local `node_modules`.
+3. **Lambda runtime** therefore could not resolve `serverless-http` because it was never bundled into the artifact.
 
-1. **Root install** (`npm ci` at root): Installs all dependencies (hoisted to root)
-2. **Local install** (`npm install --production` in workspace): Installs production dependencies locally in `apps/api/node_modules`
-3. **Serverless packaging**: Finds dependencies in `apps/api/node_modules` ✅
+## Updated Solution – Bundle with `serverless-esbuild`
 
-## Alternative Solutions
+Instead of trying to force a nested `node_modules`, we now bundle the Lambda handler with `serverless-esbuild`. This packs `serverless-http`, Express, and all referenced source files into the Lambda artifact automatically.
 
-### Option 1: Use serverless-esbuild (Bundles Everything)
+### Key Changes
 
-```yaml
-plugins:
-  - serverless-esbuild
-```
+- Added `serverless-esbuild` as a dev dependency in `apps/api/package.json`.
+- Updated `serverless.yml` to:
+  - point the handler to `src/functions/handler.handler` (esbuild output)
+  - bundle via the new plugin
+  - exclude the raw TypeScript sources from the final zip and include the esbuild bundle instead.
 
-Bundles all dependencies into a single file - no dependency issues.
+With these changes, the packaged artifact (`.serverless/ai-math-tutor-api.zip`) now contains a single compiled file that embeds `serverless-http`, so Lambda can load it with no additional dependencies.
 
-### Option 2: Use serverless-plugin-monorepo (Should Work)
+## Deployment Flow (2025-11-04)
 
-The `serverless-plugin-monorepo` plugin should create symlinks automatically, but it may need proper configuration.
+1. `npm install` (root) – ensures TypeScript, Serverless CLI, and the esbuild plugin are available.
+2. `npm run build --workspace apps/api` – optional TypeScript build for local usage (`dist/`).
+3. `npx serverless deploy` (inside `apps/api`) – runs esbuild bundling and uploads the artifact.
 
-### Option 3: Manual Linking (Not Recommended)
+> **Note:** The previous workaround (“install production dependencies locally before deploy”) is no longer required and has been removed from the scripts.
 
-Manually copy/link dependencies before packaging - too complex.
+## Verification Checklist
 
-## Current Fix
+- [x] `npm run build --workspace apps/api`
+- [x] `npx serverless package`
+- [x] Inspect `.serverless/ai-math-tutor-api.zip` – contains bundled `src/functions/handler.js`
+- [x] Deploy: `npm run deploy:dev --workspace apps/api`
 
-The GitHub Actions workflow now:
-1. Installs root dependencies (`npm ci`)
-2. Installs API dependencies locally (`npm install --production` in `apps/api`)
-3. Builds the API
-4. Deploys with Serverless
-
-This ensures all dependencies are available in `apps/api/node_modules` when Serverless packages.
+Once deployed, the Lambda no longer throws the `serverless-http` module resolution error.
 

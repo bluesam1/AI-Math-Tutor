@@ -45,7 +45,7 @@ provider:
 
 functions:
   api:
-    handler: dist/functions/handler.handler
+    handler: src/functions/handler.handler
     events:
       - httpApi:
           path: /{proxy+}
@@ -58,20 +58,29 @@ package:
   patterns:
     - '!src/**'
     - '!tests/**'
-    - '!*.ts'
     - '!*.md'
     - '!*.tsbuildinfo'
-    - 'dist/**'
+    - '!dist/**'
     - 'package.json'
-    - 'node_modules/**'  # Include local node_modules (deps installed locally)
+    - '.esbuild/**'
   excludeDevDependencies: true
   individually: false
 
 plugins:
   - serverless-plugin-monorepo
+  - serverless-esbuild
   - serverless-offline
 
 custom:
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: false
+    target: node20
+    platform: node
+    keepNames: true
+    external:
+      - aws-sdk
   serverless-offline:
     httpPort: 3001
     host: localhost
