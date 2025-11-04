@@ -47,31 +47,6 @@ jobs:
         working-directory: apps/api
         run: npm ci
 
-      - name: Build API
-        working-directory: apps/api
-        run: npm run build
-
-      - name: Ensure production dependencies are local
-        working-directory: apps/api
-        run: |
-          # Install production dependencies locally to ensure they're in apps/api/node_modules
-          # This is needed because npm workspaces hoist dependencies to root
-          # Remove node_modules first to force local installation
-          rm -rf node_modules
-          npm install --production --no-save
-
-      - name: Verify production dependencies are installed
-        working-directory: apps/api
-        run: |
-          # Verify serverless-http is in local node_modules
-          if [ ! -d "node_modules/serverless-http" ]; then
-            echo "ERROR: serverless-http not found in apps/api/node_modules"
-            ls -la node_modules/ | head -20
-            exit 1
-          fi
-          echo "✓ serverless-http found in node_modules"
-          ls node_modules/ | grep -E "(serverless-http|express|cors|dotenv)"
-
       - name: Install Serverless Framework (v3)
         working-directory: apps/api
         run: |
