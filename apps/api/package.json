@@ -4,18 +4,30 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "tsx watch src/server.ts",
+    "dev:offline": "serverless offline",
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "node dist/server.js",
+    "deploy": "npm run build && serverless deploy",
+    "deploy:dev": "npm run build && serverless deploy --stage dev",
+    "deploy:prod": "npm run build && serverless deploy --stage prod",
+    "remove": "serverless remove",
     "lint": "eslint . --ext .ts"
   },
   "dependencies": {
-    "express": "^4.18.0"
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^4.18.0",
+    "serverless-http": "^4.0.0"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "^4.17.0",
     "@types/node": "^20.0.0",
-    "typescript": "^5.3.0",
-    "tsx": "^4.7.0"
+    "@types/serverless": "^3.12.27",
+    "serverless": "^3.40.0",
+    "serverless-offline": "^14.4.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.0"
   }
 }
