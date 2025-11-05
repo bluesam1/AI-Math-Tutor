@@ -115,7 +115,7 @@ export const parseImage = async (
  * Returns validation result with problem type if valid
  */
 export const validate = async (
-  req: Request<{}, ValidateProblemApiResponse, ValidateProblemRequest>,
+  req: Request<Record<string, never>, ValidateProblemApiResponse, ValidateProblemRequest>,
   res: Response<ValidateProblemApiResponse>
 ): Promise<void> => {
   try {

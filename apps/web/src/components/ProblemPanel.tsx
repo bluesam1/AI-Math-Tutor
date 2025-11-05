@@ -5,7 +5,7 @@ import ProblemTypeBadge from './ProblemTypeBadge';
 import EmptyState from './EmptyState';
 import LoadingSpinner from './LoadingSpinner';
 import { RotateCcw } from 'lucide-react';
-import type { ProblemPanelProps, ProblemType } from '../types';
+import type { ProblemPanelProps } from '../types';
 
 type InputMode = 'text' | 'image';
 
@@ -31,7 +31,6 @@ const ProblemPanel: React.FC<ExtendedProblemPanelProps> = ({
   isProcessing = false,
 }) => {
   const [inputMode, setInputMode] = useState<InputMode>('text');
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isInputExpanded, setIsInputExpanded] = useState(!problem);
 
   // Auto-collapse input when problem is loaded
@@ -42,7 +41,6 @@ const ProblemPanel: React.FC<ExtendedProblemPanelProps> = ({
   }, [problem]);
 
   const handleImageFileSelect = (file: File) => {
-    setSelectedFile(file);
     // Auto-submit if onImageSubmit is available and not loading
     if (onImageSubmit && !isLoading) {
       setTimeout(() => {
@@ -53,7 +51,6 @@ const ProblemPanel: React.FC<ExtendedProblemPanelProps> = ({
 
   const handleChangeProblem = () => {
     setIsInputExpanded(true);
-    setSelectedFile(null);
     setInputMode('text');
   };
 
@@ -105,7 +102,6 @@ const ProblemPanel: React.FC<ExtendedProblemPanelProps> = ({
                   type="button"
                   onClick={() => {
                     setInputMode('text');
-                    setSelectedFile(null);
                   }}
                   disabled={isLoading}
                   className={`px-4 py-2 rounded-lg font-medium text-base transition-all ${
@@ -121,7 +117,6 @@ const ProblemPanel: React.FC<ExtendedProblemPanelProps> = ({
                   type="button"
                   onClick={() => {
                     setInputMode('image');
-                    setSelectedFile(null);
                   }}
                   disabled={isLoading}
                   className={`px-4 py-2 rounded-lg font-medium text-base transition-all ${

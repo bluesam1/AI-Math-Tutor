@@ -6,7 +6,6 @@
  */
 
 import type { TestProblem } from '../testData/problemLibrary';
-import type { ProblemType } from '../services/api';
 
 /**
  * Answer detection test patterns

@@ -26,17 +26,24 @@ const router = Router();
  */
 router.post('/parse-image', async (req: Request, res: Response) => {
   try {
+    // Get uploaded files from express-multipart-file-parser
+    // The type is defined in express-multipart-file-parser.d.ts
+    // Type assertion needed because Express.Request.files type is ambiguous
+    const files = req.files as Array<{
+      fieldname: string;
+      originalname: string;
+      mimetype: string;
+      buffer: Buffer;
+    }> | undefined;
+    
     console.log('[Parse Image] Request received', {
       contentType: req.headers['content-type'],
       contentLength: req.headers['content-length'],
       method: req.method,
       path: req.path,
-      hasFiles: !!(req as any).files,
-      filesLength: (req as any).files?.length,
+      hasFiles: !!files,
+      filesLength: files?.length,
     });
-
-    // Get uploaded files from express-multipart-file-parser
-    const files = (req as any).files;
     
     if (!files || files.length === 0) {
       console.error('[Parse Image] No file uploaded', {

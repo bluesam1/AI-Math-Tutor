@@ -168,7 +168,7 @@ export const handleMulterError = (
         });
         return;
 
-      default:
+      default: {
         // Handle "Unexpected end of form" and other multer errors
         const errorMessage = multerError.message || 'An error occurred while uploading the file';
         
@@ -189,6 +189,7 @@ export const handleMulterError = (
           });
         }
         return;
+      }
     }
   }
 

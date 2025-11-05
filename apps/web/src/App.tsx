@@ -126,7 +126,7 @@ const App: React.FC = () => {
     }
   };
 
-  const handleLoadTestProblem = (testProblem: string, testType: ProblemType) => {
+  const handleLoadTestProblem = (testProblem: string) => {
     // Load test problem into the problem input
     handleProblemSubmit(testProblem);
   };
