@@ -4,6 +4,7 @@ import express, {
   type Request,
   type Response,
 } from 'express';
+import fileParser from 'express-multipart-file-parser';
 import { config } from 'dotenv';
 import { env } from './config/env';
 import { configureCors } from './middleware/cors';
@@ -16,14 +17,27 @@ import chatRoutes from './routes/chat';
 // Firebase Functions in production use environment variables set via Firebase CLI or console
 // The FUNCTIONS_EMULATOR env var is set when running Firebase emulators
 if (process.env.FUNCTIONS_EMULATOR || process.env.NODE_ENV !== 'production') {
-  config();
+  // Load .env.local first (if it exists), then .env (if it exists)
+  // .env.local takes precedence over .env
+  config({ path: '.env.local' });
+  config(); // .env will override .env.local values if both exist
 }
 
 const app: Express = express();
 
-// Configure middleware
-app.use(json({ limit: '10mb' }));
+// IMPORTANT: Configure CORS BEFORE any body parsing middleware
+// CORS preflight requests (OPTIONS) don't have a body, so we can apply CORS early
 configureCors(app);
+
+// Configure middleware
+// IMPORTANT: Use express-multipart-file-parser for Firebase Functions compatibility
+// This middleware is specifically designed to work with Firebase Functions
+// which pre-parses the request body as req.rawBody
+// See: https://stackoverflow.com/questions/76036987
+app.use(fileParser);
+
+// JSON parser for non-multipart requests
+app.use(json({ limit: '10mb' }));
 
 // Health check endpoint
 app.get('/', (req: Request, res: Response) => {

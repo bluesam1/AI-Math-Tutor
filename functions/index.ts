@@ -17,7 +17,7 @@ export const api = onRequest(
     memory: '512MiB',
     timeoutSeconds: 30,
     secrets: [openaiApiKey],
+    // Note: Using express-multipart-file-parser middleware for file uploads
   },
   app
 );
-

@@ -14,10 +14,10 @@ The PRD specifies a monorepo structure combining frontend and backend code in a 
 
 ### Change Log
 
-| Date       | Version | Description                                                        | Author    |
-| ---------- | ------- | ------------------------------------------------------------------ | --------- |
-| 2025-01-XX | 1.0     | Initial architecture document created                              | Architect |
-| 2025-01-XX | 1.1     | Updated scope to 6th grade math, added developer testing interface | Architect |
+| Date       | Version | Description                                                                                         | Author    |
+| ---------- | ------- | --------------------------------------------------------------------------------------------------- | --------- |
+| 2025-01-XX | 1.0     | Initial architecture document created                                                               | Architect |
+| 2025-01-XX | 1.1     | Updated scope to 6th grade math, added developer testing interface                                  | Architect |
 | 2025-11-04 | 1.2     | Migrated from AWS (Lambda, S3, CloudFront, ElastiCache) to Firebase (Functions, Hosting, Firestore) | Architect |
 
 ## High Level Architecture
@@ -204,22 +204,22 @@ This section documents all technical dependencies, their versions, compatibility
 
 #### Backend Dependencies
 
-| Package                     | Version   | Purpose                | Dependencies        | Notes                                       |
-| --------------------------- | --------- | ---------------------- | ------------------- | ------------------------------------------- |
-| express                     | ^4.18.0   | Web framework          | -                   | Latest stable Express 4.x                   |
-| typescript                  | ^5.3.0    | Type checking          | -                   | Shared with frontend                        |
-| @types/express              | ^4.17.0   | TypeScript types       | express, typescript | Express type definitions                    |
-| @types/node                 | ^20.0.0   | Node.js types          | typescript          | Node.js type definitions                    |
-| firebase-admin              | ^12.0.0   | Firebase Admin SDK     | -                   | Server-side Firebase operations             |
-| firebase-functions          | ^5.0.0    | Firebase Functions SDK  | -                   | Cloud Functions integration                  |
-| @firebase/firestore         | ^4.0.0    | Firestore client       | -                   | Firestore session storage                   |
-| openai                      | ^4.0.0    | OpenAI API client      | -                   | For Vision API and LLM API                  |
-| @anthropic-ai/sdk           | ^0.9.0    | Anthropic Claude API   | -                   | Alternative LLM provider                    |
-| cors                        | ^2.8.5    | CORS middleware        | express             | Required for frontend-backend communication |
-| multer                      | ^1.4.5    | File upload middleware | express             | For image upload handling                   |
-| @types/multer               | ^1.4.0    | TypeScript types       | multer, typescript  | Multer type definitions                     |
-| @types/cors                 | ^2.8.0    | TypeScript types       | cors, typescript    | CORS type definitions                       |
-| dotenv                      | ^16.3.0   | Environment variables  | -                   | For local development config                |
+| Package             | Version | Purpose                | Dependencies        | Notes                                       |
+| ------------------- | ------- | ---------------------- | ------------------- | ------------------------------------------- |
+| express             | ^4.18.0 | Web framework          | -                   | Latest stable Express 4.x                   |
+| typescript          | ^5.3.0  | Type checking          | -                   | Shared with frontend                        |
+| @types/express      | ^4.17.0 | TypeScript types       | express, typescript | Express type definitions                    |
+| @types/node         | ^20.0.0 | Node.js types          | typescript          | Node.js type definitions                    |
+| firebase-admin      | ^12.0.0 | Firebase Admin SDK     | -                   | Server-side Firebase operations             |
+| firebase-functions  | ^5.0.0  | Firebase Functions SDK | -                   | Cloud Functions integration                 |
+| @firebase/firestore | ^4.0.0  | Firestore client       | -                   | Firestore session storage                   |
+| openai              | ^4.0.0  | OpenAI API client      | -                   | For Vision API and LLM API                  |
+| @anthropic-ai/sdk   | ^0.9.0  | Anthropic Claude API   | -                   | Alternative LLM provider                    |
+| cors                | ^2.8.5  | CORS middleware        | express             | Required for frontend-backend communication |
+| multer              | ^1.4.5  | File upload middleware | express             | For image upload handling                   |
+| @types/multer       | ^1.4.0  | TypeScript types       | multer, typescript  | Multer type definitions                     |
+| @types/cors         | ^2.8.0  | TypeScript types       | cors, typescript    | CORS type definitions                       |
+| dotenv              | ^16.3.0 | Environment variables  | -                   | For local development config                |
 
 **Backend Dependency Compatibility Notes:**
 
@@ -271,14 +271,14 @@ This section documents all technical dependencies, their versions, compatibility
 
 #### Infrastructure Dependencies
 
-| Service                 | Version/Region | Purpose              | Dependencies     | Notes                      |
-| ----------------------- | -------------- | -------------------- | ---------------- | -------------------------- |
-| Firebase Hosting        | Latest         | Static asset hosting | -                | Frontend deployment with CDN |
-| Firebase Cloud Functions | Latest         | Serverless functions | Firebase Hosting | Backend API endpoints      |
-| Firestore               | Latest         | Session storage      | -                | Session context with TTL   |
-| Firebase Hosting Rewrites | Latest       | API routing          | Cloud Functions  | API request routing        |
-| OpenAI API              | Latest         | Vision + LLM APIs    | -                | Image parsing and dialogue |
-| Anthropic Claude API    | Latest         | Alternative LLM      | -                | Alternative LLM provider   |
+| Service                   | Version/Region | Purpose              | Dependencies     | Notes                        |
+| ------------------------- | -------------- | -------------------- | ---------------- | ---------------------------- |
+| Firebase Hosting          | Latest         | Static asset hosting | -                | Frontend deployment with CDN |
+| Firebase Cloud Functions  | Latest         | Serverless functions | Firebase Hosting | Backend API endpoints        |
+| Firestore                 | Latest         | Session storage      | -                | Session context with TTL     |
+| Firebase Hosting Rewrites | Latest         | API routing          | Cloud Functions  | API request routing          |
+| OpenAI API                | Latest         | Vision + LLM APIs    | -                | Image parsing and dialogue   |
+| Anthropic Claude API      | Latest         | Alternative LLM      | -                | Alternative LLM provider     |
 
 **Infrastructure Dependency Compatibility Notes:**
 
@@ -1580,14 +1580,20 @@ export class ContextService {
 
     session.lastActivityAt = new Date();
 
-    await this.db.collection('sessions').doc(sessionId).set({
-      sessionId: session.sessionId,
-      problem: session.problem,
-      messages: session.messages,
-      createdAt: Timestamp.fromDate(session.createdAt),
-      lastActivityAt: Timestamp.fromDate(session.lastActivityAt),
-      expiresAt: Timestamp.fromDate(new Date(Date.now() + 30 * 60 * 1000)), // 30 minutes TTL
-    }, { merge: true });
+    await this.db
+      .collection('sessions')
+      .doc(sessionId)
+      .set(
+        {
+          sessionId: session.sessionId,
+          problem: session.problem,
+          messages: session.messages,
+          createdAt: Timestamp.fromDate(session.createdAt),
+          lastActivityAt: Timestamp.fromDate(session.lastActivityAt),
+          expiresAt: Timestamp.fromDate(new Date(Date.now() + 30 * 60 * 1000)), // 30 minutes TTL
+        },
+        { merge: true }
+      );
 
     // TTL policy configured in Firestore for automatic cleanup
   }
@@ -1878,11 +1884,11 @@ jobs:
 
 ### Environments
 
-| Environment | Frontend URL                    | Backend URL                         | Purpose                |
-| ----------- | ------------------------------- | ----------------------------------- | ---------------------- |
-| Development | http://localhost:3000           | http://localhost:5000/api           | Local development (emulators) |
-| Staging     | https://staging-{project}.web.app | https://us-central1-{project}.cloudfunctions.net/api | Pre-production testing |
-| Production  | https://{project}.web.app       | https://us-central1-{project}.cloudfunctions.net/api | Live environment       |
+| Environment | Frontend URL                      | Backend URL                                          | Purpose                       |
+| ----------- | --------------------------------- | ---------------------------------------------------- | ----------------------------- |
+| Development | http://localhost:3000             | http://localhost:5000/api                            | Local development (emulators) |
+| Staging     | https://staging-{project}.web.app | https://us-central1-{project}.cloudfunctions.net/api | Pre-production testing        |
+| Production  | https://{project}.web.app         | https://us-central1-{project}.cloudfunctions.net/api | Live environment              |
 
 ## Security and Performance
 

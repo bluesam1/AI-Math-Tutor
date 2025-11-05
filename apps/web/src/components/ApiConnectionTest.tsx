@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { apiClient, type HealthResponse, type ApiError } from '../services/api';
+import { apiClient, type HealthResponse } from '../services/api';
 
 interface ConnectionStatus {
   status: 'idle' | 'testing' | 'success' | 'error';
@@ -120,4 +120,3 @@ const ApiConnectionTest: React.FC = () => {
 };
 
 export default ApiConnectionTest;
-

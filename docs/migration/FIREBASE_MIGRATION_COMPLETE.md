@@ -11,6 +11,7 @@ Successfully migrated from AWS Serverless (Lambda + API Gateway + S3 + CloudFron
 ## What Was Migrated
 
 ### ✅ Backend API
+
 - **From:** AWS Lambda + API Gateway
 - **To:** Firebase Cloud Functions (v2)
 - **Location:** `functions/src/` (all API source code)
@@ -18,12 +19,14 @@ Successfully migrated from AWS Serverless (Lambda + API Gateway + S3 + CloudFron
 - **Configuration:** Standard Firebase TypeScript setup (CommonJS)
 
 ### ✅ Frontend Hosting
+
 - **From:** AWS S3 + CloudFront
 - **To:** Firebase Hosting
 - **Build Output:** `apps/web/dist`
 - **Configuration:** `firebase.json` with rewrites to Functions
 
 ### ✅ Infrastructure
+
 - **Region:** us-central1 (migrated from us-east-2)
 - **Plan:** Firebase Blaze (Pay-as-you-go)
 - **Environment Variables:** `.env` file (not Secret Manager)
@@ -50,11 +53,13 @@ functions/
 ## Configuration Files
 
 ### `firebase.json`
+
 - Functions: `functions/` directory, Node.js 20 runtime
 - Hosting: `apps/web/dist` with rewrites to Functions
 - Emulators: Functions (5001), Hosting (5000), UI (4000)
 
 ### `functions/tsconfig.json`
+
 - Standard Firebase Functions TypeScript configuration
 - CommonJS modules (Firebase standard)
 - Output to `lib/` directory
@@ -63,12 +68,14 @@ functions/
 ## Next Steps
 
 ### 1. Set Firebase Project
+
 ```bash
 firebase use --add
 # Select your existing Firebase project
 ```
 
 Or create `.firebaserc`:
+
 ```json
 {
   "projects": {
@@ -78,12 +85,14 @@ Or create `.firebaserc`:
 ```
 
 ### 2. Configure Environment Variables
+
 ```bash
 cp functions/.env.example functions/.env
 # Edit functions/.env with your API keys
 ```
 
 ### 3. Test Locally
+
 ```bash
 npm run dev:emulators
 # Visit http://localhost:4000 for emulator UI
@@ -91,6 +100,7 @@ npm run dev:emulators
 ```
 
 ### 4. Deploy
+
 ```bash
 # Deploy functions
 npm run deploy:functions
@@ -105,24 +115,29 @@ npm run deploy
 ## Key Differences from AWS
 
 ### Environment Variables
+
 - **AWS:** Set in `serverless.yml` or Lambda console
 - **Firebase:** Use `.env` file locally, set via Firebase CLI or console for deployed
 
 ### Deployment
+
 - **AWS:** `serverless deploy` or AWS CLI
 - **Firebase:** `firebase deploy` (handles functions + hosting automatically)
 
 ### TypeScript Compilation
+
 - **AWS:** Used `serverless-esbuild` to bundle
 - **Firebase:** Standard TypeScript compilation to CommonJS (via `predeploy` hook)
 
 ### Module System
+
 - **AWS:** ES modules (`"type": "module"`)
 - **Firebase:** CommonJS (Firebase Functions standard)
 
 ## Files Changed
 
 ### Created
+
 - `functions/index.ts` - Firebase Functions entry point
 - `functions/src/` - All API source code (copied from `apps/api/src/`)
 - `functions/package.json` - Functions dependencies
@@ -131,16 +146,19 @@ npm run deploy
 - `firebase.json` - Firebase project configuration
 
 ### Modified
+
 - `apps/api/src/server.ts` - Updated for Firebase Functions (removed Lambda checks)
 - `package.json` - Added Firebase deployment scripts
 - `.gitignore` - Added Firebase-specific entries
 
 ### Removed
+
 - `apps/api/src/functions/handler.ts` - Lambda-specific handler (no longer needed)
 
 ## Testing
 
 ### Local Testing
+
 ```bash
 npm run dev:emulators
 # Functions: http://localhost:5001
@@ -149,6 +167,7 @@ npm run dev:emulators
 ```
 
 ### Deployed Testing
+
 ```bash
 # View logs
 firebase functions:log
@@ -170,4 +189,3 @@ firebase functions:log --only api
 - Environment variables use `.env` file (simple approach)
 - Region: us-central1
 - Firebase Blaze plan required for deployment
-

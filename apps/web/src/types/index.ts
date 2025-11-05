@@ -29,6 +29,25 @@ export interface ProblemPanelProps {
   problemType?: string;
 }
 
+/**
+ * Problem display component props
+ * Used for displaying submitted problems with type information
+ */
+export interface ProblemDisplayProps {
+  problemText: string;
+  problemType: ProblemType | null;
+  isValidated: boolean;
+}
+
+/**
+ * Problem type badge props
+ * Used for displaying problem type badges
+ */
+export interface ProblemTypeBadgeProps {
+  problemType: ProblemType | string;
+  className?: string;
+}
+
 export interface ChatPanelProps {
   messages?: Message[];
   emptyState?: boolean;

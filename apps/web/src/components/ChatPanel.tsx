@@ -29,7 +29,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ messages = [] }) => {
 
   return (
     <div
-      className="flex h-full flex-col bg-white"
+      className="flex h-full flex-col bg-white border-l border-border"
       role="region"
       aria-label="Chat conversation"
     >

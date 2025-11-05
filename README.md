@@ -201,7 +201,6 @@ The application is deployed to Firebase (Hosting + Cloud Functions):
    ```
 
 5. **View Deployment:**
-
    - Functions: `https://us-central1-{project-id}.cloudfunctions.net/api`
    - Hosting: `https://{project-id}.web.app` or `https://{project-id}.firebaseapp.com`
 

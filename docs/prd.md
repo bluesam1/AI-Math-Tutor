@@ -25,11 +25,11 @@ The system is specifically designed for 6th grade mathematics, focusing on core 
 
 ### Change Log
 
-| Date       | Version | Description                                                                          | Author |
-| ---------- | ------- | ------------------------------------------------------------------------------------ | ------ |
-| 2025-11-03 | 1.0     | Initial PRD created from Project Brief                                               | PM     |
-| 2025-01-XX | 1.1     | Scope refined to focus on 6th grade math specifically                                | PM     |
-| 2025-01-XX | 1.2     | Added requirements for streamlined testing workflows and developer testing interface | PM     |
+| Date       | Version | Description                                                                                         | Author |
+| ---------- | ------- | --------------------------------------------------------------------------------------------------- | ------ |
+| 2025-11-03 | 1.0     | Initial PRD created from Project Brief                                                              | PM     |
+| 2025-01-XX | 1.1     | Scope refined to focus on 6th grade math specifically                                               | PM     |
+| 2025-01-XX | 1.2     | Added requirements for streamlined testing workflows and developer testing interface                | PM     |
 | 2025-11-04 | 1.3     | Migrated from AWS (Lambda, S3, CloudFront, ElastiCache) to Firebase (Functions, Hosting, Firestore) | PM     |
 
 ## Requirements
