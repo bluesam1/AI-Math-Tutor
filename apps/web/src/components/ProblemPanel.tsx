@@ -92,7 +92,9 @@ const ProblemPanel: React.FC<ExtendedProblemPanelProps> = ({
           {(!problem || isInputExpanded) && (
             <div
               className={`mb-6 space-y-4 transition-all duration-300 ${
-                isInputExpanded ? 'opacity-100 max-h-none' : 'opacity-0 max-h-0 overflow-hidden'
+                isInputExpanded
+                  ? 'opacity-100 max-h-none'
+                  : 'opacity-0 max-h-0 overflow-hidden'
               }`}
               aria-expanded={isInputExpanded}
             >
@@ -138,18 +140,18 @@ const ProblemPanel: React.FC<ExtendedProblemPanelProps> = ({
                     {isUploading
                       ? 'Uploading image...'
                       : isProcessing
-                      ? 'Processing image...'
-                      : isSubmitting || isValidating
-                      ? 'Validating problem...'
-                      : 'Processing...'}
+                        ? 'Processing image...'
+                        : isSubmitting || isValidating
+                          ? 'Validating problem...'
+                          : 'Processing...'}
                   </p>
                 </div>
               )}
 
               {/* Text Input Mode */}
               {inputMode === 'text' && onProblemSubmit && (
-                <ProblemInput 
-                  onSubmit={onProblemSubmit} 
+                <ProblemInput
+                  onSubmit={onProblemSubmit}
                   disabled={isLoading}
                   validationError={validationError}
                   isSubmitting={isSubmitting}
@@ -181,7 +183,7 @@ const ProblemPanel: React.FC<ExtendedProblemPanelProps> = ({
               <ProblemTypeBadge problemType={problemType} />
             </div>
           )}
-          
+
           {/* Problem Statement */}
           <article
             className="flex-1 bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 lg:p-8 shadow-sm border-2 border-primary/20 min-h-0 overflow-y-auto focus-within:ring-2 focus-within:ring-primary/20 focus-within:ring-offset-2"

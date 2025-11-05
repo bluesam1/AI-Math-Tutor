@@ -3,7 +3,7 @@ import type { ApiErrorResponse } from '../types/api';
 
 /**
  * Error handling middleware for Express
- * 
+ *
  * Firebase Functions automatically logs errors, but we should still log them
  * for debugging purposes in both development and production
  */

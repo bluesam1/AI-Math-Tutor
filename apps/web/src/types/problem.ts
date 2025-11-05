@@ -14,4 +14,3 @@ export interface ProblemInputState {
   error: string | null;
   isSubmitting: boolean;
 }
-

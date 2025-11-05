@@ -1,6 +1,6 @@
 /**
  * LLM Service
- * 
+ *
  * Handles integration with LLM API (OpenAI GPT-4) for problem validation and type identification
  */
 
@@ -51,7 +51,7 @@ const getOpenAIClient = (): OpenAI => {
 
 /**
  * Validate problem text and identify problem type using LLM
- * 
+ *
  * @param problemText - Problem text to validate
  * @returns Validation result with problem type if valid
  */
@@ -126,11 +126,13 @@ Important:
     console.log('[LLM Service] OpenAI API response received', {
       hasResponse: !!response,
       choicesCount: response.choices?.length || 0,
-      usage: response.usage ? {
-        promptTokens: response.usage.prompt_tokens,
-        completionTokens: response.usage.completion_tokens,
-        totalTokens: response.usage.total_tokens,
-      } : undefined,
+      usage: response.usage
+        ? {
+            promptTokens: response.usage.prompt_tokens,
+            completionTokens: response.usage.completion_tokens,
+            totalTokens: response.usage.total_tokens,
+          }
+        : undefined,
     });
 
     const responseText = response.choices[0]?.message?.content?.trim();
@@ -160,7 +162,8 @@ Important:
     } catch (parseError) {
       // If JSON parsing fails, try to extract from text
       console.error('[LLM Service] Failed to parse JSON response', {
-        parseError: parseError instanceof Error ? parseError.message : String(parseError),
+        parseError:
+          parseError instanceof Error ? parseError.message : String(parseError),
         responseText: responseText.substring(0, 500),
       });
       throw new Error('Invalid response format from LLM API');
@@ -213,9 +216,7 @@ Important:
           status: error.status,
           message: error.message,
         });
-        throw new Error(
-          'Rate limit exceeded. Please try again in a moment.'
-        );
+        throw new Error('Rate limit exceeded. Please try again in a moment.');
       }
 
       // Handle authentication errors
@@ -253,7 +254,8 @@ Important:
     console.error('[LLM Service] Unknown error type', {
       error: String(error),
     });
-    throw new Error('An unexpected error occurred while validating the problem');
+    throw new Error(
+      'An unexpected error occurred while validating the problem'
+    );
   }
 };
-

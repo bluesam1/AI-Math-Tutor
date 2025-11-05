@@ -1,6 +1,6 @@
 /**
  * API Client for AI Math Tutor Backend
- * 
+ *
  * Handles all API requests to the Firebase Functions backend
  */
 
@@ -215,7 +215,9 @@ class ApiClient {
 
     // Check if file has a valid name
     if (!file.name || file.name.trim().length === 0) {
-      throw new Error('File name is missing. Please select a valid image file.');
+      throw new Error(
+        'File name is missing. Please select a valid image file.'
+      );
     }
 
     const formData = new FormData();
@@ -231,7 +233,7 @@ class ApiClient {
     }
 
     const url = `${this.baseUrl}/problem/parse-image`;
-    
+
     // Log file details before sending (for debugging)
     console.log('[API Client] Sending file', {
       name: file.name,
@@ -255,7 +257,7 @@ class ApiClient {
 
     if (!response.ok) {
       let errorData: ParseImageErrorResponse;
-      
+
       try {
         errorData = await response.json();
       } catch {
@@ -280,4 +282,3 @@ export const apiClient = new ApiClient();
 
 // Export class for testing
 export default ApiClient;
-

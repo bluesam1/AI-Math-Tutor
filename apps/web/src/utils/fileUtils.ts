@@ -52,13 +52,13 @@ export const getFileExtension = (file: File | string): string => {
 export const validateFileFormat = (file: File): boolean => {
   // Check MIME type
   const isValidMimeType = SUPPORTED_IMAGE_TYPES.includes(
-    file.type.toLowerCase() as typeof SUPPORTED_IMAGE_TYPES[number]
+    file.type.toLowerCase() as (typeof SUPPORTED_IMAGE_TYPES)[number]
   );
 
   // Check file extension as fallback
   const extension = getFileExtension(file);
   const isValidExtension = SUPPORTED_IMAGE_EXTENSIONS.includes(
-    extension as typeof SUPPORTED_IMAGE_EXTENSIONS[number]
+    extension as (typeof SUPPORTED_IMAGE_EXTENSIONS)[number]
   );
 
   return isValidMimeType || isValidExtension;
@@ -99,4 +99,3 @@ export const formatFileSize = (bytes: number): string => {
 export const getSupportedFormatsText = (): string => {
   return 'JPG, PNG, GIF';
 };
-

@@ -140,14 +140,20 @@ export class ContextService {
 
     session.lastActivityAt = new Date();
 
-    await this.db.collection('sessions').doc(sessionId).set({
-      sessionId: session.sessionId,
-      problem: session.problem,
-      messages: session.messages,
-      createdAt: Timestamp.fromDate(session.createdAt),
-      lastActivityAt: Timestamp.fromDate(session.lastActivityAt),
-      expiresAt: Timestamp.fromDate(new Date(Date.now() + 30 * 60 * 1000)), // 30 minutes TTL
-    }, { merge: true });
+    await this.db
+      .collection('sessions')
+      .doc(sessionId)
+      .set(
+        {
+          sessionId: session.sessionId,
+          problem: session.problem,
+          messages: session.messages,
+          createdAt: Timestamp.fromDate(session.createdAt),
+          lastActivityAt: Timestamp.fromDate(session.lastActivityAt),
+          expiresAt: Timestamp.fromDate(new Date(Date.now() + 30 * 60 * 1000)), // 30 minutes TTL
+        },
+        { merge: true }
+      );
 
     // TTL policy configured in Firestore for automatic cleanup
   }

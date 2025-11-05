@@ -84,4 +84,3 @@ const StatusIndicator: React.FC = () => {
 };
 
 export default StatusIndicator;
-

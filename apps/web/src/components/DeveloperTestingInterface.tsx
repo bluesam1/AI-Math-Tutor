@@ -1,9 +1,9 @@
 /**
  * Developer Testing Interface Component
- * 
+ *
  * A comprehensive testing interface for developers to test different problem types,
  * scenarios, and edge cases. Only accessible in development mode.
- * 
+ *
  * Features:
  * - Test problem library with 50+ problems organized by type
  * - One-click problem loading
@@ -49,12 +49,16 @@ const DeveloperTestingInterface: React.FC<DeveloperTestingInterfaceProps> = ({
   };
 
   // All hooks must be called before any conditional returns
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(getInitialCollapsedState);
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(
+    getInitialCollapsedState
+  );
   const [activeTab, setActiveTab] = useState<
     'library' | 'scenarios' | 'edge-cases' | 'results' | 'batch'
   >('library');
   const [selectedType, setSelectedType] = useState<ProblemType | 'all'>('all');
-  const [selectedProblem, setSelectedProblem] = useState<TestProblem | null>(null);
+  const [selectedProblem, setSelectedProblem] = useState<TestProblem | null>(
+    null
+  );
   const [testResults, setTestResults] = useState<TestResult[]>([]);
   const [isRunningTest, setIsRunningTest] = useState(false);
   const [currentTest, setCurrentTest] = useState<string | null>(null);
@@ -100,7 +104,7 @@ const DeveloperTestingInterface: React.FC<DeveloperTestingInterfaceProps> = ({
     setIsRunningTest(true);
     setCurrentTest(scenario);
     // Simulate test execution
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 1000));
     setIsRunningTest(false);
     setCurrentTest(null);
   };
@@ -114,7 +118,7 @@ const DeveloperTestingInterface: React.FC<DeveloperTestingInterfaceProps> = ({
     for (const problem of problems) {
       setCurrentTest(`Testing ${problem.id}...`);
       // Simulate test execution
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, 500));
       results.push({
         id: problem.id,
         name: problem.problem,
@@ -168,7 +172,7 @@ const DeveloperTestingInterface: React.FC<DeveloperTestingInterfaceProps> = ({
           { id: 'edge-cases', label: 'Edge Cases' },
           { id: 'results', label: 'Results' },
           { id: 'batch', label: 'Batch' },
-        ].map((tab) => (
+        ].map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as typeof activeTab)}
@@ -189,7 +193,9 @@ const DeveloperTestingInterface: React.FC<DeveloperTestingInterfaceProps> = ({
         {activeTab === 'library' && (
           <div className="space-y-4">
             <div>
-              <h3 className="text-lg font-semibold mb-2">Test Problem Library</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                Test Problem Library
+              </h3>
               <p className="text-sm text-gray-600 mb-4">
                 {totalProblems} total problems across 5 problem types
               </p>
@@ -197,19 +203,29 @@ const DeveloperTestingInterface: React.FC<DeveloperTestingInterfaceProps> = ({
 
             {/* Problem Type Filter */}
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-2">Filter by Type:</label>
+              <label className="block text-sm font-medium mb-2">
+                Filter by Type:
+              </label>
               <select
                 value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value as ProblemType | 'all')}
+                onChange={e =>
+                  setSelectedType(e.target.value as ProblemType | 'all')
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
               >
                 <option value="all">All Types ({totalProblems})</option>
                 <option value="arithmetic">
                   Arithmetic ({problemCounts.arithmetic})
                 </option>
-                <option value="algebra">Algebra ({problemCounts.algebra})</option>
-                <option value="geometry">Geometry ({problemCounts.geometry})</option>
-                <option value="word">Word Problems ({problemCounts.word})</option>
+                <option value="algebra">
+                  Algebra ({problemCounts.algebra})
+                </option>
+                <option value="geometry">
+                  Geometry ({problemCounts.geometry})
+                </option>
+                <option value="word">
+                  Word Problems ({problemCounts.word})
+                </option>
                 <option value="multi-step">
                   Multi-Step ({problemCounts['multi-step']})
                 </option>
@@ -218,7 +234,7 @@ const DeveloperTestingInterface: React.FC<DeveloperTestingInterfaceProps> = ({
 
             {/* Problem List */}
             <div className="space-y-2">
-              {getFilteredProblems().map((problem) => (
+              {getFilteredProblems().map(problem => (
                 <button
                   key={problem.id}
                   onClick={() => handleProblemSelect(problem)}
@@ -230,7 +246,8 @@ const DeveloperTestingInterface: React.FC<DeveloperTestingInterfaceProps> = ({
                 >
                   <div className="text-sm font-medium">{problem.problem}</div>
                   <div className="text-xs text-gray-500 mt-1">
-                    {problem.type} {problem.description && `• ${problem.description}`}
+                    {problem.type}{' '}
+                    {problem.description && `• ${problem.description}`}
                   </div>
                 </button>
               ))}
@@ -244,8 +261,8 @@ const DeveloperTestingInterface: React.FC<DeveloperTestingInterfaceProps> = ({
             <div>
               <h3 className="text-lg font-semibold mb-2">Scenario Testing</h3>
               <p className="text-sm text-gray-600 mb-4">
-                Test specific scenarios including answer detection, help escalation, and
-                context management
+                Test specific scenarios including answer detection, help
+                escalation, and context management
               </p>
             </div>
 
@@ -272,7 +289,7 @@ const DeveloperTestingInterface: React.FC<DeveloperTestingInterfaceProps> = ({
             <div className="mb-4">
               <h4 className="font-medium mb-2">Help Escalation</h4>
               <div className="space-y-2">
-                {helpEscalationScenarios.map((scenario) => (
+                {helpEscalationScenarios.map(scenario => (
                   <button
                     key={scenario.id}
                     onClick={() => handleTestScenario(scenario.id)}
@@ -291,7 +308,7 @@ const DeveloperTestingInterface: React.FC<DeveloperTestingInterfaceProps> = ({
             <div className="mb-4">
               <h4 className="font-medium mb-2">Context Management</h4>
               <div className="space-y-2">
-                {contextManagementScenarios.map((scenario) => (
+                {contextManagementScenarios.map(scenario => (
                   <button
                     key={scenario.id}
                     onClick={() => handleTestScenario(scenario.id)}
@@ -314,13 +331,13 @@ const DeveloperTestingInterface: React.FC<DeveloperTestingInterfaceProps> = ({
             <div>
               <h3 className="text-lg font-semibold mb-2">Edge Case Testing</h3>
               <p className="text-sm text-gray-600 mb-4">
-                Test edge cases including empty inputs, invalid problems, and error
-                scenarios
+                Test edge cases including empty inputs, invalid problems, and
+                error scenarios
               </p>
             </div>
 
             <div className="space-y-2">
-              {edgeCaseScenarios.map((scenario) => (
+              {edgeCaseScenarios.map(scenario => (
                 <button
                   key={scenario.id}
                   onClick={() => handleTestScenario(scenario.id)}
@@ -343,7 +360,9 @@ const DeveloperTestingInterface: React.FC<DeveloperTestingInterfaceProps> = ({
         {activeTab === 'results' && (
           <div className="space-y-4">
             <div>
-              <h3 className="text-lg font-semibold mb-2">Test Results Dashboard</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                Test Results Dashboard
+              </h3>
               <p className="text-sm text-gray-600 mb-4">
                 View test results and compliance metrics
               </p>
@@ -359,12 +378,12 @@ const DeveloperTestingInterface: React.FC<DeveloperTestingInterfaceProps> = ({
                   <div className="font-medium">Summary:</div>
                   <div className="text-gray-600">
                     Total: {testResults.length} | Pass:{' '}
-                    {testResults.filter((r) => r.status === 'pass').length} | Fail:{' '}
-                    {testResults.filter((r) => r.status === 'fail').length}
+                    {testResults.filter(r => r.status === 'pass').length} |
+                    Fail: {testResults.filter(r => r.status === 'fail').length}
                   </div>
                 </div>
 
-                {testResults.map((result) => (
+                {testResults.map(result => (
                   <div
                     key={result.id}
                     className={`px-3 py-2 rounded-md border ${
@@ -380,7 +399,9 @@ const DeveloperTestingInterface: React.FC<DeveloperTestingInterfaceProps> = ({
                       Status: {result.status} | Duration: {result.duration}ms
                     </div>
                     {result.error && (
-                      <div className="text-xs text-red-600 mt-1">{result.error}</div>
+                      <div className="text-xs text-red-600 mt-1">
+                        {result.error}
+                      </div>
                     )}
                   </div>
                 ))}
@@ -401,8 +422,8 @@ const DeveloperTestingInterface: React.FC<DeveloperTestingInterfaceProps> = ({
 
             <div className="mb-4">
               <div className="text-sm mb-2">
-                Selected: {selectedType === 'all' ? 'All Types' : selectedType} (
-                {getFilteredProblems().length} problems)
+                Selected: {selectedType === 'all' ? 'All Types' : selectedType}{' '}
+                ({getFilteredProblems().length} problems)
               </div>
             </div>
 
@@ -439,4 +460,3 @@ const DeveloperTestingInterface: React.FC<DeveloperTestingInterfaceProps> = ({
 };
 
 export default DeveloperTestingInterface;
-

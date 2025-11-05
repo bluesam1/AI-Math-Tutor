@@ -2,8 +2,8 @@ import React, { useState, KeyboardEvent, FormEvent } from 'react';
 import LoadingSpinner from './LoadingSpinner';
 import type { ProblemInputProps } from '../types/problem';
 
-const ProblemInput: React.FC<ProblemInputProps> = ({ 
-  onSubmit, 
+const ProblemInput: React.FC<ProblemInputProps> = ({
+  onSubmit,
   disabled = false,
   validationError = null,
   isSubmitting = false,
@@ -62,7 +62,8 @@ const ProblemInput: React.FC<ProblemInputProps> = ({
     }
   };
 
-  const isButtonDisabled = disabled || isSubmitting || problemText.trim().length === 0;
+  const isButtonDisabled =
+    disabled || isSubmitting || problemText.trim().length === 0;
 
   return (
     <div className="w-full">
@@ -139,4 +140,3 @@ const ProblemInput: React.FC<ProblemInputProps> = ({
 };
 
 export default ProblemInput;
-

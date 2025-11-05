@@ -1,16 +1,16 @@
 /**
  * Development Mode Configuration
- * 
+ *
  * Provides utilities to check if the application is running in development mode.
  * The testing interface should only be accessible in development mode.
  */
 
 /**
  * Check if the application is running in development mode
- * 
+ *
  * In Vite, `import.meta.env.MODE` is 'development' in development mode
  * and 'production' in production builds.
- * 
+ *
  * @returns true if running in development mode, false otherwise
  */
 export const isDevelopmentMode = (): boolean => {
@@ -39,10 +39,10 @@ export const isDevelopmentMode = (): boolean => {
 
 /**
  * Check if the testing interface should be enabled
- * 
+ *
  * This is a more explicit check that can be used to conditionally render
  * the testing interface components.
- * 
+ *
  * @returns true if testing interface should be enabled, false otherwise
  */
 export const isTestingInterfaceEnabled = (): boolean => {
@@ -56,8 +56,8 @@ export const devConfig = {
   isDevelopment: isDevelopmentMode(),
   isTestingEnabled: isTestingInterfaceEnabled(),
   mode: import.meta.env.MODE || 'production',
-  nodeEnv: import.meta.env.MODE === 'development' ? 'development' : 'production',
+  nodeEnv:
+    import.meta.env.MODE === 'development' ? 'development' : 'production',
 };
 
 export default devConfig;
-

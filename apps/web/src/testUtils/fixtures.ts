@@ -1,6 +1,6 @@
 /**
  * Test Fixtures
- * 
+ *
  * Provides test fixtures and utilities for testing different scenarios.
  * Used by the developer testing interface and automated tests.
  */
@@ -79,7 +79,12 @@ export interface EdgeCaseScenario {
   name: string;
   description: string;
   problem?: string;
-  type: 'empty-input' | 'invalid-problem' | 'api-failure' | 'rate-limit' | 'timeout';
+  type:
+    | 'empty-input'
+    | 'invalid-problem'
+    | 'api-failure'
+    | 'rate-limit'
+    | 'timeout';
   expectedBehavior: string;
 }
 
@@ -277,4 +282,3 @@ export const testFixtures = {
 };
 
 export default testFixtures;
-

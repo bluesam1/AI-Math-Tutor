@@ -1,6 +1,6 @@
 /**
  * File validation middleware for image uploads
- * 
+ *
  * Validates file format, size, and content before processing
  */
 
@@ -10,7 +10,12 @@ import type { MulterError } from 'multer';
 /**
  * Allowed image MIME types
  */
-const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+const ALLOWED_MIME_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/gif',
+];
 
 /**
  * Maximum file size (10MB)
@@ -64,7 +69,7 @@ const validateFileSignature = (buffer: Buffer, mimeType: string): boolean => {
 
 /**
  * File validation middleware
- * 
+ *
  * Validates uploaded file after multer processing
  * Checks format, size, and file signature
  */
@@ -90,8 +95,7 @@ export const validateUploadedFile = (
     res.status(400).json({
       success: false,
       error: 'Invalid file format',
-      message:
-        'Only JPG, PNG, and GIF image files are allowed',
+      message: 'Only JPG, PNG, and GIF image files are allowed',
     });
     return;
   }
@@ -122,7 +126,7 @@ export const validateUploadedFile = (
 
 /**
  * Handle multer errors
- * 
+ *
  * Catches multer-specific errors and returns user-friendly messages
  */
 export const handleMulterError = (
@@ -170,14 +174,19 @@ export const handleMulterError = (
 
       default: {
         // Handle "Unexpected end of form" and other multer errors
-        const errorMessage = multerError.message || 'An error occurred while uploading the file';
-        
+        const errorMessage =
+          multerError.message || 'An error occurred while uploading the file';
+
         // Check for common multer error messages
-        if (errorMessage.includes('Unexpected end of form') || errorMessage.includes('Unexpected')) {
+        if (
+          errorMessage.includes('Unexpected end of form') ||
+          errorMessage.includes('Unexpected')
+        ) {
           res.status(400).json({
             success: false,
             error: 'File upload error',
-            message: 'The file upload was incomplete. Please try again with a smaller file or check your connection.',
+            message:
+              'The file upload was incomplete. Please try again with a smaller file or check your connection.',
             code: 'UPLOAD_INCOMPLETE',
           });
         } else {
@@ -196,4 +205,3 @@ export const handleMulterError = (
   // Not a multer error, pass to next error handler
   next(err);
 };
-

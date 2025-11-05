@@ -3,7 +3,7 @@
  */
 declare module 'express-multipart-file-parser' {
   import { RequestHandler } from 'express';
-  
+
   interface UploadedFile {
     fieldname: string;
     originalname: string;
@@ -24,4 +24,3 @@ declare module 'express-multipart-file-parser' {
   const fileParser: RequestHandler;
   export default fileParser;
 }
-

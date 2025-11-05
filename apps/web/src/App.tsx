@@ -26,9 +26,8 @@ const App: React.FC = () => {
 
     try {
       // Validate problem using backend API
-      const validationResult = await apiClient.validateProblem(
-        submittedProblem
-      );
+      const validationResult =
+        await apiClient.validateProblem(submittedProblem);
 
       if (validationResult.success && validationResult.valid) {
         // Problem is valid - set problem and type
@@ -45,7 +44,8 @@ const App: React.FC = () => {
       } else {
         // API error occurred
         setValidationError(
-          validationResult.message || 'Failed to validate problem. Please try again.'
+          validationResult.message ||
+            'Failed to validate problem. Please try again.'
         );
         setProblem(undefined);
         setProblemType(undefined);
@@ -80,7 +80,7 @@ const App: React.FC = () => {
         // Image parsed successfully - now validate the extracted text
         setIsProcessing(false); // Processing complete, now validating
         const extractedText = parseResult.problemText;
-        
+
         // Validate the extracted problem text
         const validationResult = await apiClient.validateProblem(extractedText);
 
@@ -99,14 +99,17 @@ const App: React.FC = () => {
         } else {
           // Validation API error occurred
           setValidationError(
-            validationResult.message || 'Failed to validate problem. Please try again.'
+            validationResult.message ||
+              'Failed to validate problem. Please try again.'
           );
           setProblem(undefined);
           setProblemType(undefined);
         }
       } else {
         // Image parsing failed
-        setValidationError(parseResult.message || 'Failed to parse image. Please try again.');
+        setValidationError(
+          parseResult.message || 'Failed to parse image. Please try again.'
+        );
         setProblem(undefined);
         setProblemType(undefined);
       }

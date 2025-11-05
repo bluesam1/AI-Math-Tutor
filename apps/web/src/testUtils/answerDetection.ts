@@ -1,6 +1,6 @@
 /**
  * Answer Detection Test Utilities
- * 
+ *
  * Utilities for testing answer detection functionality.
  * Used by the developer testing interface to validate answer detection patterns.
  */
@@ -52,7 +52,7 @@ export const testAnswerDetectionMultiple = (
   patterns: AnswerDetectionPattern[],
   text: string
 ): AnswerDetectionTestResult[] => {
-  return patterns.map((pattern) => testAnswerDetection(pattern, text));
+  return patterns.map(pattern => testAnswerDetection(pattern, text));
 };
 
 /**
@@ -67,7 +67,7 @@ export const containsDirectAnswer = (text: string): boolean => {
     /^\d+\/\d+$/,
   ];
 
-  return directPatterns.some((pattern) => pattern.test(text));
+  return directPatterns.some(pattern => pattern.test(text));
 };
 
 /**
@@ -82,7 +82,7 @@ export const containsImplicitAnswer = (text: string): boolean => {
     /=\s*\d+/,
   ];
 
-  return implicitPatterns.some((pattern) => pattern.test(text));
+  return implicitPatterns.some(pattern => pattern.test(text));
 };
 
 /**
@@ -96,4 +96,3 @@ export const answerDetectionUtils = {
 };
 
 export default answerDetectionUtils;
-

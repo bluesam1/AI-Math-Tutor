@@ -1,12 +1,15 @@
 import { Router, type Request, type Response } from 'express';
 import { validate } from '../controllers/problemController';
-import { extractTextFromImage, validateMathContent } from '../services/visionService';
+import {
+  extractTextFromImage,
+  validateMathContent,
+} from '../services/visionService';
 
 const router = Router();
 
 /**
  * Problem-related routes
- * 
+ *
  * POST /api/problem/parse-image - Image parsing (Story 1.6)
  * POST /api/problem/validate - Problem validation (Story 1.7)
  */
@@ -16,10 +19,10 @@ const router = Router();
 
 /**
  * POST /api/problem/parse-image
- * 
+ *
  * Accepts multipart/form-data with image file
  * Field name: "image"
- * 
+ *
  * Returns:
  * - Success: { success: true, problemText: string }
  * - Error: { success: false, error: string, message: string, code?: string }
@@ -29,13 +32,15 @@ router.post('/parse-image', async (req: Request, res: Response) => {
     // Get uploaded files from express-multipart-file-parser
     // The type is defined in express-multipart-file-parser.d.ts
     // Type assertion needed because Express.Request.files type is ambiguous
-    const files = req.files as Array<{
-      fieldname: string;
-      originalname: string;
-      mimetype: string;
-      buffer: Buffer;
-    }> | undefined;
-    
+    const files = req.files as
+      | Array<{
+          fieldname: string;
+          originalname: string;
+          mimetype: string;
+          buffer: Buffer;
+        }>
+      | undefined;
+
     console.log('[Parse Image] Request received', {
       contentType: req.headers['content-type'],
       contentLength: req.headers['content-length'],
@@ -44,7 +49,7 @@ router.post('/parse-image', async (req: Request, res: Response) => {
       hasFiles: !!files,
       filesLength: files?.length,
     });
-    
+
     if (!files || files.length === 0) {
       console.error('[Parse Image] No file uploaded', {
         hasFiles: !!files,
@@ -59,7 +64,7 @@ router.post('/parse-image', async (req: Request, res: Response) => {
 
     // Get the first uploaded file
     const file = files[0];
-    
+
     console.log('[Parse Image] File received', {
       fieldname: file.fieldname,
       originalname: file.originalname,
@@ -78,7 +83,10 @@ router.post('/parse-image', async (req: Request, res: Response) => {
 
     // Extract text from image using Vision API
     console.log('[Parse Image] Extracting text from image');
-    const extractedText = await extractTextFromImage(file.buffer, file.mimetype);
+    const extractedText = await extractTextFromImage(
+      file.buffer,
+      file.mimetype
+    );
 
     // Validate that extracted text contains mathematical content
     const isValidMathContent = validateMathContent(extractedText);
@@ -87,7 +95,8 @@ router.post('/parse-image', async (req: Request, res: Response) => {
       return res.status(400).json({
         success: false,
         error: 'Invalid math content',
-        message: 'The extracted text does not appear to be a math problem. Please ensure the image contains a clear math problem.',
+        message:
+          'The extracted text does not appear to be a math problem. Please ensure the image contains a clear math problem.',
       });
     }
 
@@ -105,17 +114,18 @@ router.post('/parse-image', async (req: Request, res: Response) => {
     return res.status(500).json({
       success: false,
       error: 'File upload error',
-      message: error instanceof Error ? error.message : 'Failed to process image',
+      message:
+        error instanceof Error ? error.message : 'Failed to process image',
     });
   }
 });
 
 /**
  * POST /api/problem/validate
- * 
+ *
  * Accepts JSON with problem text
  * Field name: "problemText"
- * 
+ *
  * Returns:
  * - Success (Valid): { success: true, valid: true, problemType: string, cleanedProblemText?: string }
  * - Success (Invalid): { success: true, valid: false, error: string }

@@ -60,8 +60,8 @@ jobs:
 
 ### Environments
 
-| Environment | Frontend URL                    | Backend URL                         | Purpose                |
-| ----------- | ------------------------------- | ----------------------------------- | ---------------------- |
-| Development | http://localhost:3000           | http://localhost:5000/api           | Local development (emulators) |
-| Staging     | https://staging-{project}.web.app | https://us-central1-{project}.cloudfunctions.net/api | Pre-production testing |
-| Production  | https://{project}.web.app       | https://us-central1-{project}.cloudfunctions.net/api | Live environment       |
+| Environment | Frontend URL                      | Backend URL                                          | Purpose                       |
+| ----------- | --------------------------------- | ---------------------------------------------------- | ----------------------------- |
+| Development | http://localhost:3000             | http://localhost:5000/api                            | Local development (emulators) |
+| Staging     | https://staging-{project}.web.app | https://us-central1-{project}.cloudfunctions.net/api | Pre-production testing        |
+| Production  | https://{project}.web.app         | https://us-central1-{project}.cloudfunctions.net/api | Live environment              |

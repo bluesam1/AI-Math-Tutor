@@ -1,9 +1,9 @@
 /**
  * Test Problem Library
- * 
+ *
  * A comprehensive library of test problems organized by problem type.
  * Used by the developer testing interface to test different scenarios.
- * 
+ *
  * Each problem type has 10+ test problems (50+ total scenarios).
  */
 
@@ -241,14 +241,16 @@ export const geometryProblems: TestProblem[] = [
   },
   {
     id: 'geom-6',
-    problem: 'Find the volume of a rectangular prism with length 5, width 3, and height 4',
+    problem:
+      'Find the volume of a rectangular prism with length 5, width 3, and height 4',
     type: 'geometry',
     description: 'Rectangular prism volume calculation',
     tags: ['volume', 'rectangular-prism'],
   },
   {
     id: 'geom-7',
-    problem: 'Calculate the perimeter of a rectangle with length 12 and width 7',
+    problem:
+      'Calculate the perimeter of a rectangle with length 12 and width 7',
     type: 'geometry',
     description: 'Rectangle perimeter calculation',
     tags: ['perimeter', 'rectangle'],
@@ -297,21 +299,24 @@ export const geometryProblems: TestProblem[] = [
 export const wordProblems: TestProblem[] = [
   {
     id: 'word-1',
-    problem: 'Sara has 24 apples. She gives 1/3 to her friend. How many apples does she have left?',
+    problem:
+      'Sara has 24 apples. She gives 1/3 to her friend. How many apples does she have left?',
     type: 'word',
     description: 'Fraction word problem with subtraction',
     tags: ['fractions', 'subtraction', 'real-world'],
   },
   {
     id: 'word-2',
-    problem: 'A recipe calls for 2 1/2 cups of flour. If you want to make 1.5 times the recipe, how much flour do you need?',
+    problem:
+      'A recipe calls for 2 1/2 cups of flour. If you want to make 1.5 times the recipe, how much flour do you need?',
     type: 'word',
     description: 'Mixed number multiplication',
     tags: ['fractions', 'multiplication', 'real-world'],
   },
   {
     id: 'word-3',
-    problem: 'Tom has $50. He spends $18.75 on groceries. How much money does he have left?',
+    problem:
+      'Tom has $50. He spends $18.75 on groceries. How much money does he have left?',
     type: 'word',
     description: 'Decimal subtraction with money',
     tags: ['decimals', 'subtraction', 'money'],
@@ -325,56 +330,64 @@ export const wordProblems: TestProblem[] = [
   },
   {
     id: 'word-5',
-    problem: 'Maria has 3/4 of a pizza left. She eats 1/3 of what remains. How much pizza does she have left?',
+    problem:
+      'Maria has 3/4 of a pizza left. She eats 1/3 of what remains. How much pizza does she have left?',
     type: 'word',
     description: 'Fraction multiplication with remaining portion',
     tags: ['fractions', 'multiplication', 'real-world'],
   },
   {
     id: 'word-6',
-    problem: 'A store sells apples for $0.75 each. If you buy 12 apples, how much will you pay?',
+    problem:
+      'A store sells apples for $0.75 each. If you buy 12 apples, how much will you pay?',
     type: 'word',
     description: 'Decimal multiplication with money',
     tags: ['decimals', 'multiplication', 'money'],
   },
   {
     id: 'word-7',
-    problem: 'A rectangle has a length of 8 meters and a width of 5 meters. What is its area?',
+    problem:
+      'A rectangle has a length of 8 meters and a width of 5 meters. What is its area?',
     type: 'word',
     description: 'Geometry word problem',
     tags: ['geometry', 'area', 'rectangle'],
   },
   {
     id: 'word-8',
-    problem: 'If 3 students can paint a wall in 4 hours, how long will it take 6 students to paint the same wall?',
+    problem:
+      'If 3 students can paint a wall in 4 hours, how long will it take 6 students to paint the same wall?',
     type: 'word',
     description: 'Proportion word problem',
     tags: ['proportions', 'rate', 'time'],
   },
   {
     id: 'word-9',
-    problem: 'A bag contains 30 marbles. 2/5 of them are blue. How many blue marbles are in the bag?',
+    problem:
+      'A bag contains 30 marbles. 2/5 of them are blue. How many blue marbles are in the bag?',
     type: 'word',
     description: 'Fraction word problem with multiplication',
     tags: ['fractions', 'multiplication', 'real-world'],
   },
   {
     id: 'word-10',
-    problem: 'You have 2.5 liters of juice. You pour 0.75 liters into a glass. How much juice is left?',
+    problem:
+      'You have 2.5 liters of juice. You pour 0.75 liters into a glass. How much juice is left?',
     type: 'word',
     description: 'Decimal subtraction',
     tags: ['decimals', 'subtraction', 'real-world'],
   },
   {
     id: 'word-11',
-    problem: 'A car travels 180 miles on 6 gallons of gas. How many miles per gallon does it get?',
+    problem:
+      'A car travels 180 miles on 6 gallons of gas. How many miles per gallon does it get?',
     type: 'word',
     description: 'Rate calculation',
     tags: ['division', 'rate', 'mileage'],
   },
   {
     id: 'word-12',
-    problem: 'There are 48 cookies. If you want to share them equally among 8 people, how many cookies does each person get?',
+    problem:
+      'There are 48 cookies. If you want to share them equally among 8 people, how many cookies does each person get?',
     type: 'word',
     description: 'Division word problem',
     tags: ['division', 'equal-sharing', 'real-world'],
@@ -388,21 +401,24 @@ export const wordProblems: TestProblem[] = [
 export const multiStepProblems: TestProblem[] = [
   {
     id: 'multi-1',
-    problem: 'A recipe calls for 2 1/2 cups of flour. If you want to make 1.5 times the recipe, how much flour do you need?',
+    problem:
+      'A recipe calls for 2 1/2 cups of flour. If you want to make 1.5 times the recipe, how much flour do you need?',
     type: 'multi-step',
     description: 'Mixed number multiplication',
     tags: ['fractions', 'multiplication', 'scaling'],
   },
   {
     id: 'multi-2',
-    problem: 'You have $100. You spend 1/4 of it on lunch and then spend $20 on a book. How much money do you have left?',
+    problem:
+      'You have $100. You spend 1/4 of it on lunch and then spend $20 on a book. How much money do you have left?',
     type: 'multi-step',
     description: 'Multiple operations with fractions and subtraction',
     tags: ['fractions', 'subtraction', 'money'],
   },
   {
     id: 'multi-3',
-    problem: 'A rectangle has a length of 8 and a width of 5. What is its area? Then, if you double both the length and width, what is the new area?',
+    problem:
+      'A rectangle has a length of 8 and a width of 5. What is its area? Then, if you double both the length and width, what is the new area?',
     type: 'multi-step',
     description: 'Geometry calculation followed by scaling',
     tags: ['geometry', 'area', 'scaling'],
@@ -416,56 +432,64 @@ export const multiStepProblems: TestProblem[] = [
   },
   {
     id: 'multi-5',
-    problem: 'Maria has 3/4 of a pizza. She eats 1/3 of what she has. How much pizza does she have left?',
+    problem:
+      'Maria has 3/4 of a pizza. She eats 1/3 of what she has. How much pizza does she have left?',
     type: 'multi-step',
     description: 'Fraction multiplication with remaining portion',
     tags: ['fractions', 'multiplication', 'subtraction'],
   },
   {
     id: 'multi-6',
-    problem: 'A store is having a sale: 20% off all items. If an item originally costs $50, what is the sale price?',
+    problem:
+      'A store is having a sale: 20% off all items. If an item originally costs $50, what is the sale price?',
     type: 'multi-step',
     description: 'Percentage calculation',
     tags: ['percentages', 'multiplication', 'money'],
   },
   {
     id: 'multi-7',
-    problem: 'Find the perimeter of a rectangle with length 10 and width 6. Then find the area.',
+    problem:
+      'Find the perimeter of a rectangle with length 10 and width 6. Then find the area.',
     type: 'multi-step',
     description: 'Multiple geometry calculations',
     tags: ['geometry', 'perimeter', 'area'],
   },
   {
     id: 'multi-8',
-    problem: 'You have 2.5 liters of juice. You pour 0.75 liters into one glass and 0.5 liters into another. How much is left?',
+    problem:
+      'You have 2.5 liters of juice. You pour 0.75 liters into one glass and 0.5 liters into another. How much is left?',
     type: 'multi-step',
     description: 'Multiple decimal subtractions',
     tags: ['decimals', 'subtraction', 'real-world'],
   },
   {
     id: 'multi-9',
-    problem: 'A train travels 120 miles in 2 hours. How far will it travel in 5 hours at the same speed?',
+    problem:
+      'A train travels 120 miles in 2 hours. How far will it travel in 5 hours at the same speed?',
     type: 'multi-step',
     description: 'Rate calculation then distance calculation',
     tags: ['rate', 'multiplication', 'distance'],
   },
   {
     id: 'multi-10',
-    problem: 'Solve: 3x - 7 = 14. Then check your answer by substituting it back into the equation.',
+    problem:
+      'Solve: 3x - 7 = 14. Then check your answer by substituting it back into the equation.',
     type: 'multi-step',
     description: 'Solve equation then verify',
     tags: ['algebra', 'linear-equation', 'verification'],
   },
   {
     id: 'multi-11',
-    problem: 'A bag contains 30 marbles. 2/5 are blue and 1/3 are red. How many marbles are neither blue nor red?',
+    problem:
+      'A bag contains 30 marbles. 2/5 are blue and 1/3 are red. How many marbles are neither blue nor red?',
     type: 'multi-step',
     description: 'Multiple fraction calculations',
     tags: ['fractions', 'multiplication', 'subtraction'],
   },
   {
     id: 'multi-12',
-    problem: 'Find the area of a triangle with base 10 and height 4. Then find the perimeter if the sides are 10, 4, and 11.',
+    problem:
+      'Find the area of a triangle with base 10 and height 4. Then find the perimeter if the sides are 10, 4, and 11.',
     type: 'multi-step',
     description: 'Multiple geometry calculations',
     tags: ['geometry', 'area', 'perimeter'],
@@ -505,7 +529,7 @@ export const getTestProblemsByType = (type: ProblemType): TestProblem[] => {
  * Get a test problem by ID
  */
 export const getTestProblemById = (id: string): TestProblem | undefined => {
-  return allTestProblems.find((problem) => problem.id === id);
+  return allTestProblems.find(problem => problem.id === id);
 };
 
 /**
@@ -527,4 +551,3 @@ export const getProblemCountByType = (): Record<ProblemType, number> => {
     'multi-step': multiStepProblems.length,
   };
 };
-

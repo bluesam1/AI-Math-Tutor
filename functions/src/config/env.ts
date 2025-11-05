@@ -1,7 +1,7 @@
 /**
  * Environment variable configuration
  * Access environment variables through this module, never process.env directly
- * 
+ *
  * Firebase Functions v2 uses process.env directly, so we just wrap it for type safety
  */
 

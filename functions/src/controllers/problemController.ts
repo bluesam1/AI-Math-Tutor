@@ -1,11 +1,14 @@
 /**
  * Problem Controller
- * 
+ *
  * Handles problem-related API endpoints
  */
 
 import type { Request, Response } from 'express';
-import { extractTextFromImage, validateMathContent } from '../services/visionService';
+import {
+  extractTextFromImage,
+  validateMathContent,
+} from '../services/visionService';
 import { validateProblem } from '../services/llmService';
 import type {
   ParseImageResponse,
@@ -16,7 +19,7 @@ import type {
 
 /**
  * Parse image endpoint handler
- * 
+ *
  * POST /api/problem/parse-image
  * Accepts multipart/form-data with image file
  * Returns extracted problem text
@@ -77,7 +80,10 @@ export const parseImage = async (
       }
 
       // Check for authentication errors
-      if (error.message.includes('API key') || error.message.includes('Invalid')) {
+      if (
+        error.message.includes('API key') ||
+        error.message.includes('Invalid')
+      ) {
         res.status(500).json({
           success: false,
           error: 'Configuration error',
@@ -109,13 +115,17 @@ export const parseImage = async (
 
 /**
  * Validate problem endpoint handler
- * 
+ *
  * POST /api/problem/validate
  * Accepts JSON with problem text
  * Returns validation result with problem type if valid
  */
 export const validate = async (
-  req: Request<Record<string, never>, ValidateProblemApiResponse, ValidateProblemRequest>,
+  req: Request<
+    Record<string, never>,
+    ValidateProblemApiResponse,
+    ValidateProblemRequest
+  >,
   res: Response<ValidateProblemApiResponse>
 ): Promise<void> => {
   try {
@@ -175,7 +185,9 @@ export const validate = async (
       res.status(200).json({
         success: true,
         valid: false,
-        error: validationResult.error || 'This does not appear to be a valid math problem.',
+        error:
+          validationResult.error ||
+          'This does not appear to be a valid math problem.',
       });
       return;
     }
@@ -186,7 +198,10 @@ export const validate = async (
       errorMessage: error instanceof Error ? error.message : String(error),
       errorStack: error instanceof Error ? error.stack : undefined,
       isOpenAIError: error instanceof Error && 'status' in error,
-      statusCode: error instanceof Error && 'status' in error ? (error as { status?: number }).status : undefined,
+      statusCode:
+        error instanceof Error && 'status' in error
+          ? (error as { status?: number }).status
+          : undefined,
     });
 
     // Handle LLM API errors
@@ -204,7 +219,11 @@ export const validate = async (
       }
 
       // Check for authentication errors
-      if (error.message.includes('API key') || error.message.includes('Invalid') || error.message.includes('OPENAI_API_KEY')) {
+      if (
+        error.message.includes('API key') ||
+        error.message.includes('Invalid') ||
+        error.message.includes('OPENAI_API_KEY')
+      ) {
         console.error('[Problem Validation] API key configuration error', {
           errorMessage: error.message,
           hasApiKey: !!process.env.OPENAI_API_KEY,
@@ -244,4 +263,3 @@ export const validate = async (
     });
   }
 };
-

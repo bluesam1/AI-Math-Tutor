@@ -188,16 +188,12 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             isDragging
               ? 'border-primary bg-primary/5'
               : 'border-input hover:border-primary/50'
-          } ${
-            disabled
-              ? 'opacity-50 cursor-not-allowed'
-              : 'cursor-pointer'
-          }`}
+          } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
           role="button"
           tabIndex={disabled ? -1 : 0}
           aria-label="Upload image by clicking or dragging and dropping"
           aria-disabled={disabled}
-          onKeyDown={(e) => {
+          onKeyDown={e => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
               handleButtonClick();
@@ -231,7 +227,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
               </svg>
             </div>
             <p className="text-text-primary text-lg font-medium mb-2">
-              {autoSubmit ? 'Drop image here or click to upload' : 'Drag image here or click to select'}
+              {autoSubmit
+                ? 'Drop image here or click to upload'
+                : 'Drag image here or click to select'}
             </p>
             <p className="text-text-secondary text-sm">
               {getSupportedFormatsText()} (max {MAX_FILE_SIZE_MB}MB)
@@ -276,7 +274,11 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                   <div className="mt-2 flex items-center gap-2 text-sm text-blue-600">
                     <LoadingSpinner size="sm" ariaLabel="Processing" />
                     <span>
-                      {isUploading ? 'Uploading...' : isProcessing ? 'Processing...' : ''}
+                      {isUploading
+                        ? 'Uploading...'
+                        : isProcessing
+                          ? 'Processing...'
+                          : ''}
                     </span>
                   </div>
                 )}
@@ -322,4 +324,3 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 };
 
 export default ImageUpload;
-

@@ -1,6 +1,6 @@
 /**
  * TypeScript types for environment variables
- * 
+ *
  * Firebase Functions v2 uses process.env directly
  * Environment variables are set via Firebase CLI or console
  */

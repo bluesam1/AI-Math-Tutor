@@ -1,6 +1,6 @@
 /**
  * Vision API Service
- * 
+ *
  * Handles integration with OpenAI Vision API for extracting text from images
  */
 
@@ -29,7 +29,7 @@ const imageBufferToBase64 = (buffer: Buffer, mimeType: string): string => {
 
 /**
  * Extract text from image using OpenAI Vision API
- * 
+ *
  * @param imageBuffer - Image file buffer
  * @param mimeType - Image MIME type (e.g., 'image/png', 'image/jpeg')
  * @returns Extracted problem text
@@ -80,9 +80,7 @@ export const extractTextFromImage = async (
     if (error instanceof OpenAI.APIError) {
       // Handle rate limit errors
       if (error.status === 429) {
-        throw new Error(
-          'Rate limit exceeded. Please try again in a moment.'
-        );
+        throw new Error('Rate limit exceeded. Please try again in a moment.');
       }
 
       // Handle authentication errors
@@ -107,7 +105,7 @@ export const extractTextFromImage = async (
 
 /**
  * Validate that extracted text contains mathematical content
- * 
+ *
  * @param text - Extracted text to validate
  * @returns true if text contains mathematical content
  */
@@ -164,12 +162,10 @@ export const validateMathContent = (text: string): boolean => {
   const lowerText = text.toLowerCase();
 
   // Check for keywords
-  const hasKeyword = mathKeywords.some((keyword) =>
-    lowerText.includes(keyword)
-  );
+  const hasKeyword = mathKeywords.some(keyword => lowerText.includes(keyword));
 
   // Check for symbols
-  const hasSymbol = mathSymbols.some((symbol) => text.includes(symbol));
+  const hasSymbol = mathSymbols.some(symbol => text.includes(symbol));
 
   // Check for numbers (common in math problems)
   const hasNumber = /\d/.test(text);
@@ -177,4 +173,3 @@ export const validateMathContent = (text: string): boolean => {
   // Text is valid if it has at least one keyword or symbol, and contains numbers
   return (hasKeyword || hasSymbol) && hasNumber;
 };
-

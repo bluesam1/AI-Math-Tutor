@@ -1,6 +1,6 @@
 /**
  * Socratic Compliance Test Utilities
- * 
+ *
  * Utilities for testing Socratic compliance (ensuring no direct answers).
  * Used by the developer testing interface to validate Socratic dialogue.
  */
@@ -36,16 +36,16 @@ export const testSocraticCompliance = (
 ): SocraticComplianceTestResult => {
   // Check for direct answers
   const containsDirect = answerDetectionUtils.containsDirect(response);
-  
+
   // Check for implicit answers
   const containsImplicit = answerDetectionUtils.containsImplicit(response);
-  
+
   // Check if it's a question (good sign)
   const isQuestion = /[?]/.test(response);
-  
+
   // Check if it provides guidance (good sign)
   const isGuidance = /(think|consider|what|how|why|try|step)/i.test(response);
-  
+
   // Test against all patterns
   const testResults = answerDetectionUtils.testMultiple(patterns, response);
   const violations: Array<{
@@ -53,13 +53,15 @@ export const testSocraticCompliance = (
     location: string;
     severity: 'high' | 'medium' | 'low';
   }> = testResults
-    .filter((result) => result.detected)
-    .map((result) => ({
+    .filter(result => result.detected)
+    .map(result => ({
       pattern: result.pattern,
       location: result.matchDetails?.match || 'unknown',
-      severity: (result.pattern.category === 'direct' ? 'high' : 'medium') as 'high' | 'medium',
+      severity: (result.pattern.category === 'direct' ? 'high' : 'medium') as
+        | 'high'
+        | 'medium',
     }));
-  
+
   // Calculate compliance score
   let score = 1.0;
   if (containsDirect) score -= 0.5;
@@ -67,9 +69,10 @@ export const testSocraticCompliance = (
   if (isQuestion) score += 0.1;
   if (isGuidance) score += 0.1;
   score = Math.max(0, Math.min(1, score));
-  
-  const compliant = !containsDirect && !containsImplicit && violations.length === 0;
-  
+
+  const compliant =
+    !containsDirect && !containsImplicit && violations.length === 0;
+
   return {
     compliant,
     score,
@@ -103,4 +106,3 @@ export const socraticComplianceUtils = {
 };
 
 export default socraticComplianceUtils;
-

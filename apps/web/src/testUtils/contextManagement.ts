@@ -1,6 +1,6 @@
 /**
  * Context Management Test Utilities
- * 
+ *
  * Utilities for testing context management functionality.
  * Used by the developer testing interface to validate conversation context.
  */
@@ -38,26 +38,26 @@ export const testContextManagement = (
   const messagesCount = messages.length;
   const contextWindow = Math.min(messagesCount, maxContextSize);
   const lastMessages = messages.slice(-contextWindow);
-  
+
   // Check if context is retained (last messages should be present)
   const contextRetained = lastMessages.length > 0;
-  
+
   // Simple coherence check: check if messages reference previous context
   let coherence = 0.5; // Start with neutral
   if (messages.length >= 2) {
     const lastMessage = messages[messages.length - 1];
     const previousMessage = messages[messages.length - 2];
-    
+
     // Check if last message references previous context
     const referencesPrevious = lastMessage.content
       .toLowerCase()
       .includes(previousMessage.content.toLowerCase().substring(0, 10));
-    
+
     if (referencesPrevious) {
       coherence += 0.3;
     }
   }
-  
+
   // Check message retention
   let messageRetention: 'full' | 'partial' | 'none' = 'full';
   if (messagesCount > maxContextSize) {
@@ -65,9 +65,9 @@ export const testContextManagement = (
   } else if (messagesCount === 0) {
     messageRetention = 'none';
   }
-  
+
   coherence = Math.max(0, Math.min(1, coherence));
-  
+
   return {
     messagesCount,
     contextRetained,
@@ -100,4 +100,3 @@ export const contextManagementUtils = {
 };
 
 export default contextManagementUtils;
-

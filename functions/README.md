@@ -65,6 +65,7 @@ npm run dev:emulators
 ```
 
 The functions emulator will be available at:
+
 - Functions: `http://localhost:5001`
 - Emulator UI: `http://localhost:4000`
 
@@ -147,6 +148,7 @@ Functions are configured in `firebase.json`:
 ```
 
 The function is exported as `api` in `index.ts` and is accessible at:
+
 - Emulator: `http://localhost:5001/{project-id}/us-central1/api/...`
 - Production: `https://us-central1-{project-id}.cloudfunctions.net/api/...`
 - Via Hosting Rewrite: `https://your-domain.web.app/api/...`
@@ -154,6 +156,7 @@ The function is exported as `api` in `index.ts` and is accessible at:
 ## TypeScript
 
 The project uses TypeScript with standard Firebase Functions configuration:
+
 - **Module System**: CommonJS (Firebase standard)
 - **Target**: ES2017
 - **Output**: `lib/` directory
@@ -166,4 +169,3 @@ The project uses TypeScript with standard Firebase Functions configuration:
 - Firebase Functions v2 handles the server lifecycle automatically
 - CORS is configured to allow requests from Firebase Hosting and local development
 - Error handling logs errors to Firebase Functions logs automatically
-

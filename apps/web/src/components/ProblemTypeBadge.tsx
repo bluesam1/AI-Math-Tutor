@@ -1,5 +1,11 @@
 import React from 'react';
-import { Calculator, Variable, Triangle, FileText, ArrowRightLeft } from 'lucide-react';
+import {
+  Calculator,
+  Variable,
+  Triangle,
+  FileText,
+  ArrowRightLeft,
+} from 'lucide-react';
 import type { ProblemType } from '../types';
 
 export interface ProblemTypeBadgeProps {
@@ -72,4 +78,3 @@ const ProblemTypeBadge: React.FC<ProblemTypeBadgeProps> = ({
 };
 
 export default ProblemTypeBadge;
-
