@@ -5,7 +5,9 @@
  */
 
 // Get API base URL from environment variable or use default
-// In development with emulators, use localhost:5000 (Firebase Hosting emulator)
+// In development with emulators:
+// - If running through Firebase Hosting emulator: use localhost:5000/api
+// - If running frontend separately (Vite dev server): use localhost:5001/api (Functions emulator directly)
 // In production, this will be the Firebase Hosting domain
 const getApiBaseUrl = (): string => {
   // Prefer explicit environment variable (build-time override)
@@ -15,6 +17,7 @@ const getApiBaseUrl = (): string => {
 
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname;
+    const port = window.location.port;
     const isHostedEnvironment =
       hostname.endsWith('web.app') ||
       hostname.endsWith('firebaseapp.com') ||
@@ -24,9 +27,18 @@ const getApiBaseUrl = (): string => {
       // Use Hosting rewrite `/api` → Cloud Function
       return '/api';
     }
+
+    // If frontend is running on a different port (e.g., Vite dev server on 3000),
+    // use the Hosting emulator on port 5000 which handles rewrites to Functions
+    // The Hosting emulator rewrites /api/** to the Functions emulator
+    if (port && port !== '5000' && port !== '') {
+      // Frontend running separately (likely Vite dev server)
+      // Use Hosting emulator which handles API rewrites
+      return 'http://localhost:5000/api';
+    }
   }
 
-  // Fallback to local emulator (default dev experience)
+  // Fallback to local Hosting emulator (handles rewrites)
   return 'http://localhost:5000/api';
 };
 
@@ -101,6 +113,43 @@ export interface ParseImageErrorResponse {
 export type ParseImageApiResponse =
   | ParseImageResponse
   | ParseImageErrorResponse;
+
+/**
+ * Chat Message API Types
+ */
+export interface ConversationMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export interface ChatMessageRequest {
+  message: string;
+  problemText: string;
+  problemType: ProblemType;
+  conversationHistory?: ConversationMessage[];
+  sessionId?: string;
+}
+
+export interface ChatMessageResponse {
+  success: true;
+  response: string;
+  metadata: {
+    type: 'question' | 'hint' | 'encouragement';
+    helpLevel: 'normal' | 'escalated';
+  };
+  sessionId?: string;
+}
+
+export interface ChatMessageErrorResponse {
+  success: false;
+  error: string;
+  message: string;
+  code?: string;
+}
+
+export type ChatMessageApiResponse =
+  | ChatMessageResponse
+  | ChatMessageErrorResponse;
 
 /**
  * API Client class
@@ -274,6 +323,26 @@ class ApiClient {
     }
 
     return response.json();
+  }
+
+  /**
+   * Send chat message endpoint
+   * POST /api/chat/message
+   */
+  async sendChatMessage(
+    message: string,
+    problemText: string,
+    problemType: ProblemType,
+    conversationHistory?: ConversationMessage[],
+    sessionId?: string
+  ): Promise<ChatMessageApiResponse> {
+    return this.post<ChatMessageApiResponse>('/chat/message', {
+      message,
+      problemText,
+      problemType,
+      conversationHistory,
+      sessionId,
+    });
   }
 }
 

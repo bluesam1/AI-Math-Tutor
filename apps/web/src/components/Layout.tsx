@@ -2,15 +2,19 @@ import React from 'react';
 import ProblemPanel from './ProblemPanel';
 import ChatPanel from './ChatPanel';
 import StatusIndicator from './StatusIndicator';
-import type { LayoutProps, ChatPanelProps } from '../types';
+import type { LayoutProps, ChatPanelProps, ProblemType } from '../types';
 
 interface LayoutComponentProps extends LayoutProps {
   problem?: string;
-  problemType?: string;
+  problemType?: ProblemType;
   messages?: ChatPanelProps['messages'];
   emptyState?: boolean;
   onProblemSubmit?: (problem: string) => void;
   onImageSubmit?: (file: File) => void;
+  onSendMessage?: (message: string) => Promise<void>;
+  sessionId?: string;
+  chatError?: string | null;
+  isChatLoading?: boolean;
   validationError?: string | null;
   isValidating?: boolean;
   isSubmitting?: boolean;
@@ -25,6 +29,10 @@ const Layout: React.FC<LayoutComponentProps> = ({
   emptyState = false,
   onProblemSubmit,
   onImageSubmit,
+  onSendMessage,
+  sessionId,
+  chatError,
+  isChatLoading,
   validationError,
   isValidating,
   isSubmitting,
@@ -54,7 +62,16 @@ const Layout: React.FC<LayoutComponentProps> = ({
 
         {/* Chat Conversation Panel - Right side on desktop, bottom on mobile */}
         <div className="w-full lg:w-1/2 h-1/2 lg:h-full overflow-hidden">
-          <ChatPanel messages={messages} emptyState={emptyState} />
+          <ChatPanel
+            messages={messages}
+            emptyState={emptyState}
+            onSendMessage={onSendMessage}
+            problemText={problem}
+            problemType={problemType}
+            sessionId={sessionId}
+            isLoading={isChatLoading}
+            error={chatError}
+          />
         </div>
       </div>
     </main>

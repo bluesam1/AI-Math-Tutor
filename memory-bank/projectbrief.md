@@ -1,7 +1,7 @@
 # Project Brief: AI Math Tutor
 
-**Last Updated:** 2025-01-XX  
-**Version:** 1.0
+**Last Updated:** 2025-11-05  
+**Version:** 1.1
 
 ## Executive Summary
 
@@ -42,7 +42,7 @@ AI Math Tutor is an interactive web application that guides students through mat
 
 - **Frontend:** React 18.2.0 + TypeScript 5.3.0+ + Vite 5.0.0 + Tailwind CSS v4.1.16
 - **Backend:** Node.js/Express 4.18.0 + TypeScript 5.3.0+
-- **Infrastructure:** AWS (S3 + CloudFront, Lambda, API Gateway, ElastiCache/DynamoDB)
+- **Infrastructure:** Firebase (Hosting, Cloud Functions, Firestore)
 - **External APIs:** OpenAI Vision API, LLM API (OpenAI GPT-4 or Claude)
 - **Math Rendering:** LaTeX/KaTeX
 - **Architecture:** Serverless monorepo with npm workspaces
@@ -52,7 +52,7 @@ AI Math Tutor is an interactive web application that guides students through mat
 Monorepo structure with:
 
 - `apps/web/` - React frontend application
-- `apps/api/` - Node.js/Express backend API
+- `functions/` - Firebase Cloud Functions (Express API)
 - `packages/shared/` - Shared TypeScript types and utilities
 - `packages/config/` - Shared ESLint, TypeScript, Jest configurations
 

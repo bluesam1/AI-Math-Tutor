@@ -1,16 +1,13 @@
 import { Router } from 'express';
+import { sendMessage } from '../controllers/chatController';
 
 const router = Router();
 
 /**
  * Chat-related routes
- * Placeholder for future implementation
- * POST /api/chat - Chat messages (Future epic)
+ * POST /api/chat/message - Send chat message and receive Socratic dialogue response
  */
 
-// Placeholder route to be implemented in future stories
-router.post('/', (req, res) => {
-  res.status(501).json({ error: 'Not implemented yet' });
-});
+router.post('/message', sendMessage);
 
 export default router;

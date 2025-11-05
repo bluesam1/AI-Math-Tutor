@@ -15,4 +15,3 @@ try {
   console.log('Husky not available, skipping installation');
   process.exit(0);
 }
-

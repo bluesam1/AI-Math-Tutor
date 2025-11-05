@@ -1,7 +1,8 @@
 /**
  * LLM Service
  *
- * Handles integration with LLM API (OpenAI GPT-4) for problem validation and type identification
+ * Handles integration with LLM API (OpenAI GPT-4) for problem validation, type identification,
+ * and Socratic dialogue generation
  */
 
 import OpenAI from 'openai';
@@ -25,6 +26,36 @@ export interface ValidationResult {
   problemType?: ProblemType;
   cleanedProblemText?: string;
   error?: string;
+}
+
+/**
+ * Conversation message for context management
+ */
+export interface ConversationMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+/**
+ * Socratic dialogue generation options
+ */
+export interface SocraticDialogueOptions {
+  problemText: string;
+  problemType: ProblemType;
+  studentMessage: string;
+  conversationHistory?: ConversationMessage[];
+  helpLevel?: 'normal' | 'escalated';
+}
+
+/**
+ * Socratic dialogue response
+ */
+export interface SocraticDialogueResponse {
+  response: string;
+  metadata: {
+    type: 'question' | 'hint' | 'encouragement';
+    helpLevel: 'normal' | 'escalated';
+  };
 }
 
 /**
@@ -257,5 +288,209 @@ Important:
     throw new Error(
       'An unexpected error occurred while validating the problem'
     );
+  }
+};
+
+/**
+ * Generate Socratic dialogue response using LLM
+ *
+ * @param options - Dialogue generation options including problem context and conversation history
+ * @returns Socratic dialogue response with metadata
+ */
+export const generateSocraticDialogue = async (
+  options: SocraticDialogueOptions
+): Promise<SocraticDialogueResponse> => {
+  const client = getOpenAIClient();
+  const startTime = Date.now();
+
+  try {
+    // Build conversation history for context
+    const conversationMessages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] =
+      [];
+
+    // System message with Socratic principles
+    const systemMessage = `You are a patient, encouraging math tutor for 6th grade students (ages 11-12). Your role is to guide students through math problems using the Socratic method - asking guiding questions that help them discover solutions themselves.
+
+CRITICAL RULES - NEVER VIOLATE THESE:
+1. NEVER give direct answers or final solutions
+2. NEVER say "the answer is X" or "the solution is Y"
+3. NEVER provide numerical results (e.g., "42", "x = 5")
+4. ALWAYS ask guiding questions that lead students to think
+5. Use progressive disclosure - break problems into smaller steps
+6. Use chain-of-thought strategies - guide students to think through each step
+7. Be encouraging and positive, especially when students struggle
+8. Adapt your questions to the student's understanding level
+
+When a student is stuck (after 2+ turns without progress), provide more concrete hints while STILL asking questions - never give answers.
+
+Problem Type: ${options.problemType}
+Current Problem: ${options.problemText}`;
+
+    conversationMessages.push({
+      role: 'system',
+      content: systemMessage,
+    });
+
+    // Add conversation history if available
+    if (options.conversationHistory && options.conversationHistory.length > 0) {
+      // Convert conversation history to OpenAI format
+      for (const msg of options.conversationHistory) {
+        conversationMessages.push({
+          role: msg.role === 'user' ? 'user' : 'assistant',
+          content: msg.content,
+        });
+      }
+    }
+
+    // Add help level context if escalated
+    if (options.helpLevel === 'escalated') {
+      conversationMessages.push({
+        role: 'system',
+        content:
+          'The student has been stuck for multiple turns. Provide more concrete hints and specific guidance, but STILL ask questions - never give direct answers. Break down the problem into smaller, more manageable steps.',
+      });
+    }
+
+    // Add current student message
+    conversationMessages.push({
+      role: 'user',
+      content: options.studentMessage,
+    });
+
+    console.log('[LLM Service] Generating Socratic dialogue', {
+      model: 'gpt-4o',
+      problemType: options.problemType,
+      studentMessageLength: options.studentMessage.length,
+      conversationHistoryLength: options.conversationHistory?.length || 0,
+      helpLevel: options.helpLevel || 'normal',
+    });
+
+    const response = await client.chat.completions.create({
+      model: 'gpt-4o',
+      messages: conversationMessages,
+      max_tokens: 500,
+      temperature: 0.7, // Slightly higher for more natural dialogue
+    });
+
+    const responseTime = Date.now() - startTime;
+    console.log('[LLM Service] Socratic dialogue response received', {
+      responseTime: `${responseTime}ms`,
+      hasResponse: !!response,
+      choicesCount: response.choices?.length || 0,
+      usage: response.usage
+        ? {
+            promptTokens: response.usage.prompt_tokens,
+            completionTokens: response.usage.completion_tokens,
+            totalTokens: response.usage.total_tokens,
+          }
+        : undefined,
+    });
+
+    const responseText = response.choices[0]?.message?.content?.trim();
+
+    if (!responseText) {
+      console.error('[LLM Service] No response text from OpenAI API', {
+        response: JSON.stringify(response, null, 2),
+      });
+      throw new Error('No response from LLM API');
+    }
+
+    // Determine response metadata (type and help level)
+    // Simple heuristics to classify response type
+    const lowerResponse = responseText.toLowerCase();
+    let responseType: 'question' | 'hint' | 'encouragement' = 'question';
+    if (
+      lowerResponse.includes('?') ||
+      lowerResponse.startsWith('what') ||
+      lowerResponse.startsWith('how') ||
+      lowerResponse.startsWith('why') ||
+      lowerResponse.startsWith('can you') ||
+      lowerResponse.startsWith('think about')
+    ) {
+      responseType = 'question';
+    } else if (
+      lowerResponse.includes('hint') ||
+      lowerResponse.includes('consider') ||
+      lowerResponse.includes('remember') ||
+      lowerResponse.includes('try')
+    ) {
+      responseType = 'hint';
+    } else if (
+      lowerResponse.includes('great') ||
+      lowerResponse.includes('good') ||
+      lowerResponse.includes('excellent') ||
+      lowerResponse.includes('well done') ||
+      lowerResponse.includes('keep going')
+    ) {
+      responseType = 'encouragement';
+    }
+
+    return {
+      response: responseText,
+      metadata: {
+        type: responseType,
+        helpLevel: options.helpLevel || 'normal',
+      },
+    };
+  } catch (error) {
+    const responseTime = Date.now() - startTime;
+    console.error('[LLM Service] Error generating Socratic dialogue', {
+      responseTime: `${responseTime}ms`,
+      errorName: error instanceof Error ? error.name : 'Unknown',
+      errorMessage: error instanceof Error ? error.message : String(error),
+      isOpenAIError: error instanceof OpenAI.APIError,
+      statusCode: error instanceof OpenAI.APIError ? error.status : undefined,
+      errorCode: error instanceof OpenAI.APIError ? error.code : undefined,
+      errorType: error instanceof OpenAI.APIError ? error.type : undefined,
+      errorStack: error instanceof Error ? error.stack : undefined,
+    });
+
+    // Handle OpenAI API errors
+    if (error instanceof OpenAI.APIError) {
+      // Handle rate limit errors with retry logic
+      if (error.status === 429) {
+        console.error('[LLM Service] Rate limit error', {
+          status: error.status,
+          message: error.message,
+        });
+        throw new Error('Rate limit exceeded. Please try again in a moment.');
+      }
+
+      // Handle authentication errors
+      if (error.status === 401) {
+        console.error('[LLM Service] Authentication error', {
+          status: error.status,
+          message: error.message,
+          hasApiKey: !!env.openaiApiKey,
+          apiKeyLength: env.openaiApiKey?.length || 0,
+        });
+        throw new Error('Invalid API key. Please check your configuration.');
+      }
+
+      // Handle other API errors
+      console.error('[LLM Service] OpenAI API error', {
+        status: error.status,
+        message: error.message,
+        code: error.code,
+        type: error.type,
+      });
+      throw new Error(
+        `LLM API error: ${error.message || 'Unknown error occurred'}`
+      );
+    }
+
+    // Handle network errors and other errors
+    if (error instanceof Error) {
+      console.error('[LLM Service] General error', {
+        message: error.message,
+        stack: error.stack,
+      });
+      throw new Error(`Failed to generate dialogue: ${error.message}`);
+    }
+
+    console.error('[LLM Service] Unknown error type', {
+      error: String(error),
+    });
+    throw new Error('An unexpected error occurred while generating dialogue');
   }
 };

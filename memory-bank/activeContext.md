@@ -1,7 +1,7 @@
 # Active Context: AI Math Tutor
 
-**Last Updated:** 2025-01-28  
-**Version:** 1.1
+**Last Updated:** 2025-11-05  
+**Version:** 1.2
 
 ## Current Work Focus
 
@@ -71,6 +71,57 @@
   - DeveloperTestingInterface component with collapsible UI
   - Production-safe (hidden in production builds)
 
+**Epic 2: Socratic Dialogue System & Answer Detection** - ✅ **COMPLETE** (2025-11-05)
+
+- ✅ **Story 2.1:** LLM Integration Backend Service - Complete
+  - `generateSocraticDialogue` function added to `llmService.ts`
+  - OpenAI GPT-4 (gpt-4o) integration with Socratic prompt templates
+  - Error handling and rate limiting
+  - Response time monitoring
+
+- ✅ **Story 2.2:** Socratic Dialogue Generation Endpoint - Complete
+  - POST `/api/chat/message` endpoint implemented
+  - Accepts student messages and generates Socratic responses
+  - Includes conversation history in prompts
+  - Returns responses with metadata (question/hint/encouragement)
+
+- ✅ **Story 2.3:** Keyword-Based Answer Detection Guardrail - Complete
+  - `answerDetectionService.ts` with pattern matching
+  - Detects direct answer phrases ("the answer is", "equals", etc.)
+  - Numeric result detection
+  - Configurable pattern library
+
+- ✅ **Story 2.4:** LLM-Based Answer Detection Guardrail - Complete
+  - `answerValidationService.ts` with secondary LLM validation
+  - Context-aware answer detection
+  - Confidence scoring
+  - Error handling with safe defaults
+
+- ✅ **Story 2.5:** Answer Blocking & Response Rewriting - Complete
+  - `answerBlockingService.ts` combines detection methods
+  - Automatic response rewriting using LLM
+  - Fallback to generic Socratic questions
+  - Logging and monitoring
+
+- ✅ **Story 2.6:** Context Management Service - Complete
+  - `contextService.ts` with Firestore integration
+  - Stores last 10 messages per session
+  - Automatic session expiration (30 minutes TTL)
+  - Graceful degradation on storage failures
+
+- ✅ **Story 2.7:** Chat UI Component - Complete
+  - `ChatPanel.tsx` with message display and input
+  - API integration with `/api/chat/message`
+  - Loading states and error handling
+  - Auto-scroll to latest messages
+  - Integrated with `App.tsx` message state management
+
+- ✅ **Story 2.8:** Progressive Help Escalation Logic - Complete
+  - `helpEscalationService.ts` with progress tracking
+  - Escalates help after 2+ turns without progress
+  - LLM prompt adjustment based on progress
+  - Reset logic when progress is made
+
 ### Current Status
 
 **Infrastructure:** ✅ Foundation complete
@@ -80,13 +131,13 @@
 - Express backend with basic routes and middleware
 - React frontend with side-by-side layout
 
-**Core Functionality:** ⏳ In Progress
+**Core Functionality:** ✅ Epic 2 Complete
 
-- Problem input (text and image) - Not yet implemented
-- Vision API integration - Not yet implemented
-- Problem validation - Not yet implemented
-- Socratic dialogue system - Not yet implemented
-- Answer detection guardrails - Not yet implemented
+- Problem input (text and image) - ✅ Complete (Epic 1)
+- Vision API integration - ✅ Complete (Epic 1)
+- Problem validation - ✅ Complete (Epic 1)
+- Socratic dialogue system - ✅ Complete (Epic 2)
+- Answer detection guardrails - ✅ Complete (Epic 2)
 
 ## Next Steps
 
@@ -100,13 +151,13 @@
    - ✅ Enhance problem display component (Story 1.8)
    - ✅ Build developer testing interface (Story 1.9)
 
-2. **Begin Epic 2: Socratic Dialogue System & Answer Detection**
-   - Set up LLM integration service (Story 2.1)
-   - Implement dialogue generation endpoint (Story 2.2)
-   - Build answer detection guardrails (Stories 2.3, 2.4, 2.5)
-   - Implement context management (Story 2.6)
-   - Build chat UI component (Story 2.7)
-   - Add progressive help escalation (Story 2.8)
+2. ✅ **Epic 2: Socratic Dialogue System & Answer Detection** - COMPLETE
+   - ✅ Set up LLM integration service (Story 2.1)
+   - ✅ Implement dialogue generation endpoint (Story 2.2)
+   - ✅ Build answer detection guardrails (Stories 2.3, 2.4, 2.5)
+   - ✅ Implement context management (Story 2.6)
+   - ✅ Build chat UI component (Story 2.7)
+   - ✅ Add progressive help escalation (Story 2.8)
 
 3. **Complete Epic 3: Visual Feedback & Math Rendering**
    - Integrate LaTeX/KaTeX rendering (Story 3.1)
@@ -118,21 +169,21 @@
 
 ### Active Decisions
 
-1. **LLM Provider Selection:** Need to decide between OpenAI GPT-4 or Claude for Socratic dialogue generation
-2. **Vision API Provider:** Need to decide between OpenAI Vision API or Google Vision API
-3. **Session Storage:** Using Firestore (migrated from ElastiCache Redis) - TTL policies configured for automatic cleanup
-4. **Deployment Strategy:** ✅ **MIGRATED TO FIREBASE** - Full cutover completed on branch `firebase-migration-plan`
+1. **LLM Provider Selection:** ✅ **DECIDED** - Using OpenAI GPT-4 (gpt-4o) for Socratic dialogue generation and validation
+2. **Vision API Provider:** ✅ **DECIDED** - Using OpenAI Vision API for image parsing
+3. **Session Storage:** ✅ **IMPLEMENTED** - Using Firestore with TTL policies (30 minutes) for automatic cleanup
+4. **Deployment Strategy:** ✅ **MIGRATED TO FIREBASE** - Full cutover completed
    - Firebase Functions (us-central1) replacing AWS Lambda
    - Firebase Hosting replacing AWS S3 + CloudFront
    - Firestore replacing ElastiCache Redis
-   - Environment variables via `.env` file (not Secret Manager)
+   - Environment variables via `.env` file (local) and Firebase Secrets (production)
 
 ### Active Considerations
 
-1. **Answer Detection Strategy:** Need to refine keyword-based and LLM-based detection patterns
-2. **Progressive Help Escalation:** Need to determine optimal thresholds for help escalation
-3. **Visual Feedback Design:** Need to finalize visual feedback elements for 6th grade students
-4. **Testing Workflows:** Need to design comprehensive test suites for all 5 problem types
+1. **Answer Detection Strategy:** ✅ **IMPLEMENTED** - Two-tier system (keyword-based + LLM validation) with configurable patterns
+2. **Progressive Help Escalation:** ✅ **IMPLEMENTED** - 2-turn threshold with configurable escalation levels
+3. **Visual Feedback Design:** Need to finalize visual feedback elements for 6th grade students (Epic 3)
+4. **Testing Workflows:** Need to design comprehensive test suites for all 5 problem types (Epic 3)
 
 ## Blockers & Risks
 
@@ -163,13 +214,18 @@
 5. **Developer Testing Interface:** Collapsible UI pattern works well for dev tools that should be accessible but not intrusive
 6. **React Hooks Rules:** All hooks must be called before any conditional returns to comply with Rules of Hooks
 7. **Development Mode Detection:** Vite's `import.meta.env.MODE` provides reliable development/production detection
+8. **Firebase Functions Integration:** Express app mounted directly to `onRequest` works seamlessly with Firebase Hosting rewrites
+9. **Two-Tier Answer Detection:** Combining keyword-based and LLM-based validation provides robust protection against direct answers
+10. **Firestore Context Management:** Automatic TTL policies simplify session cleanup without manual expiration logic
+11. **API Client Configuration:** Using Hosting emulator (port 5000) for API rewrites when frontend runs separately ensures proper routing
+12. **Progressive Help Escalation:** Heuristic-based progress tracking effectively identifies when students are stuck
 
 ## Questions & Open Items
 
-1. **LLM Provider:** Which LLM provider (OpenAI GPT-4 or Claude) provides better Socratic dialogue generation?
-2. **Answer Detection Patterns:** What additional keyword patterns should be included in answer detection?
-3. **Visual Feedback:** What specific visual feedback elements are most effective for 6th grade students?
-4. **Session Expiration:** Should sessions expire after inactivity, or persist for full browser session?
+1. ✅ **LLM Provider:** **RESOLVED** - Using OpenAI GPT-4 (gpt-4o) for both dialogue generation and validation
+2. **Answer Detection Patterns:** May need refinement based on testing - patterns are configurable and can be extended
+3. **Visual Feedback:** What specific visual feedback elements are most effective for 6th grade students? (Epic 3)
+4. ✅ **Session Expiration:** **RESOLVED** - Sessions expire after 30 minutes of inactivity via Firestore TTL policies
 
 ## Notes
 

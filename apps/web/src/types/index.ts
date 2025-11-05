@@ -51,6 +51,12 @@ export interface ProblemTypeBadgeProps {
 export interface ChatPanelProps {
   messages?: Message[];
   emptyState?: boolean;
+  onSendMessage?: (message: string) => Promise<void>;
+  problemText?: string;
+  problemType?: ProblemType;
+  sessionId?: string;
+  isLoading?: boolean;
+  error?: string | null;
 }
 
 export interface LayoutProps {

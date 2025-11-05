@@ -1,23 +1,51 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import type { ChatPanelProps } from '../types';
 import MessageList from './MessageList';
 import LoadingMessage from './LoadingMessage';
 
-const ChatPanel: React.FC<ChatPanelProps> = ({ messages = [] }) => {
+const ChatPanel: React.FC<ChatPanelProps> = ({
+  messages = [],
+  onSendMessage,
+  problemText,
+  problemType,
+  isLoading: externalIsLoading,
+  error,
+}) => {
   const [inputValue, setInputValue] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [internalLoading, setInternalLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const handleSendMessage = () => {
+  const isLoading = externalIsLoading || internalLoading;
+
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const handleSendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
-    // In a real app, this would call an API
-    setInputValue('');
-    setIsLoading(true);
+    if (!onSendMessage) return;
+    if (!problemText || !problemType) {
+      // Show error if problem is not set
+      return;
+    }
 
-    // Simulate tutor response after a short delay
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+    const messageToSend = inputValue.trim();
+    setInputValue('');
+    setInternalLoading(true);
+
+    try {
+      await onSendMessage(messageToSend);
+    } catch (error) {
+      console.error('[ChatPanel] Error sending message', error);
+      // Restore input value on error
+      setInputValue(messageToSend);
+    } finally {
+      setInternalLoading(false);
+      // Focus input after sending
+      inputRef.current?.focus();
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -50,6 +78,12 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ messages = [] }) => {
       >
         <MessageList messages={messages} />
         {isLoading && <LoadingMessage />}
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mt-4">
+            <p className="text-sm">{error}</p>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
       </div>
 
       {/* Input Area */}
@@ -61,13 +95,20 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ messages = [] }) => {
             value={inputValue}
             onChange={e => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Type your question here..."
-            className="flex-1 px-4 py-3 rounded-xl border border-input bg-white text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
+            placeholder={
+              !problemText || !problemType
+                ? 'Please set a problem first...'
+                : 'Type your question here...'
+            }
+            disabled={!problemText || !problemType || isLoading}
+            className="flex-1 px-4 py-3 rounded-xl border border-input bg-white text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Message input"
           />
           <button
             onClick={handleSendMessage}
-            disabled={!inputValue.trim() || isLoading}
+            disabled={
+              !inputValue.trim() || isLoading || !problemText || !problemType
+            }
             className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all min-w-[44px] flex items-center justify-center"
             aria-label="Send message"
           >
