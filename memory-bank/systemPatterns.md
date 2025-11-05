@@ -1,7 +1,7 @@
 # System Patterns: AI Math Tutor
 
-**Last Updated:** 2025-01-XX  
-**Version:** 1.0
+**Last Updated:** 2025-01-28  
+**Version:** 1.1
 
 ## System Architecture
 
@@ -34,6 +34,7 @@ External Services:
 5. **Session Management:** Session storage (last 10 messages) using Firestore with TTL policies
 6. **Progressive Help Escalation:** Escalates help after 2+ turns without progress
 7. **Firebase Deployment:** Unified deployment via Firebase CLI (functions, hosting, database)
+8. **Developer Testing Interface:** Collapsible testing interface only available in development mode, with test problem library and testing utilities
 
 ## Component Structure
 
@@ -47,7 +48,17 @@ apps/web/src/
 │   ├── Layout.tsx       # Side-by-side layout
 │   ├── ProblemDisplay.tsx
 │   ├── ChatInterface.tsx
+│   ├── DeveloperTestingInterface.tsx  # Developer testing interface (dev only)
 │   └── ...
+├── config/              # Configuration
+│   └── development.ts   # Development mode detection
+├── testData/            # Test data
+│   └── problemLibrary.ts # Test problem library (60 problems)
+├── testUtils/           # Test utilities
+│   ├── fixtures.ts       # Test fixtures and scenarios
+│   ├── answerDetection.ts # Answer detection utilities
+│   ├── socraticCompliance.ts # Socratic compliance utilities
+│   └── contextManagement.ts # Context management utilities
 ├── types/               # TypeScript types
 ├── styles/              # CSS/Tailwind styles
 └── ...
