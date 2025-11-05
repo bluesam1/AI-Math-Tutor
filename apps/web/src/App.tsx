@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Layout from './components/Layout';
+import DeveloperTestingInterface from './components/DeveloperTestingInterface';
 import type { Message } from './types';
 import { apiClient } from './services/api';
 import type { ProblemType } from './services/api';
@@ -125,20 +126,28 @@ const App: React.FC = () => {
     }
   };
 
+  const handleLoadTestProblem = (testProblem: string, testType: ProblemType) => {
+    // Load test problem into the problem input
+    handleProblemSubmit(testProblem);
+  };
+
   return (
-    <Layout
-      problem={problem}
-      problemType={problemType}
-      messages={sampleMessages}
-      emptyState={true}
-      onProblemSubmit={handleProblemSubmit}
-      onImageSubmit={handleImageSubmit}
-      validationError={validationError}
-      isValidating={isValidating}
-      isSubmitting={isSubmitting}
-      isUploading={isUploading}
-      isProcessing={isProcessing}
-    />
+    <>
+      <Layout
+        problem={problem}
+        problemType={problemType}
+        messages={sampleMessages}
+        emptyState={true}
+        onProblemSubmit={handleProblemSubmit}
+        onImageSubmit={handleImageSubmit}
+        validationError={validationError}
+        isValidating={isValidating}
+        isSubmitting={isSubmitting}
+        isUploading={isUploading}
+        isProcessing={isProcessing}
+      />
+      <DeveloperTestingInterface onLoadProblem={handleLoadTestProblem} />
+    </>
   );
 };
 
