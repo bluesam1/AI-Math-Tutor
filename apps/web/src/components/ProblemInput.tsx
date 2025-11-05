@@ -1,9 +1,18 @@
 import React, { useState, KeyboardEvent, FormEvent } from 'react';
+import LoadingSpinner from './LoadingSpinner';
 import type { ProblemInputProps } from '../types/problem';
 
-const ProblemInput: React.FC<ProblemInputProps> = ({ onSubmit, disabled = false }) => {
+const ProblemInput: React.FC<ProblemInputProps> = ({ 
+  onSubmit, 
+  disabled = false,
+  validationError = null,
+  isSubmitting = false,
+}) => {
   const [problemText, setProblemText] = useState('');
   const [error, setError] = useState<string | null>(null);
+
+  // Use validation error from API if provided, otherwise use local validation error
+  const displayError = validationError || error;
 
   const validateInput = (text: string): boolean => {
     const trimmedText = text.trim();
@@ -47,13 +56,13 @@ const ProblemInput: React.FC<ProblemInputProps> = ({ onSubmit, disabled = false 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     setProblemText(value);
-    // Clear error when user starts typing
+    // Clear local error when user starts typing (validation error will be cleared by parent)
     if (error && value.trim().length > 0) {
       setError(null);
     }
   };
 
-  const isButtonDisabled = disabled || problemText.trim().length === 0;
+  const isButtonDisabled = disabled || isSubmitting || problemText.trim().length === 0;
 
   return (
     <div className="w-full">
@@ -74,7 +83,7 @@ const ProblemInput: React.FC<ProblemInputProps> = ({ onSubmit, disabled = false 
             disabled={disabled}
             rows={4}
             className={`w-full px-4 py-3 border rounded-lg text-base resize-y focus:outline-none focus:ring-2 focus:ring-ring transition-colors ${
-              error
+              displayError
                 ? 'border-red-500 focus:ring-red-500'
                 : 'border-input focus:border-primary'
             } ${
@@ -84,17 +93,17 @@ const ProblemInput: React.FC<ProblemInputProps> = ({ onSubmit, disabled = false 
             }`}
             aria-label="Enter math problem"
             aria-required="true"
-            aria-invalid={error !== null}
-            aria-describedby={error ? 'error-message' : undefined}
+            aria-invalid={displayError !== null}
+            aria-describedby={displayError ? 'error-message' : undefined}
           />
-          {error && (
+          {displayError && (
             <div
               id="error-message"
               role="alert"
               aria-live="polite"
               className="mt-2 text-sm text-red-600"
             >
-              {error}
+              {displayError}
             </div>
           )}
           <p className="mt-1 text-xs text-text-secondary">
@@ -112,7 +121,16 @@ const ProblemInput: React.FC<ProblemInputProps> = ({ onSubmit, disabled = false 
             }`}
             aria-label="Submit math problem"
           >
-            Submit
+            {isSubmitting ? (
+              <span className="flex items-center gap-2">
+                <LoadingSpinner size="sm" ariaLabel="Submitting" />
+                Submitting...
+              </span>
+            ) : disabled ? (
+              'Validating...'
+            ) : (
+              'Submit'
+            )}
           </button>
         </div>
       </form>

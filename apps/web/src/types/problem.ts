@@ -5,6 +5,8 @@
 export interface ProblemInputProps {
   onSubmit: (problem: string) => void;
   disabled?: boolean;
+  validationError?: string | null;
+  isSubmitting?: boolean;
 }
 
 export interface ProblemInputState {

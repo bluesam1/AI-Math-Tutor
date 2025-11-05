@@ -10,6 +10,12 @@ interface LayoutComponentProps extends LayoutProps {
   messages?: ChatPanelProps['messages'];
   emptyState?: boolean;
   onProblemSubmit?: (problem: string) => void;
+  onImageSubmit?: (file: File) => void;
+  validationError?: string | null;
+  isValidating?: boolean;
+  isSubmitting?: boolean;
+  isUploading?: boolean;
+  isProcessing?: boolean;
 }
 
 const Layout: React.FC<LayoutComponentProps> = ({
@@ -18,6 +24,12 @@ const Layout: React.FC<LayoutComponentProps> = ({
   messages,
   emptyState = false,
   onProblemSubmit,
+  onImageSubmit,
+  validationError,
+  isValidating,
+  isSubmitting,
+  isUploading,
+  isProcessing,
 }) => {
   return (
     <main className="h-screen w-full overflow-hidden relative">
@@ -31,6 +43,12 @@ const Layout: React.FC<LayoutComponentProps> = ({
             problem={problem} 
             problemType={problemType}
             onProblemSubmit={onProblemSubmit}
+            onImageSubmit={onImageSubmit}
+            validationError={validationError}
+            isValidating={isValidating}
+            isSubmitting={isSubmitting}
+            isUploading={isUploading}
+            isProcessing={isProcessing}
           />
         </div>
 

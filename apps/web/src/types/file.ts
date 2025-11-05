@@ -19,6 +19,21 @@ export interface ImageUploadProps {
    * @param error - Error message
    */
   onError?: (error: string) => void;
+  
+  /**
+   * Whether to auto-submit file immediately after selection
+   */
+  autoSubmit?: boolean;
+  
+  /**
+   * Whether the file is currently being uploaded
+   */
+  isUploading?: boolean;
+  
+  /**
+   * Whether the file is currently being processed
+   */
+  isProcessing?: boolean;
 }
 
 export interface ImageUploadState {

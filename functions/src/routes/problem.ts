@@ -1,7 +1,6 @@
-import { Router } from 'express';
-import multer from 'multer';
-import { parseImage } from '../controllers/problemController';
-import { validateUploadedFile, handleMulterError } from '../middleware/fileValidation';
+import { Router, type Request, type Response } from 'express';
+import { validate } from '../controllers/problemController';
+import { extractTextFromImage, validateMathContent } from '../services/visionService';
 
 const router = Router();
 
@@ -12,24 +11,8 @@ const router = Router();
  * POST /api/problem/validate - Problem validation (Story 1.7)
  */
 
-// Configure multer for file uploads
-// Store files in memory (buffer) for API processing
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB limit
-    files: 1, // Only allow one file
-  },
-  fileFilter: (req, file, cb) => {
-    // Additional format check (multer level)
-    const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-    if (allowedMimeTypes.includes(file.mimetype.toLowerCase())) {
-      cb(null, true);
-    } else {
-      cb(new Error('Invalid file format. Only JPG, PNG, and GIF are allowed.'));
-    }
-  },
-});
+// Note: We're using express-multipart-file-parser middleware (configured in server.ts)
+// which is specifically designed for Firebase Functions v2
 
 /**
  * POST /api/problem/parse-image
@@ -41,17 +24,96 @@ const upload = multer({
  * - Success: { success: true, problemText: string }
  * - Error: { success: false, error: string, message: string, code?: string }
  */
-router.post(
-  '/parse-image',
-  upload.single('image'), // Handle single file upload with field name "image"
-  handleMulterError, // Handle multer-specific errors
-  validateUploadedFile, // Validate file format, size, and signature
-  parseImage // Process image and extract text
-);
+router.post('/parse-image', async (req: Request, res: Response) => {
+  try {
+    console.log('[Parse Image] Request received', {
+      contentType: req.headers['content-type'],
+      contentLength: req.headers['content-length'],
+      method: req.method,
+      path: req.path,
+      hasFiles: !!(req as any).files,
+      filesLength: (req as any).files?.length,
+    });
 
-// Placeholder route for future story
-router.post('/validate', (req, res) => {
-  res.status(501).json({ error: 'Not implemented yet' });
+    // Get uploaded files from express-multipart-file-parser
+    const files = (req as any).files;
+    
+    if (!files || files.length === 0) {
+      console.error('[Parse Image] No file uploaded', {
+        hasFiles: !!files,
+        filesLength: files?.length,
+      });
+      return res.status(400).json({
+        success: false,
+        error: 'No file uploaded',
+        message: 'Please upload an image file',
+      });
+    }
+
+    // Get the first uploaded file
+    const file = files[0];
+    
+    console.log('[Parse Image] File received', {
+      fieldname: file.fieldname,
+      originalname: file.originalname,
+      mimetype: file.mimetype,
+      size: file.buffer?.length,
+    });
+
+    // Validate file type
+    if (!file.mimetype.startsWith('image/')) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid file type',
+        message: 'Please upload an image file (PNG, JPG, etc.)',
+      });
+    }
+
+    // Extract text from image using Vision API
+    console.log('[Parse Image] Extracting text from image');
+    const extractedText = await extractTextFromImage(file.buffer, file.mimetype);
+
+    // Validate that extracted text contains mathematical content
+    const isValidMathContent = validateMathContent(extractedText);
+
+    if (!isValidMathContent) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid math content',
+        message: 'The extracted text does not appear to be a math problem. Please ensure the image contains a clear math problem.',
+      });
+    }
+
+    // Return successful response with extracted text
+    console.log('[Parse Image] Successfully extracted problem text');
+    return res.status(200).json({
+      success: true,
+      problemText: extractedText,
+    });
+  } catch (error) {
+    console.error('[Parse Image] Error', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+    return res.status(500).json({
+      success: false,
+      error: 'File upload error',
+      message: error instanceof Error ? error.message : 'Failed to process image',
+    });
+  }
 });
+
+/**
+ * POST /api/problem/validate
+ * 
+ * Accepts JSON with problem text
+ * Field name: "problemText"
+ * 
+ * Returns:
+ * - Success (Valid): { success: true, valid: true, problemType: string, cleanedProblemText?: string }
+ * - Success (Invalid): { success: true, valid: false, error: string }
+ * - Error: { success: false, error: string, message: string, code?: string }
+ */
+router.post('/validate', validate);
 
 export default router;

@@ -160,12 +160,34 @@ export const handleMulterError = (
         });
         return;
 
-      default:
+      case 'MISSING_FIELD_NAME':
         res.status(400).json({
           success: false,
-          error: 'File upload error',
-          message: multerError.message || 'An error occurred while uploading the file',
+          error: 'Missing field name',
+          message: 'Please upload the image using the "image" field name',
         });
+        return;
+
+      default:
+        // Handle "Unexpected end of form" and other multer errors
+        const errorMessage = multerError.message || 'An error occurred while uploading the file';
+        
+        // Check for common multer error messages
+        if (errorMessage.includes('Unexpected end of form') || errorMessage.includes('Unexpected')) {
+          res.status(400).json({
+            success: false,
+            error: 'File upload error',
+            message: 'The file upload was incomplete. Please try again with a smaller file or check your connection.',
+            code: 'UPLOAD_INCOMPLETE',
+          });
+        } else {
+          res.status(400).json({
+            success: false,
+            error: 'File upload error',
+            message: errorMessage,
+            code: multerError.code,
+          });
+        }
         return;
     }
   }

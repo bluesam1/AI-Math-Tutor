@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
+import LoadingSpinner from './LoadingSpinner';
 import type { ImageUploadProps } from '../types/file';
 import {
   validateFileFormat,
@@ -12,6 +13,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   onFileSelect,
   disabled = false,
   onError,
+  autoSubmit = false,
+  isUploading = false,
+  isProcessing = false,
 }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -63,6 +67,8 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       setPreviewUrl(url);
 
       // Notify parent component
+      // If auto-submit is enabled, parent will handle submission
+      // Otherwise, parent will show submit button
       onFileSelect(file);
 
       return true;
@@ -225,7 +231,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
               </svg>
             </div>
             <p className="text-text-primary text-lg font-medium mb-2">
-              Drag image here or click to select
+              {autoSubmit ? 'Drop image here or click to upload' : 'Drag image here or click to select'}
             </p>
             <p className="text-text-secondary text-sm">
               {getSupportedFormatsText()} (max {MAX_FILE_SIZE_MB}MB)
@@ -266,12 +272,20 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                 <p className="text-text-secondary text-sm mt-1">
                   {formatFileSize(selectedFile.size)}
                 </p>
+                {(isUploading || isProcessing) && (
+                  <div className="mt-2 flex items-center gap-2 text-sm text-blue-600">
+                    <LoadingSpinner size="sm" ariaLabel="Processing" />
+                    <span>
+                      {isUploading ? 'Uploading...' : isProcessing ? 'Processing...' : ''}
+                    </span>
+                  </div>
+                )}
               </div>
               <button
                 type="button"
                 onClick={handleClear}
-                disabled={disabled}
-                className="flex-shrink-0 p-2 text-text-secondary hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-lg transition-colors"
+                disabled={disabled || isUploading || isProcessing}
+                className="flex-shrink-0 p-2 text-text-secondary hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Remove selected image"
               >
                 <svg

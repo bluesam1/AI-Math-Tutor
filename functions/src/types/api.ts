@@ -29,3 +29,50 @@ export interface ParseImageErrorResponse {
   message: string;
   code?: string;
 }
+
+/**
+ * Problem Type Categories
+ */
+export type ProblemType =
+  | 'arithmetic'
+  | 'algebra'
+  | 'geometry'
+  | 'word'
+  | 'multi-step';
+
+/**
+ * Validate Problem API Request Types
+ */
+
+export interface ValidateProblemRequest {
+  problemText: string;
+}
+
+/**
+ * Validate Problem API Response Types
+ */
+
+export interface ValidateProblemResponse {
+  success: true;
+  valid: true;
+  problemType: ProblemType;
+  cleanedProblemText?: string;
+}
+
+export interface ValidateProblemInvalidResponse {
+  success: true;
+  valid: false;
+  error: string;
+}
+
+export interface ValidateProblemErrorResponse {
+  success: false;
+  error: string;
+  message: string;
+  code?: string;
+}
+
+export type ValidateProblemApiResponse =
+  | ValidateProblemResponse
+  | ValidateProblemInvalidResponse
+  | ValidateProblemErrorResponse;
