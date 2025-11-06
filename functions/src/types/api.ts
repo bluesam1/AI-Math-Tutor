@@ -76,3 +76,41 @@ export type ValidateProblemApiResponse =
   | ValidateProblemResponse
   | ValidateProblemInvalidResponse
   | ValidateProblemErrorResponse;
+
+/**
+ * Chat Message API Request Types
+ */
+
+export interface ConversationMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export interface ChatMessageRequest {
+  message: string;
+  problemText: string;
+  problemType: ProblemType;
+  conversationHistory?: ConversationMessage[];
+  sessionId?: string;
+}
+
+/**
+ * Chat Message API Response Types
+ */
+
+export interface ChatMessageResponse {
+  success: true;
+  response: string;
+  metadata: {
+    type: 'question' | 'hint' | 'encouragement';
+    helpLevel: 'normal' | 'escalated';
+  };
+  sessionId?: string;
+}
+
+export interface ChatMessageErrorResponse {
+  success: false;
+  error: string;
+  message: string;
+  code?: string;
+}

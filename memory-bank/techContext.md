@@ -1,7 +1,7 @@
 # Technical Context: AI Math Tutor
 
-**Last Updated:** 2025-01-XX  
-**Version:** 1.0
+**Last Updated:** 2025-11-05  
+**Version:** 1.1
 
 ## Technologies Used
 
@@ -173,9 +173,11 @@ npm run format
 - Express 4.18.0
 - TypeScript 5.3.0+
 - @types/express, @types/node
-- firebase-admin (for server-side Firebase operations)
+- firebase-admin (for server-side Firebase operations - Firestore integration)
 - firebase-functions (for Cloud Functions integration)
 - dotenv (for environment variable management in local development)
+- openai (for Vision API and LLM integration)
+- express-multipart-file-parser (for Firebase Functions file upload compatibility)
 
 ## Build Configuration
 
@@ -189,30 +191,33 @@ npm run format
 ### Build Commands
 
 - **Frontend:** `npm run build:web` → `apps/web/dist/`
-- **Backend:** `npm run build:api` → `apps/api/dist/`
+- **Backend:** `npm run build` (in functions/) → `functions/lib/`
 - **All Workspaces:** `npm run build` → builds all workspaces
 
 ## Deployment Configuration
 
-### Frontend Deployment (AWS Amplify)
+### Frontend Deployment (Firebase Hosting)
 
 - **Build Command:** `npm run build:web`
 - **Output Directory:** `apps/web/dist`
-- **Configuration:** `amplify.yml` (build settings for monorepo)
+- **Configuration:** `firebase.json` (hosting configuration)
+- **Deployment:** Firebase CLI (`firebase deploy --only hosting`)
 
 ### Backend Deployment (Firebase Cloud Functions)
 
 - **Firebase Functions:** `functions/index.ts` exports Express app as Cloud Function
 - **Firebase Configuration:** `firebase.json` defines functions and hosting
 - **Deployment:** Firebase CLI (`firebase deploy --only functions`)
+- **API Routing:** Firebase Hosting rewrites `/api/**` to Cloud Functions
 
 ### Environment Variables
 
 - **Development:** `.env` files in `functions/` directory (never committed)
-- **Production:** Firebase Functions Config or Secret Manager
+- **Production:** Firebase Functions Secrets (using `defineSecret` and `firebase functions:secrets:set`)
 - **Required Variables:**
-  - API keys (OpenAI, Anthropic)
-  - Frontend URL for CORS configuration
+  - `OPENAI_API_KEY` - OpenAI API key (for Vision API and LLM)
+  - `FRONTEND_URL` - Frontend origin for CORS (default: http://localhost:3000)
+  - `NODE_ENV` - Environment (development, production)
 
 ## Code Quality Standards
 

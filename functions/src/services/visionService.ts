@@ -44,16 +44,21 @@ export const extractTextFromImage = async (
   const base64Image = imageBufferToBase64(imageBuffer, mimeType);
 
   try {
-    // Call OpenAI Vision API
+    // Call OpenAI Vision API with structured output
     const response = await client.chat.completions.create({
       model: 'gpt-4o', // Use gpt-4o for vision (or gpt-4-vision-preview if unavailable)
       messages: [
+        {
+          role: 'system',
+          content:
+            'You are a math problem extraction assistant. Extract math problems from images and return them in a simple, clean format.',
+        },
         {
           role: 'user',
           content: [
             {
               type: 'text',
-              text: 'Extract the math problem text from this image. Return only the problem statement, without any explanations or solutions.',
+              text: 'Extract the math problem from this image. Return ONLY the mathematical expression or equation, without any explanations, solutions, or extra text. Format the math using simple LaTeX commands (like \\frac, \\sqrt, etc.) but DO NOT include any delimiters like \\(, \\), \\[, or \\]. Just return the raw math expression.',
             },
             {
               type: 'image_url',
@@ -74,7 +79,44 @@ export const extractTextFromImage = async (
       throw new Error('No text was extracted from the image');
     }
 
-    return extractedText;
+    console.log('[Vision API] Raw extracted text:', extractedText);
+    console.log(
+      '[Vision API] Text starts with:',
+      extractedText.substring(0, 10)
+    );
+    console.log(
+      '[Vision API] Text ends with:',
+      extractedText.substring(extractedText.length - 10)
+    );
+
+    // Aggressively remove ALL types of math delimiters
+    // This handles: \( \), \[ \], $, $$, and any combination
+    let cleaned = extractedText;
+
+    // Remove LaTeX display math delimiters: \[ and \]
+    cleaned = cleaned.replace(/\\\[/g, '').replace(/\\\]/g, '');
+
+    // Remove LaTeX inline math delimiters: \( and \)
+    cleaned = cleaned.replace(/\\\(/g, '').replace(/\\\)/g, '');
+
+    // Remove KaTeX block delimiters: $$
+    cleaned = cleaned.replace(/\$\$/g, '');
+
+    // Remove KaTeX inline delimiters: $
+    cleaned = cleaned.replace(/\$/g, '');
+
+    // Clean up any extra whitespace
+    cleaned = cleaned.trim();
+
+    console.log('[Vision API] After cleanup:', cleaned);
+
+    // Wrap in KaTeX inline delimiters (single $)
+    // Most image-based problems are equations that should be displayed inline
+    const normalizedText = `$${cleaned}$`;
+
+    console.log('[Vision API] Final normalized text:', normalizedText);
+
+    return normalizedText;
   } catch (error) {
     // Handle OpenAI API errors
     if (error instanceof OpenAI.APIError) {

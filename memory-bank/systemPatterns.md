@@ -1,7 +1,7 @@
 # System Patterns: AI Math Tutor
 
-**Last Updated:** 2025-01-28  
-**Version:** 1.1
+**Last Updated:** 2025-11-05  
+**Version:** 1.2
 
 ## System Architecture
 
@@ -77,11 +77,13 @@ functions/
 │   │   └── chat.ts
 │   ├── controllers/       # Route controllers
 │   ├── services/          # Business logic
-│   │   ├── llmService.ts
-│   │   ├── answerDetectionService.ts
-│   │   ├── answerValidationService.ts
-│   │   ├── contextService.ts
-│   │   └── helpEscalationService.ts
+│   │   ├── llmService.ts               # LLM integration (validation, dialogue generation)
+│   │   ├── visionService.ts            # Vision API integration
+│   │   ├── answerDetectionService.ts   # Keyword-based answer detection
+│   │   ├── answerValidationService.ts  # LLM-based answer validation
+│   │   ├── answerBlockingService.ts    # Combined detection and rewriting
+│   │   ├── contextService.ts           # Firestore context management
+│   │   └── helpEscalationService.ts    # Progressive help escalation
 │   ├── middleware/        # Express middleware
 │   │   ├── cors.ts
 │   │   └── errorHandler.ts
@@ -113,9 +115,10 @@ packages/shared/src/
 
 **Implementation:**
 
-- `llmService.ts` - LLM API integration
-- `answerDetectionService.ts` - Keyword-based detection
-- `answerValidationService.ts` - LLM-based validation
+- `llmService.ts` - LLM API integration with `generateSocraticDialogue` function
+- `answerDetectionService.ts` - Keyword-based detection with configurable patterns
+- `answerValidationService.ts` - LLM-based validation with secondary LLM call
+- `answerBlockingService.ts` - Combined detection and automatic rewriting
 - Answer blocking and rewriting before response delivery
 
 ### 2. Two-Tier Answer Detection Pattern
@@ -128,9 +131,10 @@ packages/shared/src/
 
 **Implementation:**
 
-- Keyword detection: regex/pattern matching
-- LLM validation: secondary LLM call analyzing response context
-- Blocking: replace with Socratic question or generic guiding question
+- `answerDetectionService.ts` - Keyword detection with regex/pattern matching
+- `answerValidationService.ts` - LLM validation with secondary LLM call analyzing response context
+- `answerBlockingService.ts` - Combined detection logic with automatic rewriting
+- Blocking: replace with Socratic question or generic guiding question using LLM service
 
 ### 3. Progressive Help Escalation Pattern
 
@@ -142,9 +146,10 @@ packages/shared/src/
 
 **Implementation:**
 
-- `helpEscalationService.ts` - Tracks progress and escalates help
-- Integrated with dialogue generation endpoint
-- Adjusts LLM prompts based on student progress
+- `helpEscalationService.ts` - Tracks progress using heuristic-based detection (response length, keywords, engagement)
+- Integrated with dialogue generation endpoint via `chatController.ts`
+- Adjusts LLM prompts based on student progress (normal vs escalated help levels)
+- Configurable threshold (default: 2 turns without progress)
 
 ### 4. Context Management Pattern
 
@@ -157,8 +162,11 @@ packages/shared/src/
 **Implementation:**
 
 - `contextService.ts` - Stores and retrieves conversation context using Firestore
+- Functions: `getContext`, `addMessage`, `setProblem`, `clearContext`, `getConversationHistory`
 - Session identifiers for multi-user support
 - Context expiration after 30 minutes of inactivity via Firestore TTL policies
+- Automatic cleanup of expired sessions
+- Graceful degradation when Firestore is unavailable
 
 ### 5. Problem Validation Pattern
 
@@ -185,7 +193,7 @@ packages/shared/src/
 - `GET /api/health` - Health check
 - `POST /api/problem/parse-image` - Parse image with Vision API
 - `POST /api/problem/validate` - Validate problem and identify type
-- `POST /api/chat/message` - Generate Socratic dialogue response
+- `POST /api/chat/message` - Generate Socratic dialogue response with answer detection guardrails
 
 **Request/Response Format:**
 
@@ -218,14 +226,16 @@ App
 ### Backend Service Flow
 
 ```
-API Request
-  └── Route Handler
-      └── Controller
-          └── Service Layer
-              ├── LLM Service
-              ├── Answer Detection Service
-              ├── Context Service
-              └── Help Escalation Service
+API Request (POST /api/chat/message)
+  └── Route Handler (chat.ts)
+      └── Controller (chatController.ts)
+          ├── Context Service (get context, add messages)
+          ├── Help Escalation Service (track progress)
+          ├── LLM Service (generate Socratic dialogue)
+          ├── Answer Blocking Service (detect and rewrite)
+          │   ├── Answer Detection Service (keyword patterns)
+          │   └── Answer Validation Service (LLM validation)
+          └── Context Service (store assistant response)
 ```
 
 ## Integration Points

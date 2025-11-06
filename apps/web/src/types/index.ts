@@ -16,6 +16,7 @@ export interface Message {
   role: 'student' | 'system' | 'tutor';
   content: string;
   timestamp: Date | string;
+  isAnswer?: boolean; // True if this message is an answer submission
 }
 
 export interface Session {
@@ -51,6 +52,15 @@ export interface ProblemTypeBadgeProps {
 export interface ChatPanelProps {
   messages?: Message[];
   emptyState?: boolean;
+  onSendMessage?: (message: string) => Promise<void>;
+  onAddTutorMessage?: (message: string) => void;
+  problemText?: string;
+  problemType?: ProblemType;
+  sessionId?: string;
+  isLoading?: boolean;
+  error?: string | null;
+  onTypingChange?: (isTyping: boolean) => void;
+  isExternalTyping?: boolean;
 }
 
 export interface LayoutProps {
