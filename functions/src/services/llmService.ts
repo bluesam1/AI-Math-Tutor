@@ -45,6 +45,7 @@ export interface SocraticDialogueOptions {
   studentMessage: string;
   conversationHistory?: ConversationMessage[];
   helpLevel?: 'normal' | 'escalated';
+  systemOverride?: string; // Optional system message override
 }
 
 /**
@@ -99,35 +100,50 @@ export const validateProblem = async (
     };
   }
 
-  const prompt = `You are a math tutor for 6th grade students (ages 11-12). Analyze the following text and determine if it is a valid math problem appropriate for 6th grade level.
+  const prompt = `You are a math tutor assistant. Your job is to validate math problems and classify them by type.
 
-If the text is a valid 6th grade math problem, identify its type from these categories:
+VALIDATION RULES:
+- If the text contains ANY mathematical equation, expression, or calculation, it is VALID.
+- If the text contains variables (like x, y, z), it is ALWAYS valid and should be classified as "algebra".
+- Equations with fractions are VALID algebra problems.
+- LaTeX formatted equations (like \\( \\frac{3(x-4)}{4} = \\frac{5(2x-3)}{3} \\)) are VALID math problems.
+- Only reject if the text is completely non-mathematical (e.g., "What is the capital of France?").
+
+PROBLEM TYPES:
 - "arithmetic": Basic operations (addition, subtraction, multiplication, division) with whole numbers, fractions, or decimals
-- "algebra": Variables, equations, expressions (introductory algebra)
-- "geometry": Shapes, area, perimeter, volume (basic geometry)
+- "algebra": ANY problem with variables, equations, or expressions. Examples include:
+  * "x + 5 = 10"
+  * "3(x-4)/4 = 5(2x-3)/3"
+  * "\\( \\frac{3(x-4)}{4} = \\frac{5(2x-3)}{3} \\)"
+  * "2x + 3 = 7"
+  * Any equation solving for a variable
+- "geometry": Shapes, area, perimeter, volume
 - "word": Real-world math problems requiring problem-solving
 - "multi-step": Problems requiring multiple steps to solve
 
-If the text is NOT a valid math problem, return valid: false with an appropriate error message.
+EXAMPLES OF VALID PROBLEMS:
+- "x + 5 = 10" → valid: true, problemType: "algebra"
+- "3(x-4)/4 = 5(2x-3)/3" → valid: true, problemType: "algebra"
+- "\\( \\frac{3(x-4)}{4} = \\frac{5(2x-3)}{3} \\)" → valid: true, problemType: "algebra"
+- "2 + 2 = ?" → valid: true, problemType: "arithmetic"
+- "What is the capital of France?" → valid: false, error: "This is not a math problem"
 
 Return your response as JSON with this exact structure:
 {
   "valid": true or false,
   "problemType": "arithmetic" | "algebra" | "geometry" | "word" | "multi-step" (only if valid is true),
-  "cleanedProblemText": string (optional, only if the problem text needs cleaning/formatting),
+  "cleanedProblemText": string (optional, only if the problem text needs cleaning/formatting - DO NOT include any delimiters like \\(, \\), \\[, \\], $, or $$),
   "error": string (only if valid is false, should be age-appropriate and friendly)
 }
 
 Problem text to analyze:
 "${problemText}"
 
-Important:
-- Be strict about what constitutes a 6th grade math problem
-- Reject non-math content (e.g., "What is the capital of France?")
-- Reject unclear problems (e.g., "Solve this")
-- Reject problems that are too advanced for 6th grade
-- Provide friendly, encouraging error messages for 6th grade students
-- If the problem is valid but needs minor formatting, provide cleanedProblemText`;
+CRITICAL: 
+- If you see variables (x, y, z, etc.) or an equation with an equals sign, it MUST be accepted as "algebra".
+- Do NOT reject based on complexity, grade level, or whether it has fractions.
+- Equations with fractions are VALID algebra problems.
+- LaTeX format is still a valid math problem format.`;
 
   try {
     console.log('[LLM Service] Calling OpenAI API', {
@@ -142,7 +158,7 @@ Important:
         {
           role: 'system',
           content:
-            'You are a math tutor assistant that validates math problems and identifies their types. Always return valid JSON.',
+            'You are a math tutor assistant that validates math problems and identifies their types. You MUST accept any valid math problem regardless of complexity, grade level, or whether it has fractions. Any equation with variables is a valid algebra problem. Always return valid JSON.',
         },
         {
           role: 'user',
@@ -150,7 +166,7 @@ Important:
         },
       ],
       max_tokens: 500,
-      temperature: 0.3, // Lower temperature for more consistent validation
+      temperature: 0.2, // Lower temperature for more consistent validation
       response_format: { type: 'json_object' }, // Request JSON response
     });
 
@@ -224,6 +240,51 @@ Important:
         // Default to arithmetic if invalid type is returned
         validationResult.problemType = 'arithmetic';
       }
+    }
+
+    // Clean up any delimiters from the cleanedProblemText if present
+    if (validationResult.cleanedProblemText) {
+      const originalText = validationResult.cleanedProblemText;
+      console.log('[LLM Service] *** CLEANUP STARTING ***');
+      console.log('[LLM Service] Original cleanedProblemText:', JSON.stringify(originalText));
+      console.log('[LLM Service] Length:', originalText.length);
+      console.log('[LLM Service] First 20 chars:', originalText.substring(0, 20));
+      console.log('[LLM Service] Last 20 chars:', originalText.substring(originalText.length - 20));
+
+      let cleaned = originalText;
+      
+      // Remove all types of math delimiters step by step with logging
+      console.log('[LLM Service] Step 1 - Before cleanup:', JSON.stringify(cleaned));
+      
+      cleaned = cleaned.replace(/\\\[/g, '');
+      console.log('[LLM Service] Step 2 - After removing \\[:', JSON.stringify(cleaned));
+      
+      cleaned = cleaned.replace(/\\\]/g, '');
+      console.log('[LLM Service] Step 3 - After removing \\]:', JSON.stringify(cleaned));
+      
+      cleaned = cleaned.replace(/\\\(/g, '');
+      console.log('[LLM Service] Step 4 - After removing \\(:', JSON.stringify(cleaned));
+      
+      cleaned = cleaned.replace(/\\\)/g, '');
+      console.log('[LLM Service] Step 5 - After removing \\):', JSON.stringify(cleaned));
+      
+      cleaned = cleaned.replace(/\$\$/g, '');
+      console.log('[LLM Service] Step 6 - After removing $$:', JSON.stringify(cleaned));
+      
+      cleaned = cleaned.replace(/\$/g, '');
+      console.log('[LLM Service] Step 7 - After removing $:', JSON.stringify(cleaned));
+      
+      cleaned = cleaned.trim();
+      console.log('[LLM Service] Step 8 - After trim:', JSON.stringify(cleaned));
+
+      // Return cleaned text without wrapping in delimiters
+      // The frontend will handle math rendering if needed
+      validationResult.cleanedProblemText = cleaned;
+
+      console.log('[LLM Service] *** CLEANUP COMPLETE ***');
+      console.log('[LLM Service] Final cleanedProblemText:', JSON.stringify(validationResult.cleanedProblemText));
+    } else {
+      console.log('[LLM Service] No cleanedProblemText to clean');
     }
 
     return validationResult;
@@ -309,7 +370,8 @@ export const generateSocraticDialogue = async (
       [];
 
     // System message with Socratic principles
-    const systemMessage = `You are a patient, encouraging math tutor for 6th grade students (ages 11-12). Your role is to guide students through math problems using the Socratic method - asking guiding questions that help them discover solutions themselves.
+    // Use override if provided, otherwise use default
+    const systemMessage = options.systemOverride || `You are a patient, encouraging math tutor for 6th grade students (ages 11-12). Your role is to guide students through math problems using the Socratic method - asking guiding questions that help them discover solutions themselves.
 
 CRITICAL RULES - NEVER VIOLATE THESE:
 1. NEVER give direct answers or final solutions
@@ -320,8 +382,11 @@ CRITICAL RULES - NEVER VIOLATE THESE:
 6. Use chain-of-thought strategies - guide students to think through each step
 7. Be encouraging and positive, especially when students struggle
 8. Adapt your questions to the student's understanding level
+9. When referencing mathematical expressions, use KaTeX format: wrap inline math with single dollar signs $...$ and block math with double dollar signs $$...$$. DO NOT use LaTeX delimiters \\(...\\) or \\[...\\].
 
 When a student is stuck (after 2+ turns without progress), provide more concrete hints while STILL asking questions - never give answers.
+
+CRITICAL: When referencing the problem text in your responses, PRESERVE ALL SPACES exactly as shown. Do not remove spaces between words or numbers. For example, if the problem says "Tom has $50. He spends $18.75", keep it exactly as "Tom has $50. He spends $18.75" with all spaces intact.
 
 Problem Type: ${options.problemType}
 Current Problem: ${options.problemText}`;
@@ -386,7 +451,7 @@ Current Problem: ${options.problemText}`;
         : undefined,
     });
 
-    const responseText = response.choices[0]?.message?.content?.trim();
+    let responseText = response.choices[0]?.message?.content?.trim();
 
     if (!responseText) {
       console.error('[LLM Service] No response text from OpenAI API', {
@@ -394,6 +459,81 @@ Current Problem: ${options.problemText}`;
       });
       throw new Error('No response from LLM API');
     }
+
+    // Normalize math delimiters to KaTeX format
+    // Convert LaTeX \(...\) to $...$ and \[...\] to $$...$$
+    console.log('[LLM Service] *** NORMALIZING MATH DELIMITERS ***');
+    console.log('[LLM Service] Original response text:', JSON.stringify(responseText));
+    console.log('[LLM Service] Original length:', responseText.length);
+    console.log('[LLM Service] First 150 chars:', responseText.substring(0, 150));
+    console.log('[LLM Service] Contains \\(:', responseText.includes('\\('));
+    console.log('[LLM Service] Contains \\):', responseText.includes('\\)'));
+    console.log('[LLM Service] Contains \\[:', responseText.includes('\\['));
+    console.log('[LLM Service] Contains \\]:', responseText.includes('\\]'));
+
+    let normalized = responseText;
+    
+    // Convert LaTeX block math \[...\] to KaTeX $$...$$
+    const beforeBlock = normalized;
+    normalized = normalized.replace(/\\\[([\s\S]*?)\\\]/g, (_match, content) => {
+      console.log('[LLM Service] Found block math delimiter, content:', JSON.stringify(content));
+      return `$$${content}$$`;
+    });
+    if (normalized !== beforeBlock) {
+      console.log('[LLM Service] After block math conversion:', JSON.stringify(normalized));
+    }
+    
+    // Convert LaTeX inline math \(...\) to KaTeX $...$
+    const beforeInline = normalized;
+    normalized = normalized.replace(/\\\(([\s\S]*?)\\\)/g, (_match, content) => {
+      console.log('[LLM Service] Found inline math delimiter, content:', JSON.stringify(content));
+      return `$${content}$`;
+    });
+    if (normalized !== beforeInline) {
+      console.log('[LLM Service] After inline math conversion:', JSON.stringify(normalized));
+    }
+
+    responseText = normalized;
+
+    // Fix mangled problem text in response - if LLM removed spaces from problem text, restore them
+    // This happens when the LLM includes the problem text in its response
+    if (options.problemText) {
+      // Create a version of the problem text without spaces (what LLM might generate)
+      const problemWithoutSpaces = options.problemText.replace(/\s+/g, '');
+      
+      // Check if response contains the mangled version (without spaces)
+      if (responseText.includes(problemWithoutSpaces) && problemWithoutSpaces.length > 10) {
+        // Replace mangled version with correct version
+        responseText = responseText.replace(problemWithoutSpaces, options.problemText);
+        console.log('[LLM Service] Fixed mangled problem text in response (no spaces)');
+      }
+      
+      // Also check for partial matches - if LLM includes parts of the problem text
+      // Look for common patterns like "starts with 50" or "spends 18.75"
+      const problemWords = options.problemText.split(/\s+/);
+      if (problemWords.length > 3) {
+        // Check for sequences of words that are missing spaces
+        for (let i = 0; i < problemWords.length - 1; i++) {
+          const word1 = problemWords[i];
+          const word2 = problemWords[i + 1];
+          const mangled = word1 + word2;
+          const correct = word1 + ' ' + word2;
+          
+          // Only fix if both words are substantial (not just punctuation)
+          if (word1.length > 2 && word2.length > 2 && responseText.includes(mangled)) {
+            // Use word boundaries to avoid partial matches
+            const regex = new RegExp(`\\b${mangled.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'g');
+            responseText = responseText.replace(regex, correct);
+            console.log(`[LLM Service] Fixed mangled words: "${mangled}" -> "${correct}"`);
+          }
+        }
+      }
+    }
+
+    console.log('[LLM Service] *** NORMALIZATION COMPLETE ***');
+    console.log('[LLM Service] Final response text:', JSON.stringify(responseText));
+    console.log('[LLM Service] Final length:', responseText.length);
+    console.log('[LLM Service] First 150 chars:', responseText.substring(0, 150));
 
     // Determine response metadata (type and help level)
     // Simple heuristics to classify response type
