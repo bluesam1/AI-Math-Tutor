@@ -348,8 +348,10 @@ export function detectAnswer(message: string): AnswerDetectionResult {
  */
 export async function validateAnswerDetection(
   message: string,
-  problemText: string,
-  problemType: string
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _problemText: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _problemType: string
 ): Promise<AnswerDetectionResult> {
   // First, use heuristic detection
   const heuristicResult = detectAnswer(message);

@@ -24,7 +24,8 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
 }) => {
   const [inputValue, setInputValue] = useState('');
   const [internalLoading, setInternalLoading] = useState(false);
-  const [isCheckingAnswer, setIsCheckingAnswer] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_isCheckingAnswer, setIsCheckingAnswer] = useState(false);
   const [answerCheckResult, setAnswerCheckResult] = useState<{
     isCorrect: boolean;
     isPartial?: boolean;
@@ -50,9 +51,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   const {
     progressLevel,
     progressPercentage,
-    encouragementType,
-    hasMadeProgressSinceLastCheck,
-    isMilestone,
     recordAttempt,
     recordResponse,
     markProgress,
@@ -136,7 +134,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   };
 
   // Progressive engagement hook
-  const { promptCount, isActive: isEngagementActive } = useProgressiveEngagement({
+  useProgressiveEngagement({
     hasProblem: !!problemText && !!problemType,
     hasStudentMessage,
     isTyping,

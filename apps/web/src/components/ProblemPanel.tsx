@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ProblemInput from './ProblemInput';
 import ProblemTypeBadge from './ProblemTypeBadge';
-import EmptyState from './EmptyState';
 import LoadingSpinner from './LoadingSpinner';
 import MathRenderer from './MathRenderer';
 import AnswerInput from './AnswerInput';

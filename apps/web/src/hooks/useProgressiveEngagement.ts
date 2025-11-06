@@ -72,7 +72,8 @@ export const useProgressiveEngagement = (
   const [promptCount, setPromptCount] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [lastPromptTime, setLastPromptTime] = useState<number | null>(null);
-  const [lastTypingTime, setLastTypingTime] = useState<number | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_lastTypingTime, setLastTypingTime] = useState<number | null>(null);
 
   // Timers for progressive prompts
   const initialTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -229,7 +230,7 @@ export const useProgressiveEngagement = (
     return () => {
       clearAllTimers();
     };
-  }, [promptCount, lastPromptTime, hasStudentMessage, hasAttemptedAnswer, isAnyTyping, onGenerateGreeting]);
+  }, [promptCount, lastPromptTime, hasStudentMessage, hasAttemptedAnswer, isTyping, isExternalTyping, isAnyTyping, onGenerateGreeting]);
 
   // Stop engagement when student engages
   useEffect(() => {

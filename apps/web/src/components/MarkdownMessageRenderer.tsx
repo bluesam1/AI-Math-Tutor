@@ -51,7 +51,8 @@ const MarkdownMessageRenderer: React.FC<MarkdownMessageRendererProps> = ({
   const components = {
     // Render paragraphs with math support
     // Don't wrap paragraphs inside list items
-    p: ({ children, ...props }: { children?: React.ReactNode; [key: string]: any }) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    p: ({ children, ...props }: { children?: React.ReactNode; node?: any; [key: string]: any }) => {
       // Check if we're inside a list item by checking the parent
       const isInListItem = props.node?.parent?.type === 'listItem';
       
