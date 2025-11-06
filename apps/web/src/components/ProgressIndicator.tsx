@@ -94,9 +94,10 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
           className={`h-full transition-all duration-500 ease-out rounded-full ${getProgressColor()}`}
           style={{
             width: `${progressPercentage}%`,
-            background: progressPercentage >= 50
-              ? `linear-gradient(to right, hsl(var(--color-primary)), hsl(var(--color-accent)))`
-              : undefined,
+            background:
+              progressPercentage >= 50
+                ? `linear-gradient(to right, hsl(var(--color-primary)), hsl(var(--color-accent)))`
+                : undefined,
           }}
           aria-hidden="true"
         />
@@ -115,4 +116,3 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
 };
 
 export default ProgressIndicator;
-

@@ -127,32 +127,36 @@ export const generateFollowUp = async (
       problemType,
       studentMessage: simulatedStudentMessage,
       conversationHistory: enhancedHistory,
-      helpLevel: answerValidationContext.result === 'incorrect' ? 'escalated' : 'normal',
+      helpLevel:
+        answerValidationContext.result === 'incorrect' ? 'escalated' : 'normal',
       // For correct answers, add a special system message to prevent step-by-step instructions
-      systemOverride: answerValidationContext.result === 'correct' 
-        ? 'IMPORTANT: The student just submitted a CORRECT answer. You should celebrate their success enthusiastically and ask them to explain how they got the answer. Do NOT break down the problem into steps. Do NOT provide step-by-step instructions. Do NOT act like they got it wrong. Simply celebrate and ask them to explain their process.'
-        : undefined,
+      systemOverride:
+        answerValidationContext.result === 'correct'
+          ? 'IMPORTANT: The student just submitted a CORRECT answer. You should celebrate their success enthusiastically and ask them to explain how they got the answer. Do NOT break down the problem into steps. Do NOT provide step-by-step instructions. Do NOT act like they got it wrong. Simply celebrate and ask them to explain their process.'
+          : undefined,
     });
 
     // Post-process the response to ensure it's contextual based on validation result
     let followUpMessage = dialogueResponse.response;
-    
+
     // For correct answers, ensure the message celebrates and asks for explanation
     if (answerValidationContext.result === 'correct') {
       const lowerMessage = followUpMessage.toLowerCase();
-      
+
       // Check if message suggests the answer is wrong OR contains step-by-step instructions
       // (which shouldn't happen for correct answers - they should celebrate instead)
-      const suggestsIncorrect = 
-        lowerMessage.includes('try') && lowerMessage.includes('again') ||
+      const suggestsIncorrect =
+        (lowerMessage.includes('try') && lowerMessage.includes('again')) ||
         lowerMessage.includes('not quite') ||
         lowerMessage.includes('not correct') ||
         lowerMessage.includes('incorrect') ||
-        lowerMessage.includes('that\'s not right') ||
+        lowerMessage.includes("that's not right") ||
         lowerMessage.includes('not right') ||
-        (lowerMessage.includes('good try') && !lowerMessage.includes('correct')) ||
-        (lowerMessage.includes('break it down') && !lowerMessage.includes('correct'));
-      
+        (lowerMessage.includes('good try') &&
+          !lowerMessage.includes('correct')) ||
+        (lowerMessage.includes('break it down') &&
+          !lowerMessage.includes('correct'));
+
       // Check if message contains step-by-step instructions (numbered lists, "steps", etc.)
       // These should not appear for correct answers - only celebrations
       // Be more aggressive in detecting instructional content
@@ -176,16 +180,18 @@ export const generateFollowUp = async (
         lowerMessage.includes('break down') ||
         lowerMessage.includes('break it') ||
         lowerMessage.includes('smaller steps') ||
-        lowerMessage.includes('let\'s break') ||
+        lowerMessage.includes("let's break") ||
         lowerMessage.includes('break it down even more') ||
-        (lowerMessage.includes('more clearly') && lowerMessage.includes('break')) ||
+        (lowerMessage.includes('more clearly') &&
+          lowerMessage.includes('break')) ||
         lowerMessage.includes('imagine you have') ||
         lowerMessage.includes('visualize') ||
-        (lowerMessage.includes('think about') && lowerMessage.includes('step')) ||
+        (lowerMessage.includes('think about') &&
+          lowerMessage.includes('step')) ||
         lowerMessage.includes('starting point') ||
         lowerMessage.includes('first step') ||
         lowerMessage.includes('next step');
-      
+
       // If the message suggests incorrectness OR contains step-by-step instructions, replace with celebration
       if (suggestsIncorrect || containsStepByStepInstructions) {
         followUpMessage = `That's correct! 🎉 Great job getting ${answerValidationContext.studentAnswer}! Can you walk me through how you got that answer?`;
@@ -193,36 +199,44 @@ export const generateFollowUp = async (
         // Check if message already celebrates (contains positive confirmation words)
         if (
           !lowerMessage.includes('correct') &&
-          !lowerMessage.includes('right') && 
+          !lowerMessage.includes('right') &&
           !lowerMessage.includes('great job') &&
           !lowerMessage.includes('excellent') &&
           !lowerMessage.includes('well done') &&
           !lowerMessage.includes('perfect') &&
-          !lowerMessage.includes('that\'s correct')
+          !lowerMessage.includes("that's correct")
         ) {
           // Prepend celebration if not present
           followUpMessage = `That's correct! 🎉 ${followUpMessage}`;
         }
-        
+
         // Ensure it asks for explanation if not already doing so
-        if (!lowerMessage.includes('how') && !lowerMessage.includes('explain') && !lowerMessage.includes('walk me through')) {
+        if (
+          !lowerMessage.includes('how') &&
+          !lowerMessage.includes('explain') &&
+          !lowerMessage.includes('walk me through')
+        ) {
           followUpMessage = `${followUpMessage} Can you walk me through how you got that answer?`;
         }
       }
     }
-    
+
     // For incorrect answers, ensure the message is supportive and references the student's answer
     if (answerValidationContext.result === 'incorrect') {
       const lowerMessage = followUpMessage.toLowerCase();
-      const studentAnswerLower = answerValidationContext.studentAnswer.toLowerCase();
-      
+      const studentAnswerLower =
+        answerValidationContext.studentAnswer.toLowerCase();
+
       // Check if the response mentions the student's answer
-      if (!lowerMessage.includes(studentAnswerLower) && !lowerMessage.includes('your answer')) {
+      if (
+        !lowerMessage.includes(studentAnswerLower) &&
+        !lowerMessage.includes('your answer')
+      ) {
         // If the tutor didn't reference the answer, add a gentle mention
         // But only if the response doesn't already have a supportive opening
         if (
           !lowerMessage.includes('together') &&
-          !lowerMessage.includes('let\'s') &&
+          !lowerMessage.includes("let's") &&
           !lowerMessage.includes('work through')
         ) {
           // Prepend supportive message that references their attempt
@@ -233,7 +247,7 @@ export const generateFollowUp = async (
         }
       }
     }
-    
+
     // For partial answers, ensure the message acknowledges progress
     if (answerValidationContext.result === 'partial') {
       const lowerMessage = followUpMessage.toLowerCase();
@@ -303,8 +317,7 @@ export const generateFollowUp = async (
           "Thanks for trying! Let's work through this together. What information do we have?";
         break;
       case 'partial':
-        fallbackMessage =
-          "You're on the right track! What's the next step?";
+        fallbackMessage = "You're on the right track! What's the next step?";
         break;
     }
 
@@ -318,4 +331,3 @@ export const generateFollowUp = async (
     };
   }
 };
-

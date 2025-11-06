@@ -101,7 +101,7 @@ const ANSWER_PATTERNS = {
  */
 function extractAnswerFromQuestion(message: string): string | null {
   const trimmed = message.trim();
-  
+
   // Check for question-formatted answer patterns
   for (const pattern of ANSWER_PATTERNS.questionFormattedAnswer) {
     const match = trimmed.match(pattern);
@@ -114,7 +114,7 @@ function extractAnswerFromQuestion(message: string): string | null {
       }
     }
   }
-  
+
   return null;
 }
 
@@ -124,12 +124,12 @@ function extractAnswerFromQuestion(message: string): string | null {
  */
 function isQuestion(message: string): boolean {
   const trimmed = message.trim();
-  
+
   // First check if it's a question-formatted answer (these should be treated as answers)
   if (extractAnswerFromQuestion(trimmed) !== null) {
     return false; // It's a question-formatted answer, not a genuine question
   }
-  
+
   // Check if message ends with question mark (but not if it's a question-formatted answer)
   if (trimmed.endsWith('?') && extractAnswerFromQuestion(trimmed) === null) {
     // Check if it's one of the genuine question patterns
@@ -139,9 +139,10 @@ function isQuestion(message: string): boolean {
     // If it ends with ? but doesn't match question-formatted answer patterns,
     // it might still be a genuine question, so we check if it has an answer pattern
     // If it has an answer pattern, treat it as an answer, not a question
-    const hasAnswerPattern = ANSWER_PATTERNS.directAnswer.some(p => p.test(trimmed)) ||
-                            ANSWER_PATTERNS.numerical.some(p => p.test(trimmed)) ||
-                            ANSWER_PATTERNS.algebraic.some(p => p.test(trimmed));
+    const hasAnswerPattern =
+      ANSWER_PATTERNS.directAnswer.some(p => p.test(trimmed)) ||
+      ANSWER_PATTERNS.numerical.some(p => p.test(trimmed)) ||
+      ANSWER_PATTERNS.algebraic.some(p => p.test(trimmed));
     // If it has an answer pattern, it's not a genuine question
     return !hasAnswerPattern;
   }
@@ -162,12 +163,12 @@ function detectPatterns(message: string): string[] {
   const extractedAnswer = extractAnswerFromQuestion(trimmed);
   if (extractedAnswer !== null) {
     // Check if the extracted answer part looks like an answer
-    const hasAnswerPattern = 
+    const hasAnswerPattern =
       ANSWER_PATTERNS.numerical.some(p => p.test(extractedAnswer)) ||
       ANSWER_PATTERNS.algebraic.some(p => p.test(extractedAnswer)) ||
       ANSWER_PATTERNS.expression.some(p => p.test(extractedAnswer)) ||
       ANSWER_PATTERNS.textBased.some(p => p.test(extractedAnswer));
-    
+
     if (hasAnswerPattern) {
       detectedPatterns.push('questionFormattedAnswer');
       // Also add the specific pattern type detected in the extracted answer
@@ -233,9 +234,7 @@ function calculateConfidence(patterns: string[]): number {
   };
 
   // Use the highest weight among detected patterns
-  const maxWeight = Math.max(
-    ...patterns.map(p => patternWeights[p] || 0.5)
-  );
+  const maxWeight = Math.max(...patterns.map(p => patternWeights[p] || 0.5));
 
   // Multiple patterns increase confidence slightly
   const patternBonus = patterns.length > 1 ? 0.1 : 0.0;
@@ -380,4 +379,3 @@ export const answerDetectionUtils = {
 };
 
 export default answerDetectionUtils;
-

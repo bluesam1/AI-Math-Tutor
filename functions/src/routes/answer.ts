@@ -28,4 +28,3 @@ router.post('/check', checkAnswerEndpoint);
 console.log('[Answer Routes] Route /check registered');
 
 export default router;
-

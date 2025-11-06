@@ -28,4 +28,3 @@ declare module 'react-katex' {
   export class InlineMath extends Component<KaTeXProps> {}
   export class BlockMath extends Component<KaTeXProps> {}
 }
-

@@ -23,9 +23,7 @@ import {
   generateFollowUp,
   type AnswerValidationContext,
 } from '../services/followUpGenerationService';
-import {
-  generateStepByStepGuidance,
-} from '../services/stepByStepGuidanceService';
+import { generateStepByStepGuidance } from '../services/stepByStepGuidanceService';
 import {
   generateInitialGreeting,
   type GreetingPromptType,
@@ -162,12 +160,27 @@ export const sendMessage = async (
       : dialogueResponse.response;
 
     console.log('[Chat Controller] *** RETURNING RESPONSE TO FRONTEND ***');
-    console.log('[Chat Controller] Final response:', JSON.stringify(finalResponse));
-    console.log('[Chat Controller] Final response length:', finalResponse.length);
-    console.log('[Chat Controller] First 150 chars:', finalResponse.substring(0, 150));
+    console.log(
+      '[Chat Controller] Final response:',
+      JSON.stringify(finalResponse)
+    );
+    console.log(
+      '[Chat Controller] Final response length:',
+      finalResponse.length
+    );
+    console.log(
+      '[Chat Controller] First 150 chars:',
+      finalResponse.substring(0, 150)
+    );
     console.log('[Chat Controller] Contains $:', finalResponse.includes('$'));
-    console.log('[Chat Controller] Contains \\(:', finalResponse.includes('\\('));
-    console.log('[Chat Controller] Contains \\):', finalResponse.includes('\\)'));
+    console.log(
+      '[Chat Controller] Contains \\(:',
+      finalResponse.includes('\\(')
+    );
+    console.log(
+      '[Chat Controller] Contains \\):',
+      finalResponse.includes('\\)')
+    );
 
     // Add assistant response to context
     await addMessage(currentSessionId, {
@@ -626,7 +639,12 @@ export const generateInitialGreetingMessage = async (
   res: Response<InitialGreetingResponse | InitialGreetingErrorResponse>
 ): Promise<void> => {
   try {
-    const { problemText, problemType, promptType, conversationHistory = [] } = req.body;
+    const {
+      problemText,
+      problemType,
+      promptType,
+      conversationHistory = [],
+    } = req.body;
 
     // Validate required fields
     if (

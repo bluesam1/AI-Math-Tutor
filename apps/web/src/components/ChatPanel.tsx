@@ -79,11 +79,14 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     promptType: 'initial' | 'follow-up-1' | 'follow-up-2' | 'follow-up-3'
   ) => {
     if (!problemText || !problemType || !onAddTutorMessage) {
-      console.log('[ChatPanel] Greeting generation skipped - missing requirements', {
-        hasProblemText: !!problemText,
-        hasProblemType: !!problemType,
-        hasOnAddTutorMessage: !!onAddTutorMessage,
-      });
+      console.log(
+        '[ChatPanel] Greeting generation skipped - missing requirements',
+        {
+          hasProblemText: !!problemText,
+          hasProblemType: !!problemType,
+          hasOnAddTutorMessage: !!onAddTutorMessage,
+        }
+      );
       return;
     }
 
@@ -94,7 +97,9 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
 
       // Convert messages to conversation history format
       const conversationHistory = messages.map(msg => ({
-        role: (msg.role === 'student' ? 'user' : 'assistant') as 'user' | 'assistant',
+        role: (msg.role === 'student' ? 'user' : 'assistant') as
+          | 'user'
+          | 'assistant',
         content: msg.content,
       }));
 
@@ -166,7 +171,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     }
   }, [messages, recordAttempt, recordResponse, markProgress]);
 
-
   // Auto-scroll to bottom when new messages arrive
   // Only scroll within the messages container, not the entire page
   useEffect(() => {
@@ -175,7 +179,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       requestAnimationFrame(() => {
         if (messagesContainerRef.current) {
           const container = messagesContainerRef.current;
-          
+
           // Scroll to the bottom of the container
           container.scrollTo({
             top: container.scrollHeight,
@@ -206,11 +210,11 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       const isFollowUpMessage =
         lowerContent.includes('walk me through') ||
         lowerContent.includes('work through') ||
-        lowerContent.includes('let\'s work') ||
-        lowerContent.includes('let\'s think') ||
+        lowerContent.includes("let's work") ||
+        lowerContent.includes("let's think") ||
         lowerContent.includes('can you explain') ||
         lowerContent.includes('how you got') ||
-        lowerContent.includes('that\'s correct') ||
+        lowerContent.includes("that's correct") ||
         lowerContent.includes('thanks for trying') ||
         lowerContent.includes('right track') ||
         lowerContent.includes('step') ||
@@ -226,7 +230,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       // If we just checked an answer and got a tutor message, it's likely a follow-up
       // We'll show the help offer for any tutor message that appears after answer checking
       const hasRecentAnswerCheck = !!answerCheckResult;
-      
+
       if (isFollowUpMessage || hasRecentAnswerCheck) {
         console.log('[ChatPanel] Triggering help offer timer', {
           isFollowUpMessage,
@@ -247,15 +251,20 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
           setShowHelpOffer(true);
           // Auto-dismiss after 15 seconds
           helpOfferAutoDismissTimerRef.current = setTimeout(() => {
-            console.log('[ChatPanel] Auto-dismissing help offer card after 15 seconds');
+            console.log(
+              '[ChatPanel] Auto-dismissing help offer card after 15 seconds'
+            );
             setShowHelpOffer(false);
           }, 15000);
         }, 7500);
       } else {
-        console.log('[ChatPanel] Not showing help offer - not a follow-up message', {
-          isFollowUpMessage,
-          hasRecentAnswerCheck,
-        });
+        console.log(
+          '[ChatPanel] Not showing help offer - not a follow-up message',
+          {
+            isFollowUpMessage,
+            hasRecentAnswerCheck,
+          }
+        );
       }
     }
 
@@ -359,7 +368,9 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
 
       // Convert messages to conversation history format
       const conversationHistory = messages.map(msg => ({
-        role: (msg.role === 'student' ? 'user' : 'assistant') as 'user' | 'assistant',
+        role: (msg.role === 'student' ? 'user' : 'assistant') as
+          | 'user'
+          | 'assistant',
         content: msg.content,
       }));
 
@@ -387,7 +398,10 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
         // Guidance generation failure doesn't block chat flow
       }
     } catch (error) {
-      console.error('[ChatPanel] Error generating step-by-step guidance', error);
+      console.error(
+        '[ChatPanel] Error generating step-by-step guidance',
+        error
+      );
       // Guidance generation failure doesn't block chat flow
     }
   };
@@ -417,11 +431,14 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     isPartial?: boolean
   ) => {
     if (!problemText || !problemType || !onAddTutorMessage) {
-      console.log('[ChatPanel] Follow-up generation skipped - missing requirements', {
-        hasProblemText: !!problemText,
-        hasProblemType: !!problemType,
-        hasOnAddTutorMessage: !!onAddTutorMessage,
-      });
+      console.log(
+        '[ChatPanel] Follow-up generation skipped - missing requirements',
+        {
+          hasProblemText: !!problemText,
+          hasProblemType: !!problemType,
+          hasOnAddTutorMessage: !!onAddTutorMessage,
+        }
+      );
       return;
     }
 
@@ -433,7 +450,9 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
 
       // Convert messages to conversation history format
       const conversationHistory = messages.map(msg => ({
-        role: (msg.role === 'student' ? 'user' : 'assistant') as 'user' | 'assistant',
+        role: (msg.role === 'student' ? 'user' : 'assistant') as
+          | 'user'
+          | 'assistant',
         content: msg.content,
       }));
 
@@ -500,14 +519,19 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
 
     // Only check answer if detection confidence is high enough
     if (!detectionResult.isAnswer || detectionResult.confidence < 0.5) {
-      console.log('[ChatPanel] Message does not look like an answer, skipping check', {
-        isAnswer: detectionResult.isAnswer,
-        confidence: detectionResult.confidence,
-        threshold: 0.5,
-        message,
-        reasoning: detectionResult.reasoning,
-      });
-      console.log('[ChatPanel] 💡 TIP: Try sending a simple answer like "5" or "x = 5" to test auto-prompting');
+      console.log(
+        '[ChatPanel] Message does not look like an answer, skipping check',
+        {
+          isAnswer: detectionResult.isAnswer,
+          confidence: detectionResult.confidence,
+          threshold: 0.5,
+          message,
+          reasoning: detectionResult.reasoning,
+        }
+      );
+      console.log(
+        '[ChatPanel] 💡 TIP: Try sending a simple answer like "5" or "x = 5" to test auto-prompting'
+      );
       return;
     }
 

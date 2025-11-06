@@ -63,11 +63,11 @@ const CelebrationMessage: React.FC<CelebrationMessageProps> = ({
 
   // Default celebration messages (age-appropriate for 6th grade)
   const defaultMessages = [
-    '🎉 That\'s correct! Great job!',
+    "🎉 That's correct! Great job!",
     '✨ You solved it! Excellent work!',
     '🌟 Perfect answer! Keep it up!',
     '🏆 Amazing! You got it right!',
-    '🎊 Well done! You\'re learning so much!',
+    "🎊 Well done! You're learning so much!",
   ];
 
   const displayMessage =
@@ -77,7 +77,9 @@ const CelebrationMessage: React.FC<CelebrationMessageProps> = ({
   return (
     <div
       className={`relative rounded-lg p-4 border-2 transition-all duration-500 ${
-        isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-2 scale-95'
+        isVisible
+          ? 'opacity-100 translate-y-0 scale-100'
+          : 'opacity-0 translate-y-2 scale-95'
       } bg-accent text-accent-foreground border-accent shadow-accent ${className}`}
       role="status"
       aria-live="polite"
@@ -125,5 +127,3 @@ const CelebrationMessage: React.FC<CelebrationMessageProps> = ({
 };
 
 export default CelebrationMessage;
-
-

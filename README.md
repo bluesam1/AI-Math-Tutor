@@ -20,6 +20,7 @@ AI Math Tutor is a patient, adaptive AI tutor that never gives direct answers bu
 ## 🛠️ Technology Stack
 
 ### Frontend
+
 - **React** 18.2.0
 - **TypeScript** 5.3.0+
 - **Vite** 5.0.0
@@ -28,6 +29,7 @@ AI Math Tutor is a patient, adaptive AI tutor that never gives direct answers bu
 - **React Markdown** 10.1.0
 
 ### Backend
+
 - **Node.js** 20
 - **Express** 4.18.0
 - **TypeScript** 5.3.0+
@@ -35,11 +37,13 @@ AI Math Tutor is a patient, adaptive AI tutor that never gives direct answers bu
 - **OpenAI API** 6.0.0 (GPT-4 for LLM, Vision API for image parsing)
 
 ### Infrastructure
+
 - **Firebase Hosting** (frontend)
 - **Firebase Cloud Functions** (backend API)
 - **Firestore** (session storage)
 
 ### Development Tools
+
 - **ESLint** 8.57.1
 - **Prettier** 3.6.2
 - **TypeScript** 5.9.3
@@ -74,6 +78,7 @@ npm install
 ```
 
 This will install dependencies for:
+
 - Root workspace (dev tools)
 - `apps/web` (React frontend)
 - `functions` (Firebase Cloud Functions)
@@ -122,6 +127,7 @@ firebase init
 ```
 
 Select:
+
 - Functions
 - Hosting
 - Use an existing project (or create a new one)
@@ -165,6 +171,7 @@ npm run dev:web
 ```
 
 **Access Points:**
+
 - Frontend: `http://localhost:5000` (Firebase Hosting emulator)
 - Backend API: `http://localhost:5000/api` (via Hosting rewrite)
 - Functions Emulator: `http://localhost:5001`
@@ -182,6 +189,7 @@ npm run serve
 ```
 
 **Access Points:**
+
 - Frontend: `http://localhost:3000` (Vite dev server)
 - Backend API: `http://localhost:5001/{project-id}/us-central1/api`
 
@@ -345,6 +353,7 @@ Content-Type: application/json
 Validates a math problem and returns the problem type.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -365,6 +374,7 @@ image: <file>
 Parses an uploaded image and extracts problem text.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -390,6 +400,7 @@ Content-Type: application/json
 Sends a message to the tutor and receives a Socratic response.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -418,6 +429,7 @@ Content-Type: application/json
 Checks if a student's answer is correct.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -496,6 +508,7 @@ Comprehensive documentation is available in the `docs/` directory:
 ## 🤝 Contributing
 
 1. Create a feature branch
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
@@ -503,6 +516,7 @@ Comprehensive documentation is available in the `docs/` directory:
 2. Make your changes
 
 3. Ensure code quality
+
    ```bash
    npm run lint
    npm run format
@@ -510,11 +524,13 @@ Comprehensive documentation is available in the `docs/` directory:
    ```
 
 4. Commit your changes
+
    ```bash
    git commit -m "Add your feature"
    ```
 
 5. Push to the branch
+
    ```bash
    git push origin feature/your-feature-name
    ```

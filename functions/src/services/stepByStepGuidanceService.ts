@@ -129,25 +129,19 @@ export const generateStepByStepGuidance = async (
     };
   } catch (error) {
     const generationTime = Date.now() - startTime;
-    console.error(
-      '[Step-by-Step Guidance Service] Error generating guidance',
-      {
-        generationTime: `${generationTime}ms`,
-        errorName: error instanceof Error ? error.name : 'Unknown',
-        errorMessage: error instanceof Error ? error.message : String(error),
-      }
-    );
+    console.error('[Step-by-Step Guidance Service] Error generating guidance', {
+      generationTime: `${generationTime}ms`,
+      errorName: error instanceof Error ? error.name : 'Unknown',
+      errorMessage: error instanceof Error ? error.message : String(error),
+    });
 
     // Fallback to generic step-by-step guidance message
     const fallbackMessage =
       "Let's work through this step-by-step together. What information do we have in the problem? What do you think we should figure out first?";
 
-    console.log(
-      '[Step-by-Step Guidance Service] Using fallback message',
-      {
-        fallbackMessage,
-      }
-    );
+    console.log('[Step-by-Step Guidance Service] Using fallback message', {
+      fallbackMessage,
+    });
 
     return {
       guidanceMessage: fallbackMessage,
@@ -155,5 +149,3 @@ export const generateStepByStepGuidance = async (
     };
   }
 };
-
-

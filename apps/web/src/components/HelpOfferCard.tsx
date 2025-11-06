@@ -30,7 +30,7 @@ export interface HelpOfferCardProps {
  * Appears after follow-up messages to offer additional step-by-step guidance.
  */
 const HelpOfferCard: React.FC<HelpOfferCardProps> = ({
-  message = "Need help breaking this down? I can guide you step-by-step!",
+  message = 'Need help breaking this down? I can guide you step-by-step!',
   onAccept,
   onDismiss,
   visible = true,
@@ -142,5 +142,3 @@ const HelpOfferCard: React.FC<HelpOfferCardProps> = ({
 };
 
 export default HelpOfferCard;
-
-

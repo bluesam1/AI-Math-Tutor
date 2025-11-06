@@ -15,7 +15,11 @@ import { blockAndRewriteAnswer } from './answerBlockingService';
 /**
  * Greeting prompt type
  */
-export type GreetingPromptType = 'initial' | 'follow-up-1' | 'follow-up-2' | 'follow-up-3';
+export type GreetingPromptType =
+  | 'initial'
+  | 'follow-up-1'
+  | 'follow-up-2'
+  | 'follow-up-3';
 
 /**
  * Initial greeting generation options
@@ -63,7 +67,12 @@ export const generateInitialGreeting = async (
   options: InitialGreetingOptions
 ): Promise<GreetingGenerationResult> => {
   const startTime = Date.now();
-  const { problemText, problemType, promptType, conversationHistory = [] } = options;
+  const {
+    problemText,
+    problemType,
+    promptType,
+    conversationHistory = [],
+  } = options;
 
   try {
     console.log('[Initial Greeting Service] Generating greeting', {
@@ -77,22 +86,26 @@ export const generateInitialGreeting = async (
     switch (promptType) {
       case 'initial':
         // First greeting - open and welcoming
-        simulatedStudentMessage = "I just set a problem. I'm ready to start working on it.";
+        simulatedStudentMessage =
+          "I just set a problem. I'm ready to start working on it.";
         break;
 
       case 'follow-up-1':
         // First follow-up - gentle encouragement
-        simulatedStudentMessage = "I'm still looking at the problem. I'm not sure where to start.";
+        simulatedStudentMessage =
+          "I'm still looking at the problem. I'm not sure where to start.";
         break;
 
       case 'follow-up-2':
         // Second follow-up - more specific guidance
-        simulatedStudentMessage = "I'm still thinking about the problem. I could use some help getting started.";
+        simulatedStudentMessage =
+          "I'm still thinking about the problem. I could use some help getting started.";
         break;
 
       case 'follow-up-3':
         // Third follow-up - direct offer of help
-        simulatedStudentMessage = "I'm stuck on this problem. Can you help me get started?";
+        simulatedStudentMessage =
+          "I'm stuck on this problem. Can you help me get started?";
         break;
     }
 
@@ -235,5 +248,3 @@ export const generateInitialGreeting = async (
     };
   }
 };
-
-

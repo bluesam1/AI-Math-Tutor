@@ -5,15 +5,18 @@
 ### Timeline
 
 **0s: Student submits answer**
+
 ```
 Student: "The answer is 42"
 ```
 
 **0-2s: Answer validation**
+
 - System validates answer against problem
 - Validation result: ✓ Correct
 
 **2s: Celebration & Feedback**
+
 ```
 [Validation Badge appears at top of chat]
 ✓ Correct! 🎉
@@ -23,12 +26,14 @@ Student: "The answer is 42"
 ```
 
 **2s: Automatic Follow-Up (Immediate)**
+
 ```
-Tutor: "That's correct! 🎉 Can you walk me through how you got that answer? 
+Tutor: "That's correct! 🎉 Can you walk me through how you got that answer?
         I'd love to hear your thinking process."
 ```
 
 **10s: Optional Help Offer (if no student response)**
+
 ```
 [Help Offer Card appears below tutor message]
 
@@ -42,12 +47,14 @@ Tutor: "That's correct! 🎉 Can you walk me through how you got that answer?
 ```
 
 **If student clicks "Yes, please!":**
+
 ```
-Tutor: "Great! Let's think about this together. What was the first step 
+Tutor: "Great! Let's think about this together. What was the first step
         you took when you started solving this problem?"
 ```
 
 **If student types message instead:**
+
 ```
 [Help offer automatically dismisses]
 Student: "I multiplied 6 by 7"
@@ -61,15 +68,18 @@ Tutor: "Excellent! Can you tell me why you chose to multiply first?"
 ### Timeline
 
 **0s: Student submits answer**
+
 ```
 Student: "The answer is 50"
 ```
 
 **0-2s: Answer validation**
+
 - System validates answer against problem
 - Validation result: ✗ Incorrect
 
 **2s: Encouragement & Feedback**
+
 ```
 [Validation Badge appears at top of chat]
 Keep trying! 💪
@@ -79,12 +89,14 @@ Keep trying! 💪
 ```
 
 **2s: Automatic Follow-Up (Immediate)**
+
 ```
-Tutor: "Thanks for trying! Let's work through this together. What 
+Tutor: "Thanks for trying! Let's work through this together. What
         information do we have in the problem?"
 ```
 
 **8s: Optional Help Offer (if no student response)**
+
 ```
 [Help Offer Card appears below tutor message]
 
@@ -97,16 +109,18 @@ Tutor: "Thanks for trying! Let's work through this together. What
 ```
 
 **If student clicks "Yes, please!":**
+
 ```
-Tutor: "Let's start by understanding what the problem is asking. 
+Tutor: "Let's start by understanding what the problem is asking.
         Can you tell me what information we know from the problem?"
 ```
 
 **If student types message instead:**
+
 ```
 [Help offer automatically dismisses]
 Student: "We have 6 groups and 7 items in each"
-Tutor: "Perfect! Now, what operation do you think we should use 
+Tutor: "Perfect! Now, what operation do you think we should use
         to find the total?"
 ```
 
@@ -117,15 +131,18 @@ Tutor: "Perfect! Now, what operation do you think we should use
 ### Timeline
 
 **0s: Student submits answer**
+
 ```
 Student: "I think we need to multiply first"
 ```
 
 **0-2s: Answer validation**
+
 - System validates answer against problem
 - Validation result: ⚠ Partial
 
 **2s: Progress Feedback**
+
 ```
 [Validation Badge appears at top of chat]
 Partial answer ✨
@@ -135,12 +152,14 @@ Partial answer ✨
 ```
 
 **2s: Automatic Follow-Up (Immediate)**
+
 ```
-Tutor: "You're on the right track! What do you think we should multiply, 
+Tutor: "You're on the right track! What do you think we should multiply,
         and why?"
 ```
 
 **6s: Optional Help Offer (if no student response)**
+
 ```
 [Help Offer Card appears below tutor message]
 
@@ -153,16 +172,18 @@ Tutor: "You're on the right track! What do you think we should multiply,
 ```
 
 **If student clicks "Yes, please!":**
+
 ```
-Tutor: "Great! Let's break this down. First, what information do we 
+Tutor: "Great! Let's break this down. First, what information do we
         have in the problem? What numbers or values do you see?"
 ```
 
 **If student types message instead:**
+
 ```
 [Help offer automatically dismisses]
 Student: "We should multiply 6 times 7"
-Tutor: "Good thinking! Why do you think we should multiply 6 by 7? 
+Tutor: "Good thinking! Why do you think we should multiply 6 by 7?
         What does that represent in the problem?"
 ```
 
@@ -173,11 +194,13 @@ Tutor: "Good thinking! Why do you think we should multiply 6 by 7?
 ### Timeline
 
 **0s: Student submits answer**
+
 ```
 Student: "The answer is 42"
 ```
 
 **2s: Answer validation completes**
+
 ```
 [Validation Badge appears]
 ✓ Correct! 🎉
@@ -186,22 +209,25 @@ Student: "The answer is 42"
 ```
 
 **2s: Automatic Follow-Up (Immediate)**
+
 ```
 Tutor: "That's correct! 🎉 Can you walk me through how you got that answer?"
 ```
 
 **3s: Student responds immediately**
+
 ```
 Student: "I multiplied 6 by 7"
 ```
 
 **Result:**
+
 - Help offer never appears (student is actively engaging)
 - Normal dialogue continues naturally
 - Tutor responds to student's explanation
 
 ```
-Tutor: "Excellent! Can you tell me why you chose to multiply first? 
+Tutor: "Excellent! Can you tell me why you chose to multiply first?
         What does 6 times 7 represent in this problem?"
 ```
 
@@ -210,6 +236,7 @@ Tutor: "Excellent! Can you tell me why you chose to multiply first?
 ## UI Components Visualization
 
 ### Validation Badge
+
 ```
 ┌─────────────────────────────────┐
 │  ✓ Correct! 🎉                  │  [Green background]
@@ -218,6 +245,7 @@ Tutor: "Excellent! Can you tell me why you chose to multiply first?
 ```
 
 ### Automatic Follow-Up Message
+
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  Tutor                                                   │
@@ -231,6 +259,7 @@ Tutor: "Excellent! Can you tell me why you chose to multiply first?
 ```
 
 ### Help Offer Card
+
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  Tutor                                                   │
@@ -265,5 +294,3 @@ Tutor: "Excellent! Can you tell me why you chose to multiply first?
 - **ARIA Labels:** All interactive elements have proper labels
 - **High Contrast:** Validation badges use high contrast colors
 - **Color + Text:** Color is not the only indicator (icons and text also used)
-
-

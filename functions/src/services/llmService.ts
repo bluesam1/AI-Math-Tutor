@@ -246,43 +246,79 @@ CRITICAL:
     if (validationResult.cleanedProblemText) {
       const originalText = validationResult.cleanedProblemText;
       console.log('[LLM Service] *** CLEANUP STARTING ***');
-      console.log('[LLM Service] Original cleanedProblemText:', JSON.stringify(originalText));
+      console.log(
+        '[LLM Service] Original cleanedProblemText:',
+        JSON.stringify(originalText)
+      );
       console.log('[LLM Service] Length:', originalText.length);
-      console.log('[LLM Service] First 20 chars:', originalText.substring(0, 20));
-      console.log('[LLM Service] Last 20 chars:', originalText.substring(originalText.length - 20));
+      console.log(
+        '[LLM Service] First 20 chars:',
+        originalText.substring(0, 20)
+      );
+      console.log(
+        '[LLM Service] Last 20 chars:',
+        originalText.substring(originalText.length - 20)
+      );
 
       let cleaned = originalText;
-      
+
       // Remove all types of math delimiters step by step with logging
-      console.log('[LLM Service] Step 1 - Before cleanup:', JSON.stringify(cleaned));
-      
+      console.log(
+        '[LLM Service] Step 1 - Before cleanup:',
+        JSON.stringify(cleaned)
+      );
+
       cleaned = cleaned.replace(/\\\[/g, '');
-      console.log('[LLM Service] Step 2 - After removing \\[:', JSON.stringify(cleaned));
-      
+      console.log(
+        '[LLM Service] Step 2 - After removing \\[:',
+        JSON.stringify(cleaned)
+      );
+
       cleaned = cleaned.replace(/\\\]/g, '');
-      console.log('[LLM Service] Step 3 - After removing \\]:', JSON.stringify(cleaned));
-      
+      console.log(
+        '[LLM Service] Step 3 - After removing \\]:',
+        JSON.stringify(cleaned)
+      );
+
       cleaned = cleaned.replace(/\\\(/g, '');
-      console.log('[LLM Service] Step 4 - After removing \\(:', JSON.stringify(cleaned));
-      
+      console.log(
+        '[LLM Service] Step 4 - After removing \\(:',
+        JSON.stringify(cleaned)
+      );
+
       cleaned = cleaned.replace(/\\\)/g, '');
-      console.log('[LLM Service] Step 5 - After removing \\):', JSON.stringify(cleaned));
-      
+      console.log(
+        '[LLM Service] Step 5 - After removing \\):',
+        JSON.stringify(cleaned)
+      );
+
       cleaned = cleaned.replace(/\$\$/g, '');
-      console.log('[LLM Service] Step 6 - After removing $$:', JSON.stringify(cleaned));
-      
+      console.log(
+        '[LLM Service] Step 6 - After removing $$:',
+        JSON.stringify(cleaned)
+      );
+
       cleaned = cleaned.replace(/\$/g, '');
-      console.log('[LLM Service] Step 7 - After removing $:', JSON.stringify(cleaned));
-      
+      console.log(
+        '[LLM Service] Step 7 - After removing $:',
+        JSON.stringify(cleaned)
+      );
+
       cleaned = cleaned.trim();
-      console.log('[LLM Service] Step 8 - After trim:', JSON.stringify(cleaned));
+      console.log(
+        '[LLM Service] Step 8 - After trim:',
+        JSON.stringify(cleaned)
+      );
 
       // Return cleaned text without wrapping in delimiters
       // The frontend will handle math rendering if needed
       validationResult.cleanedProblemText = cleaned;
 
       console.log('[LLM Service] *** CLEANUP COMPLETE ***');
-      console.log('[LLM Service] Final cleanedProblemText:', JSON.stringify(validationResult.cleanedProblemText));
+      console.log(
+        '[LLM Service] Final cleanedProblemText:',
+        JSON.stringify(validationResult.cleanedProblemText)
+      );
     } else {
       console.log('[LLM Service] No cleanedProblemText to clean');
     }
@@ -371,7 +407,9 @@ export const generateSocraticDialogue = async (
 
     // System message with Socratic principles
     // Use override if provided, otherwise use default
-    const systemMessage = options.systemOverride || `You are a patient, encouraging math tutor for 6th grade students (ages 11-12). Your role is to guide students through math problems using the Socratic method - asking guiding questions that help them discover solutions themselves.
+    const systemMessage =
+      options.systemOverride ||
+      `You are a patient, encouraging math tutor for 6th grade students (ages 11-12). Your role is to guide students through math problems using the Socratic method - asking guiding questions that help them discover solutions themselves.
 
 CRITICAL RULES - NEVER VIOLATE THESE:
 1. NEVER give direct answers or final solutions
@@ -465,34 +503,58 @@ Current Problem: ${options.problemText}`;
     // Normalize math delimiters to KaTeX format
     // Convert LaTeX \(...\) to $...$ and \[...\] to $$...$$
     console.log('[LLM Service] *** NORMALIZING MATH DELIMITERS ***');
-    console.log('[LLM Service] Original response text:', JSON.stringify(responseText));
+    console.log(
+      '[LLM Service] Original response text:',
+      JSON.stringify(responseText)
+    );
     console.log('[LLM Service] Original length:', responseText.length);
-    console.log('[LLM Service] First 150 chars:', responseText.substring(0, 150));
+    console.log(
+      '[LLM Service] First 150 chars:',
+      responseText.substring(0, 150)
+    );
     console.log('[LLM Service] Contains \\(:', responseText.includes('\\('));
     console.log('[LLM Service] Contains \\):', responseText.includes('\\)'));
     console.log('[LLM Service] Contains \\[:', responseText.includes('\\['));
     console.log('[LLM Service] Contains \\]:', responseText.includes('\\]'));
 
     let normalized = responseText;
-    
+
     // Convert LaTeX block math \[...\] to KaTeX $$...$$
     const beforeBlock = normalized;
-    normalized = normalized.replace(/\\\[([\s\S]*?)\\\]/g, (_match, content) => {
-      console.log('[LLM Service] Found block math delimiter, content:', JSON.stringify(content));
-      return `$$${content}$$`;
-    });
+    normalized = normalized.replace(
+      /\\\[([\s\S]*?)\\\]/g,
+      (_match, content) => {
+        console.log(
+          '[LLM Service] Found block math delimiter, content:',
+          JSON.stringify(content)
+        );
+        return `$$${content}$$`;
+      }
+    );
     if (normalized !== beforeBlock) {
-      console.log('[LLM Service] After block math conversion:', JSON.stringify(normalized));
+      console.log(
+        '[LLM Service] After block math conversion:',
+        JSON.stringify(normalized)
+      );
     }
-    
+
     // Convert LaTeX inline math \(...\) to KaTeX $...$
     const beforeInline = normalized;
-    normalized = normalized.replace(/\\\(([\s\S]*?)\\\)/g, (_match, content) => {
-      console.log('[LLM Service] Found inline math delimiter, content:', JSON.stringify(content));
-      return `$${content}$`;
-    });
+    normalized = normalized.replace(
+      /\\\(([\s\S]*?)\\\)/g,
+      (_match, content) => {
+        console.log(
+          '[LLM Service] Found inline math delimiter, content:',
+          JSON.stringify(content)
+        );
+        return `$${content}$`;
+      }
+    );
     if (normalized !== beforeInline) {
-      console.log('[LLM Service] After inline math conversion:', JSON.stringify(normalized));
+      console.log(
+        '[LLM Service] After inline math conversion:',
+        JSON.stringify(normalized)
+      );
     }
 
     responseText = normalized;
@@ -502,14 +564,22 @@ Current Problem: ${options.problemText}`;
     if (options.problemText) {
       // Create a version of the problem text without spaces (what LLM might generate)
       const problemWithoutSpaces = options.problemText.replace(/\s+/g, '');
-      
+
       // Check if response contains the mangled version (without spaces)
-      if (responseText.includes(problemWithoutSpaces) && problemWithoutSpaces.length > 10) {
+      if (
+        responseText.includes(problemWithoutSpaces) &&
+        problemWithoutSpaces.length > 10
+      ) {
         // Replace mangled version with correct version
-        responseText = responseText.replace(problemWithoutSpaces, options.problemText);
-        console.log('[LLM Service] Fixed mangled problem text in response (no spaces)');
+        responseText = responseText.replace(
+          problemWithoutSpaces,
+          options.problemText
+        );
+        console.log(
+          '[LLM Service] Fixed mangled problem text in response (no spaces)'
+        );
       }
-      
+
       // Also check for partial matches - if LLM includes parts of the problem text
       // Look for common patterns like "starts with 50" or "spends 18.75"
       const problemWords = options.problemText.split(/\s+/);
@@ -520,36 +590,56 @@ Current Problem: ${options.problemText}`;
           const word2 = problemWords[i + 1];
           const mangled = word1 + word2;
           const correct = word1 + ' ' + word2;
-          
+
           // Only fix if both words are substantial (not just punctuation)
-          if (word1.length > 2 && word2.length > 2 && responseText.includes(mangled)) {
+          if (
+            word1.length > 2 &&
+            word2.length > 2 &&
+            responseText.includes(mangled)
+          ) {
             // Use word boundaries to avoid partial matches
-            const regex = new RegExp(`\\b${mangled.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'g');
+            const regex = new RegExp(
+              `\\b${mangled.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`,
+              'g'
+            );
             responseText = responseText.replace(regex, correct);
-            console.log(`[LLM Service] Fixed mangled words: "${mangled}" -> "${correct}"`);
+            console.log(
+              `[LLM Service] Fixed mangled words: "${mangled}" -> "${correct}"`
+            );
           }
         }
       }
     }
-    
+
     // Fix simple numbers wrapped in dollar signs (e.g., $1$, $2$, $5$)
     // These should be plain text, not math expressions
     // Pattern: $ followed by a simple number (digits only, possibly with decimal) followed by $
     const simpleNumberMathPattern = /\$(\d+\.?\d*)\$/g;
-    responseText = responseText.replace(simpleNumberMathPattern, (match, number) => {
-      // Only fix if it's a simple number (not a complex expression)
-      // Check if it's just digits (possibly with decimal point)
-      if (/^\d+\.?\d*$/.test(number)) {
-        console.log(`[LLM Service] Fixed simple number in math delimiters: "${match}" -> "${number}"`);
-        return number; // Remove dollar signs, keep the number
+    responseText = responseText.replace(
+      simpleNumberMathPattern,
+      (match, number) => {
+        // Only fix if it's a simple number (not a complex expression)
+        // Check if it's just digits (possibly with decimal point)
+        if (/^\d+\.?\d*$/.test(number)) {
+          console.log(
+            `[LLM Service] Fixed simple number in math delimiters: "${match}" -> "${number}"`
+          );
+          return number; // Remove dollar signs, keep the number
+        }
+        return match; // Keep complex expressions as-is
       }
-      return match; // Keep complex expressions as-is
-    });
+    );
 
     console.log('[LLM Service] *** NORMALIZATION COMPLETE ***');
-    console.log('[LLM Service] Final response text:', JSON.stringify(responseText));
+    console.log(
+      '[LLM Service] Final response text:',
+      JSON.stringify(responseText)
+    );
     console.log('[LLM Service] Final length:', responseText.length);
-    console.log('[LLM Service] First 150 chars:', responseText.substring(0, 150));
+    console.log(
+      '[LLM Service] First 150 chars:',
+      responseText.substring(0, 150)
+    );
 
     // Determine response metadata (type and help level)
     // Simple heuristics to classify response type

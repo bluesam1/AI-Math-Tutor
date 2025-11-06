@@ -80,7 +80,9 @@ const Layout: React.FC<LayoutComponentProps> = ({
       {/* Responsive layout: stacked on mobile/tablet, side-by-side on desktop */}
       <div className="h-full flex flex-col md:flex-row pt-16 sm:pt-20">
         {/* Problem Display Panel - Left side on desktop, top on mobile/tablet */}
-        <div className={`w-full ${problem ? 'md:w-1/2' : 'md:w-full'} h-auto md:h-full flex-shrink-0 border-b md:border-b-0 ${problem ? 'md:border-r' : ''} border-border overflow-hidden flex flex-col`}>
+        <div
+          className={`w-full ${problem ? 'md:w-1/2' : 'md:w-full'} h-auto md:h-full flex-shrink-0 border-b md:border-b-0 ${problem ? 'md:border-r' : ''} border-border overflow-hidden flex flex-col`}
+        >
           <ProblemPanel
             problem={problem}
             problemType={problemType}

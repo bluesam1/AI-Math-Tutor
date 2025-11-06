@@ -42,8 +42,13 @@ const MathRenderer: React.FC<MathRendererProps> = ({
   });
 
   if (!renderMath || !content) {
-    console.log('[MathRenderer] Skipping math rendering', { renderMath, hasContent: !!content });
-    return <span className={`${className} whitespace-pre-wrap`}>{content}</span>;
+    console.log('[MathRenderer] Skipping math rendering', {
+      renderMath,
+      hasContent: !!content,
+    });
+    return (
+      <span className={`${className} whitespace-pre-wrap`}>{content}</span>
+    );
   }
 
   const segments = splitTextWithMath(content);
@@ -59,7 +64,9 @@ const MathRenderer: React.FC<MathRendererProps> = ({
 
   if (segments.length === 1 && segments[0].type === 'text') {
     // No math expressions found, return plain text with whitespace preservation
-    return <span className={`${className} whitespace-pre-wrap`}>{content}</span>;
+    return (
+      <span className={`${className} whitespace-pre-wrap`}>{content}</span>
+    );
   }
 
   return (

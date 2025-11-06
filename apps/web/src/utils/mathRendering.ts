@@ -23,14 +23,14 @@ export function hasMathSyntax(text: string): boolean {
   if (blockMathRegex.test(text)) {
     return true;
   }
-  
+
   // Check for inline math: $...$ (but not $$)
   // In a math tutoring context, all dollar-wrapped content is math
   const inlineMathRegex = /(?<!\$)\$(?!\$)([^$]+)\$(?!\$)/g;
   if (inlineMathRegex.test(text)) {
     return true;
   }
-  
+
   return false;
 }
 
@@ -69,7 +69,7 @@ export function findMathExpressions(text: string): MathExpression[] {
 
     if (!isPartOfBlock) {
       const content = inlineMatch[1].trim();
-      
+
       // In a math tutoring context, any content wrapped in dollar signs
       // should be treated as a math expression, including simple numbers
       // This ensures "$4$" and "$3$" are rendered as math, not displayed with dollar signs

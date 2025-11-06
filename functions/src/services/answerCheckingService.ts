@@ -79,7 +79,10 @@ function normalizeAnswer(answer: string): string {
   let normalized = answer.trim().toLowerCase();
 
   // Remove common prefixes
-  normalized = normalized.replace(/^(the answer is|answer:|it's|it is)\s+/i, '');
+  normalized = normalized.replace(
+    /^(the answer is|answer:|it's|it is)\s+/i,
+    ''
+  );
 
   // Remove whitespace around equals signs
   normalized = normalized.replace(/\s*=\s*/g, '=');
@@ -219,23 +222,19 @@ Important:
         studentAnswer,
       });
     } catch (parseError) {
-      console.error(
-        '[Answer Checking Service] Failed to parse JSON response',
-        {
-          parseError:
-            parseError instanceof Error
-              ? parseError.message
-              : String(parseError),
-          responseText: responseText.substring(0, 500),
-          problemText,
-          studentAnswer,
-        }
-      );
+      console.error('[Answer Checking Service] Failed to parse JSON response', {
+        parseError:
+          parseError instanceof Error ? parseError.message : String(parseError),
+        responseText: responseText.substring(0, 500),
+        problemText,
+        studentAnswer,
+      });
       // Default to incorrect when parsing fails
       return {
         isCorrect: false,
         confidence: 0.5,
-        reasoning: 'Failed to parse validation response - defaulting to incorrect',
+        reasoning:
+          'Failed to parse validation response - defaulting to incorrect',
       };
     }
 
@@ -248,7 +247,8 @@ Important:
       return {
         isCorrect: false,
         confidence: 0.5,
-        reasoning: 'Invalid validation response structure - defaulting to incorrect',
+        reasoning:
+          'Invalid validation response structure - defaulting to incorrect',
       };
     }
 
@@ -333,4 +333,3 @@ Important:
     };
   }
 };
-

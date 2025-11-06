@@ -50,7 +50,8 @@ export const extractTextFromImage = async (
       messages: [
         {
           role: 'system',
-          content: 'You are a math problem extraction assistant. Extract math problems from images and return them in a simple, clean format.',
+          content:
+            'You are a math problem extraction assistant. Extract math problems from images and return them in a simple, clean format.',
         },
         {
           role: 'user',
@@ -79,25 +80,31 @@ export const extractTextFromImage = async (
     }
 
     console.log('[Vision API] Raw extracted text:', extractedText);
-    console.log('[Vision API] Text starts with:', extractedText.substring(0, 10));
-    console.log('[Vision API] Text ends with:', extractedText.substring(extractedText.length - 10));
+    console.log(
+      '[Vision API] Text starts with:',
+      extractedText.substring(0, 10)
+    );
+    console.log(
+      '[Vision API] Text ends with:',
+      extractedText.substring(extractedText.length - 10)
+    );
 
     // Aggressively remove ALL types of math delimiters
     // This handles: \( \), \[ \], $, $$, and any combination
     let cleaned = extractedText;
-    
+
     // Remove LaTeX display math delimiters: \[ and \]
     cleaned = cleaned.replace(/\\\[/g, '').replace(/\\\]/g, '');
-    
+
     // Remove LaTeX inline math delimiters: \( and \)
     cleaned = cleaned.replace(/\\\(/g, '').replace(/\\\)/g, '');
-    
+
     // Remove KaTeX block delimiters: $$
     cleaned = cleaned.replace(/\$\$/g, '');
-    
+
     // Remove KaTeX inline delimiters: $
     cleaned = cleaned.replace(/\$/g, '');
-    
+
     // Clean up any extra whitespace
     cleaned = cleaned.trim();
 

@@ -15,20 +15,20 @@ const getApiBaseUrl = (): string => {
     return import.meta.env.VITE_API_URL;
   }
 
-    if (typeof window !== 'undefined') {
-      const hostname = window.location.hostname;
-      const port = window.location.port;
-      const isHostedEnvironment =
-        hostname.endsWith('web.app') ||
-        hostname.endsWith('firebaseapp.com') ||
-        hostname.endsWith('.run.app') ||
-        hostname === 'learnmath.app' ||
-        hostname.endsWith('.learnmath.app');
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    const port = window.location.port;
+    const isHostedEnvironment =
+      hostname.endsWith('web.app') ||
+      hostname.endsWith('firebaseapp.com') ||
+      hostname.endsWith('.run.app') ||
+      hostname === 'learnmath.app' ||
+      hostname.endsWith('.learnmath.app');
 
-      if (isHostedEnvironment) {
-        // Use Hosting rewrite `/api` → Cloud Function
-        return '/api';
-      }
+    if (isHostedEnvironment) {
+      // Use Hosting rewrite `/api` → Cloud Function
+      return '/api';
+    }
 
     // If frontend is running on a different port (e.g., Vite dev server on 3000),
     // use the Hosting emulator on port 5000 which handles rewrites to Functions emulator
@@ -427,8 +427,13 @@ class ApiClient {
         console.error('[API Client] parseImage error response:', errorData);
       } catch (parseError) {
         // If response is not JSON, create error from status
-        console.error('[API Client] Failed to parse error response:', parseError);
-        const responseText = await response.text().catch(() => 'Unable to read response');
+        console.error(
+          '[API Client] Failed to parse error response:',
+          parseError
+        );
+        const responseText = await response
+          .text()
+          .catch(() => 'Unable to read response');
         console.error('[API Client] Error response text:', responseText);
         errorData = {
           success: false,
@@ -545,11 +550,14 @@ class ApiClient {
     problemType: ProblemType,
     conversationHistory?: ConversationMessage[]
   ): Promise<StepByStepGuidanceApiResponse> {
-    return this.post<StepByStepGuidanceApiResponse>('/chat/step-by-step-guidance', {
-      problemText,
-      problemType,
-      conversationHistory,
-    });
+    return this.post<StepByStepGuidanceApiResponse>(
+      '/chat/step-by-step-guidance',
+      {
+        problemText,
+        problemType,
+        conversationHistory,
+      }
+    );
   }
 
   /**

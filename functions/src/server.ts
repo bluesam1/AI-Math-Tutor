@@ -45,8 +45,14 @@ app.options('*', (req: Request, res: Response) => {
       origin.startsWith('http://127.0.0.1:'))
   ) {
     res.header('Access-Control-Allow-Origin', origin);
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    res.header(
+      'Access-Control-Allow-Methods',
+      'GET, POST, PUT, DELETE, OPTIONS, PATCH'
+    );
+    res.header(
+      'Access-Control-Allow-Headers',
+      'Content-Type, Authorization, X-Requested-With'
+    );
     res.header('Access-Control-Allow-Credentials', 'true');
     res.status(200).end();
     return;
@@ -55,8 +61,14 @@ app.options('*', (req: Request, res: Response) => {
   // Allow requests with no origin in development
   if (isDevelopment && !origin) {
     res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    res.header(
+      'Access-Control-Allow-Methods',
+      'GET, POST, PUT, DELETE, OPTIONS, PATCH'
+    );
+    res.header(
+      'Access-Control-Allow-Headers',
+      'Content-Type, Authorization, X-Requested-With'
+    );
     res.status(200).end();
     return;
   }

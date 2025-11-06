@@ -46,4 +46,3 @@ export function useOrientation(): UseOrientationReturn {
     isLandscape: orientation === 'landscape',
   };
 }
-

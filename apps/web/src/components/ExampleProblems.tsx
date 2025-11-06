@@ -77,8 +77,7 @@ const EXAMPLE_PROBLEMS: ExampleProblem[] = [
   },
   {
     id: 'ex-10',
-    problem:
-      'A train travels 120 miles in 2 hours. What is its average speed?',
+    problem: 'A train travels 120 miles in 2 hours. What is its average speed?',
     type: 'Word Problem',
   },
 ];
@@ -110,7 +109,10 @@ const ExampleProblems: React.FC<ExampleProblemsProps> = ({
             className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-text-primary bg-white border-2 border-gray-200 hover:border-primary hover:bg-primary/5 hover:shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             aria-label={`Select example problem: ${example.problem}`}
           >
-            <MathRenderer content={example.problem} className="inline-flex items-center" />
+            <MathRenderer
+              content={example.problem}
+              className="inline-flex items-center"
+            />
           </button>
         ))}
       </div>
@@ -119,4 +121,3 @@ const ExampleProblems: React.FC<ExampleProblemsProps> = ({
 };
 
 export default ExampleProblems;
-

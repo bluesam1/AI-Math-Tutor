@@ -32,7 +32,9 @@ export interface ProgressiveEngagementOptions {
   /**
    * Callback to generate and add greeting message
    */
-  onGenerateGreeting: (promptType: 'initial' | 'follow-up-1' | 'follow-up-2' | 'follow-up-3') => Promise<void>;
+  onGenerateGreeting: (
+    promptType: 'initial' | 'follow-up-1' | 'follow-up-2' | 'follow-up-3'
+  ) => Promise<void>;
 }
 
 /**
@@ -88,7 +90,8 @@ export const useProgressiveEngagement = (
     if (followUp1TimerRef.current) clearTimeout(followUp1TimerRef.current);
     if (followUp2TimerRef.current) clearTimeout(followUp2TimerRef.current);
     if (followUp3TimerRef.current) clearTimeout(followUp3TimerRef.current);
-    if (typingInactivityTimerRef.current) clearTimeout(typingInactivityTimerRef.current);
+    if (typingInactivityTimerRef.current)
+      clearTimeout(typingInactivityTimerRef.current);
     initialTimerRef.current = null;
     followUp1TimerRef.current = null;
     followUp2TimerRef.current = null;
@@ -109,20 +112,35 @@ export const useProgressiveEngagement = (
     }
 
     // Start engagement when problem is set
-    if (hasProblem && !hasStudentMessage && !hasAttemptedAnswer && promptCount === 0) {
+    if (
+      hasProblem &&
+      !hasStudentMessage &&
+      !hasAttemptedAnswer &&
+      promptCount === 0
+    ) {
       setIsActive(true);
       setLastPromptTime(Date.now());
 
       // Show initial greeting after 2 seconds
       initialTimerRef.current = setTimeout(() => {
-        if (!hasStudentMessage && !hasAttemptedAnswer && !isAnyTyping && promptCount === 0) {
+        if (
+          !hasStudentMessage &&
+          !hasAttemptedAnswer &&
+          !isAnyTyping &&
+          promptCount === 0
+        ) {
           console.log('[Progressive Engagement] Showing initial greeting');
-          onGenerateGreeting('initial').then(() => {
-            setPromptCount(1);
-            setLastPromptTime(Date.now());
-          }).catch((error) => {
-            console.error('[Progressive Engagement] Error generating initial greeting', error);
-          });
+          onGenerateGreeting('initial')
+            .then(() => {
+              setPromptCount(1);
+              setLastPromptTime(Date.now());
+            })
+            .catch(error => {
+              console.error(
+                '[Progressive Engagement] Error generating initial greeting',
+                error
+              );
+            });
         }
       }, 2000); // 2 seconds
     }
@@ -131,7 +149,14 @@ export const useProgressiveEngagement = (
     return () => {
       clearAllTimers();
     };
-  }, [hasProblem, hasStudentMessage, hasAttemptedAnswer, isAnyTyping, promptCount, onGenerateGreeting]);
+  }, [
+    hasProblem,
+    hasStudentMessage,
+    hasAttemptedAnswer,
+    isAnyTyping,
+    promptCount,
+    onGenerateGreeting,
+  ]);
 
   // Track typing activity
   useEffect(() => {
@@ -177,14 +202,24 @@ export const useProgressiveEngagement = (
       const delay = 15000 - timeSinceLastPrompt;
       if (!followUp1TimerRef.current) {
         followUp1TimerRef.current = setTimeout(() => {
-          if (!hasStudentMessage && !hasAttemptedAnswer && !isTyping && promptCount === 1) {
+          if (
+            !hasStudentMessage &&
+            !hasAttemptedAnswer &&
+            !isTyping &&
+            promptCount === 1
+          ) {
             console.log('[Progressive Engagement] Showing follow-up 1');
-            onGenerateGreeting('follow-up-1').then(() => {
-              setPromptCount(2);
-              setLastPromptTime(Date.now());
-            }).catch((error) => {
-              console.error('[Progressive Engagement] Error generating follow-up 1', error);
-            });
+            onGenerateGreeting('follow-up-1')
+              .then(() => {
+                setPromptCount(2);
+                setLastPromptTime(Date.now());
+              })
+              .catch(error => {
+                console.error(
+                  '[Progressive Engagement] Error generating follow-up 1',
+                  error
+                );
+              });
           }
           followUp1TimerRef.current = null;
         }, delay);
@@ -194,14 +229,24 @@ export const useProgressiveEngagement = (
       const delay = 30000 - timeSinceLastPrompt;
       if (!followUp2TimerRef.current) {
         followUp2TimerRef.current = setTimeout(() => {
-          if (!hasStudentMessage && !hasAttemptedAnswer && !isAnyTyping && promptCount === 2) {
+          if (
+            !hasStudentMessage &&
+            !hasAttemptedAnswer &&
+            !isAnyTyping &&
+            promptCount === 2
+          ) {
             console.log('[Progressive Engagement] Showing follow-up 2');
-            onGenerateGreeting('follow-up-2').then(() => {
-              setPromptCount(3);
-              setLastPromptTime(Date.now());
-            }).catch((error) => {
-              console.error('[Progressive Engagement] Error generating follow-up 2', error);
-            });
+            onGenerateGreeting('follow-up-2')
+              .then(() => {
+                setPromptCount(3);
+                setLastPromptTime(Date.now());
+              })
+              .catch(error => {
+                console.error(
+                  '[Progressive Engagement] Error generating follow-up 2',
+                  error
+                );
+              });
           }
           followUp2TimerRef.current = null;
         }, delay);
@@ -211,15 +256,25 @@ export const useProgressiveEngagement = (
       const delay = 45000 - timeSinceLastPrompt;
       if (!followUp3TimerRef.current) {
         followUp3TimerRef.current = setTimeout(() => {
-          if (!hasStudentMessage && !hasAttemptedAnswer && !isAnyTyping && promptCount === 3) {
+          if (
+            !hasStudentMessage &&
+            !hasAttemptedAnswer &&
+            !isAnyTyping &&
+            promptCount === 3
+          ) {
             console.log('[Progressive Engagement] Showing follow-up 3 (final)');
-            onGenerateGreeting('follow-up-3').then(() => {
-              setPromptCount(4);
-              setLastPromptTime(Date.now());
-              setIsActive(false); // Stop after max prompts
-            }).catch((error) => {
-              console.error('[Progressive Engagement] Error generating follow-up 3', error);
-            });
+            onGenerateGreeting('follow-up-3')
+              .then(() => {
+                setPromptCount(4);
+                setLastPromptTime(Date.now());
+                setIsActive(false); // Stop after max prompts
+              })
+              .catch(error => {
+                console.error(
+                  '[Progressive Engagement] Error generating follow-up 3',
+                  error
+                );
+              });
           }
           followUp3TimerRef.current = null;
         }, delay);
@@ -230,12 +285,23 @@ export const useProgressiveEngagement = (
     return () => {
       clearAllTimers();
     };
-  }, [promptCount, lastPromptTime, hasStudentMessage, hasAttemptedAnswer, isTyping, isExternalTyping, isAnyTyping, onGenerateGreeting]);
+  }, [
+    promptCount,
+    lastPromptTime,
+    hasStudentMessage,
+    hasAttemptedAnswer,
+    isTyping,
+    isExternalTyping,
+    isAnyTyping,
+    onGenerateGreeting,
+  ]);
 
   // Stop engagement when student engages
   useEffect(() => {
     if (hasStudentMessage || hasAttemptedAnswer) {
-      console.log('[Progressive Engagement] Student engaged - stopping prompts');
+      console.log(
+        '[Progressive Engagement] Student engaged - stopping prompts'
+      );
       setIsActive(false);
       clearAllTimers();
     }
@@ -246,4 +312,3 @@ export const useProgressiveEngagement = (
     isActive,
   };
 };
-

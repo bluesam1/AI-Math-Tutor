@@ -5,7 +5,7 @@ import app from './src/server';
 /**
  * Define secrets (only used in production)
  * In emulator, use environment variables from .env file instead
- * 
+ *
  * Note: We only define the secret if NOT in the emulator to avoid
  * trying to access Secret Manager when running locally
  */
@@ -15,7 +15,7 @@ const openaiApiKey = isEmulator ? undefined : defineSecret('OPENAI_API_KEY');
 /**
  * Firebase Cloud Functions entry point
  * Exposes Express app as HTTP function
- * 
+ *
  * For emulator: Uses environment variables from .env file (loaded in server.ts)
  * For production: Uses secrets from Firebase Secret Manager
  */

@@ -105,33 +105,38 @@ graph TD
    - Required by: Stories 3.13, 3.14
 
 10. **Story 3.13: Component Color Redesign**
-   - Updates all components to use logo-based colors
-   - **Dependencies:** Story 3.12 (Color system must be established)
-   - Required by: Story 3.14
+
+- Updates all components to use logo-based colors
+- **Dependencies:** Story 3.12 (Color system must be established)
+- Required by: Story 3.14
 
 11. **Story 3.14: Visual Polish & Branding**
-   - Adds gradients, shadows, animations, and logo integration
-   - **Dependencies:** Story 3.13 (Components must use new colors)
-   - Required by: Stories 3.5, 3.6
+
+- Adds gradients, shadows, animations, and logo integration
+- **Dependencies:** Story 3.13 (Components must use new colors)
+- Required by: Stories 3.5, 3.6
 
 ### Phase 5: Testing & Polish (Stories 3.5, 3.6)
 
 **Goal:** Comprehensive testing and final polish
 
 12. **Story 3.5: Comprehensive Testing Across All 5 Problem Types** ⭐ Critical
-   - Validates system works for all problem types
-   - **Dependencies:** All previous stories (Epic 1, Epic 2, Stories 3.1-3.4, 3.7-3.11, 3.12-3.14)
-   - Required by: Story 3.6
+
+- Validates system works for all problem types
+- **Dependencies:** All previous stories (Epic 1, Epic 2, Stories 3.1-3.4, 3.7-3.11, 3.12-3.14)
+- Required by: Story 3.6
 
 13. **Story 3.6: Final UI Polish & Error Handling** ⭐ Final
-   - Final polish and error handling
-   - **Dependencies:** All previous stories (Epic 1, Epic 2, Stories 3.1-3.5, 3.7-3.11, 3.12-3.14)
-   - **Final Story:** Completes Epic 3
+
+- Final polish and error handling
+- **Dependencies:** All previous stories (Epic 1, Epic 2, Stories 3.1-3.5, 3.7-3.11, 3.12-3.14)
+- **Final Story:** Completes Epic 3
 
 14. **Story 3.11: Clean Problem Entry Screen**
-   - Clean, minimal problem entry interface
-   - **Dependencies:** Stories 1.8, 3.6 (ProblemPanel exists, UI polish established)
-   - Required by: Stories 3.5, 3.6
+
+- Clean, minimal problem entry interface
+- **Dependencies:** Stories 1.8, 3.6 (ProblemPanel exists, UI polish established)
+- Required by: Stories 3.5, 3.6
 
 ## Story Summary
 

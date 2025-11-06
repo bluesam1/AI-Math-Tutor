@@ -26,7 +26,7 @@ const App: React.FC = () => {
   const [isChatTyping, setIsChatTyping] = useState(false);
   const [isAnswerTyping, setIsAnswerTyping] = useState(false);
   const isAnyTyping = isChatTyping || isAnswerTyping;
-  
+
   // Track pending automatic messages to cancel them when typing starts
   const pendingFollowUpRef = useRef<AbortController | null>(null);
 
@@ -81,7 +81,10 @@ const App: React.FC = () => {
   };
 
   const handleImageSubmit = async (file: File) => {
-    console.log('[App] handleImageSubmit called', { fileName: file.name, fileSize: file.size });
+    console.log('[App] handleImageSubmit called', {
+      fileName: file.name,
+      fileSize: file.size,
+    });
     setIsUploading(true);
     setIsProcessing(true);
     setIsValidating(true);
@@ -132,7 +135,10 @@ const App: React.FC = () => {
           setChatError(null);
         } else if (validationResult.success && !validationResult.valid) {
           // Problem is invalid - show error
-          console.warn('[App] Problem validation failed:', validationResult.error);
+          console.warn(
+            '[App] Problem validation failed:',
+            validationResult.error
+          );
           setValidationError(validationResult.error);
           setProblem(undefined);
           setProblemType(undefined);
@@ -188,7 +194,10 @@ const App: React.FC = () => {
     setMessages(prev => [...prev, tutorMessage]);
   };
 
-  const handleAddStudentMessage = (message: string, isAnswer: boolean = false) => {
+  const handleAddStudentMessage = (
+    message: string,
+    isAnswer: boolean = false
+  ) => {
     const studentMessage: Message = {
       id: `student_${Date.now()}`,
       role: 'student',
@@ -211,7 +220,9 @@ const App: React.FC = () => {
   // Cancel automatic messages when typing starts
   useEffect(() => {
     if (isAnyTyping) {
-      console.log('[App] Student is typing - canceling any pending automatic messages');
+      console.log(
+        '[App] Student is typing - canceling any pending automatic messages'
+      );
       // Cancel any pending follow-up generation
       if (pendingFollowUpRef.current) {
         pendingFollowUpRef.current.abort();
@@ -230,7 +241,7 @@ const App: React.FC = () => {
     studentAnswer?: string;
   }) => {
     console.log('[App] Answer checked:', result);
-    
+
     if (!result.studentAnswer || !problem || !problemType) {
       return;
     }
@@ -365,7 +376,7 @@ const App: React.FC = () => {
         if (response.success) {
           // Note: We don't check isAnyTyping here because this is a response to a submitted answer,
           // not an automatic greeting. The student has explicitly submitted their answer and is waiting for feedback.
-          
+
           // Add tutor's Socratic response to chat
           const assistantMessage: Message = {
             id: `assistant_${Date.now()}`,
@@ -465,7 +476,10 @@ const App: React.FC = () => {
         console.log('[App] *** RECEIVED CHAT RESPONSE FROM API ***');
         console.log('[App] Response:', JSON.stringify(response.response));
         console.log('[App] Response length:', response.response.length);
-        console.log('[App] First 150 chars:', response.response.substring(0, 150));
+        console.log(
+          '[App] First 150 chars:',
+          response.response.substring(0, 150)
+        );
         console.log('[App] Contains $:', response.response.includes('$'));
         console.log('[App] Contains \\(:', response.response.includes('\\('));
         console.log('[App] Contains \\):', response.response.includes('\\)'));
@@ -477,7 +491,10 @@ const App: React.FC = () => {
           content: response.response,
           timestamp: new Date(),
         };
-        console.log('[App] Created assistant message:', JSON.stringify(assistantMessage));
+        console.log(
+          '[App] Created assistant message:',
+          JSON.stringify(assistantMessage)
+        );
         setMessages(prev => [...prev, assistantMessage]);
 
         // Update session ID if provided

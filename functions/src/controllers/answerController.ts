@@ -79,7 +79,11 @@ export interface AnswerCheckErrorResponse {
  * Validates student answers against math problems
  */
 export const checkAnswerEndpoint = async (
-  req: Request<unknown, AnswerCheckResponse | AnswerCheckErrorResponse, AnswerCheckRequest>,
+  req: Request<
+    unknown,
+    AnswerCheckResponse | AnswerCheckErrorResponse,
+    AnswerCheckRequest
+  >,
   res: Response<AnswerCheckResponse | AnswerCheckErrorResponse>
 ): Promise<void> => {
   console.log('[Answer Controller] *** CHECK ANSWER ENDPOINT CALLED ***');
@@ -237,4 +241,3 @@ export const checkAnswerEndpoint = async (
     res.status(500).json(errorResponse);
   }
 };
-

@@ -42,7 +42,10 @@ const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
       {!isStudent && (
         <div className="flex-shrink-0 mt-1">
           <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-accent/10 border-2 border-accent shadow-card flex items-center justify-center">
-            <Bot className="w-6 h-6 sm:w-7 sm:h-7 text-accent" aria-hidden="true" />
+            <Bot
+              className="w-6 h-6 sm:w-7 sm:h-7 text-accent"
+              aria-hidden="true"
+            />
           </div>
         </div>
       )}

@@ -52,27 +52,37 @@ const MarkdownMessageRenderer: React.FC<MarkdownMessageRendererProps> = ({
     // Render paragraphs with math support
     // Don't wrap paragraphs inside list items
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    p: ({ children, ...props }: { children?: React.ReactNode; node?: any; [key: string]: any }) => {
+    p: ({
+      children,
+      ...props
+    }: {
+      children?: React.ReactNode;
+      node?: any;
+      [key: string]: any;
+    }) => {
       // Check if we're inside a list item by checking the parent
       const isInListItem = props.node?.parent?.type === 'listItem';
-      
-      const processedChildren = React.Children.map(children, (child) => {
+
+      const processedChildren = React.Children.map(children, child => {
         if (typeof child === 'string') {
           return <MathRenderer content={child} />;
         }
         return child;
       });
-      
+
       // If inside a list item, render as span to keep inline
       if (isInListItem) {
         return <span className="leading-relaxed">{processedChildren}</span>;
       }
-      
-      return <p className="mb-2 last:mb-0 leading-relaxed">{processedChildren}</p>;
+
+      return (
+        <p className="mb-2 last:mb-0 leading-relaxed">{processedChildren}</p>
+      );
     },
     // Render text nodes with math support
     text: ({ children }: { children?: React.ReactNode }) => {
-      const textContent = typeof children === 'string' ? children : String(children || '');
+      const textContent =
+        typeof children === 'string' ? children : String(children || '');
       return <MathRenderer content={textContent} />;
     },
     // Render lists properly - use list-outside for better formatting
@@ -89,17 +99,19 @@ const MarkdownMessageRenderer: React.FC<MarkdownMessageRendererProps> = ({
     li: ({ children }: { children?: React.ReactNode }) => {
       // Process children to handle text nodes with math
       // Use React.Children.toArray to handle all children properly
-      const processedChildren = React.Children.toArray(children).map((child, index) => {
-        if (typeof child === 'string') {
-          return <MathRenderer key={index} content={child} />;
+      const processedChildren = React.Children.toArray(children).map(
+        (child, index) => {
+          if (typeof child === 'string') {
+            return <MathRenderer key={index} content={child} />;
+          }
+          // If it's a React element, clone it with a key
+          if (React.isValidElement(child)) {
+            return React.cloneElement(child, { key: index });
+          }
+          return <React.Fragment key={index}>{child}</React.Fragment>;
         }
-        // If it's a React element, clone it with a key
-        if (React.isValidElement(child)) {
-          return React.cloneElement(child, { key: index });
-        }
-        return <React.Fragment key={index}>{child}</React.Fragment>;
-      });
-      
+      );
+
       return (
         <li className="mb-1 leading-relaxed [&>p]:mb-0 [&>p]:inline">
           {processedChildren}
@@ -108,28 +120,34 @@ const MarkdownMessageRenderer: React.FC<MarkdownMessageRendererProps> = ({
     },
     // Render bold text
     strong: ({ children }: { children?: React.ReactNode }) => {
-      const processedChildren = React.Children.map(children, (child) => {
+      const processedChildren = React.Children.map(children, child => {
         if (typeof child === 'string') {
           return <MathRenderer content={child} />;
         }
         return child;
       });
-      
+
       return <strong className="font-semibold">{processedChildren}</strong>;
     },
     // Render italic text
     em: ({ children }: { children?: React.ReactNode }) => {
-      const processedChildren = React.Children.map(children, (child) => {
+      const processedChildren = React.Children.map(children, child => {
         if (typeof child === 'string') {
           return <MathRenderer content={child} />;
         }
         return child;
       });
-      
+
       return <em className="italic">{processedChildren}</em>;
     },
     // Render code blocks
-    code: ({ children, className: codeClassName }: { children?: React.ReactNode; className?: string }) => {
+    code: ({
+      children,
+      className: codeClassName,
+    }: {
+      children?: React.ReactNode;
+      className?: string;
+    }) => {
       if (codeClassName) {
         // Code block
         return (
@@ -155,4 +173,3 @@ const MarkdownMessageRenderer: React.FC<MarkdownMessageRendererProps> = ({
 };
 
 export default MarkdownMessageRenderer;
-

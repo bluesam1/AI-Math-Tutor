@@ -23,6 +23,7 @@ When a student's answer is validated, the AI tutor automatically engages with co
 **When:** 5-10 seconds after follow-up (if student hasn't responded)
 
 **How:** Subtle, dismissible card offers deeper help:
+
 - "Need help breaking this down? I can guide you step-by-step!"
 - Buttons: "Yes, please!" or "Not now"
 - Auto-dismisses after 15 seconds
@@ -72,13 +73,15 @@ Show optional help offer card
 
 **Student:** "The answer is 42"
 
-**System:** 
+**System:**
+
 - ✓ Validation badge: "✓ Correct!" (green, auto-dismisses after 3s)
 - 🎉 Celebration animation (subtle, non-blocking)
 
 **Tutor (automatic):** "That's correct! 🎉 Can you walk me through how you got that answer? I'd love to hear your thinking process."
 
 **After 8 seconds (if no response):**
+
 - Help offer card appears: "Want me to help you explain your reasoning? I can guide you through it step-by-step!"
 - [Yes, please!] [Not now]
 
@@ -87,12 +90,14 @@ Show optional help offer card
 **Student:** "The answer is 50"
 
 **System:**
+
 - ✓ Validation badge: "Keep trying!" (yellow, auto-dismisses after 3s)
 - 💪 Encouragement animation
 
 **Tutor (automatic):** "Thanks for trying! Let's work through this together. What information do we have in the problem?"
 
 **After 7 seconds (if no response):**
+
 - Help offer card appears: "Need help breaking this down? I can guide you step-by-step!"
 - [Yes, please!] [Not now]
 
@@ -101,23 +106,27 @@ Show optional help offer card
 **Student:** "I think we need to multiply first"
 
 **System:**
+
 - ✓ Validation badge: "Partial answer" (blue, auto-dismisses after 3s)
 - ✨ Progress animation
 
 **Tutor (automatic):** "You're on the right track! What do you think we should multiply, and why?"
 
 **After 6 seconds (if no response):**
+
 - Help offer card appears: "Want to work through this step-by-step together?"
 - [Yes, please!] [Not now]
 
 ## Implementation Requirements
 
 ### Backend
+
 - Answer validation endpoint returns `shouldGenerateFollowUp: true`
 - Socratic dialogue generation accepts `answerValidationContext` parameter
 - All generated messages must pass answer detection guardrails
 
 ### Frontend
+
 - `AnswerValidationBadge` component for validation results
 - Automatic follow-up message generation after validation
 - `HelpOfferCard` component for optional help prompts
@@ -125,6 +134,7 @@ Show optional help offer card
 - Auto-dismiss functionality
 
 ### Timing
+
 - Answer validation: < 2 seconds
 - Celebration/feedback: Immediate
 - Automatic follow-up: Immediate (generated in parallel)
@@ -156,5 +166,3 @@ Show optional help offer card
 - Warm colors (blues, greens, yellows)
 - Simple icons and subtle animations
 - Emojis used sparingly and appropriately
-
-

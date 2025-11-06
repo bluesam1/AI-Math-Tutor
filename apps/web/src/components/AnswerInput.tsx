@@ -283,13 +283,13 @@ const AnswerInput: React.FC<AnswerInputProps> = ({
         // Handle successful validation
         if (result.isCorrect) {
           setAnswerState('correct');
-          setFeedbackMessage(result.feedback || 'That\'s correct! Great job!');
-          
+          setFeedbackMessage(result.feedback || "That's correct! Great job!");
+
           // Add student's correct answer to chat with "Answered" badge
           if (onAddStudentMessage) {
             onAddStudentMessage(answerToCheck, true); // Mark as answer submission
           }
-          
+
           // Clear answer after successful validation (after delay)
           setTimeout(() => {
             setAnswerText('');
@@ -299,19 +299,19 @@ const AnswerInput: React.FC<AnswerInputProps> = ({
         } else if (result.isPartial) {
           setAnswerState('partial');
           setFeedbackMessage(
-            result.feedback || 'You\'re on the right track! Keep going!'
+            result.feedback || "You're on the right track! Keep going!"
           );
           // For partial answers, don't add to chat - let them try again
         } else {
           setAnswerState('incorrect');
           // Show encouraging but simple feedback - the tutor will provide detailed guidance via chat
-          setFeedbackMessage("Nice try! Check with the tutor for help.");
-          
+          setFeedbackMessage('Nice try! Check with the tutor for help.');
+
           // Add student's incorrect answer to chat with "Answered" badge (simple version)
           if (onAddStudentMessage) {
             onAddStudentMessage(answerToCheck, true); // Mark as answer submission
           }
-          
+
           // Clear answer text immediately after submission so typing state is reset
           // This allows the tutor response to be generated
           setAnswerText('');
@@ -473,13 +473,14 @@ const AnswerInput: React.FC<AnswerInputProps> = ({
             </button>
           </div>
           <p className="mt-2 text-xs text-text-secondary">
-            {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
+            {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)}{' '}
+            MB)
           </p>
         </div>
       )}
 
       {/* Main answer input area */}
-      <div 
+      <div
         className="space-y-3"
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
@@ -528,7 +529,9 @@ const AnswerInput: React.FC<AnswerInputProps> = ({
               <div className="absolute inset-0 flex items-center justify-center bg-primary/5 rounded-xl pointer-events-none">
                 <div className="text-center">
                   <Upload className="w-8 h-8 text-primary mx-auto mb-2" />
-                  <p className="text-sm font-medium text-primary">Drop image here</p>
+                  <p className="text-sm font-medium text-primary">
+                    Drop image here
+                  </p>
                 </div>
               </div>
             )}
@@ -538,11 +541,11 @@ const AnswerInput: React.FC<AnswerInputProps> = ({
         {/* Helper text and action buttons */}
         <div className="flex items-center justify-between flex-wrap gap-2">
           <p className="text-xs text-text-secondary">
-            {selectedFile 
-              ? "You can add text to accompany your image"
-              : "Press Ctrl+Enter (or Cmd+Enter) to check, Escape to clear"}
+            {selectedFile
+              ? 'You can add text to accompany your image'
+              : 'Press Ctrl+Enter (or Cmd+Enter) to check, Escape to clear'}
           </p>
-          
+
           {/* Check Answer button */}
           <button
             type="button"
@@ -569,8 +572,19 @@ const AnswerInput: React.FC<AnswerInputProps> = ({
             ) : (
               <>
                 <span>Check Answer</span>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
                 </svg>
               </>
             )}
@@ -582,4 +596,3 @@ const AnswerInput: React.FC<AnswerInputProps> = ({
 };
 
 export default AnswerInput;
-

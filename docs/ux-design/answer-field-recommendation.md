@@ -3,6 +3,7 @@
 ## Problem Statement
 
 The current interface uses passive answer detection in the chat, which can be confusing for 6th grade students who may not understand:
+
 - When they're submitting an answer vs. asking a question
 - Whether their answer format will be detected correctly
 - If they need to explicitly phrase their answer in a certain way
@@ -29,6 +30,7 @@ Add a dedicated **Answer** section in the Problem Panel (left side), clearly sep
 **Location**: Problem Panel (left side), below the problem display
 
 **Layout**:
+
 ```
 ┌─────────────────────────┐
 │ Math Problem            │
@@ -52,6 +54,7 @@ Add a dedicated **Answer** section in the Problem Panel (left side), clearly sep
 ```
 
 **Features**:
+
 - Text input field labeled "Your Answer"
 - Optional image upload button for handwritten work
 - "Check Answer" button (primary action)
@@ -59,12 +62,14 @@ Add a dedicated **Answer** section in the Problem Panel (left side), clearly sep
 - Can still use chat for questions/help
 
 **Pros**:
+
 - Clear separation: Problem → Answer → Chat
 - Visual proximity to problem (helps context)
 - Supports both text and image answers
 - Doesn't clutter chat interface
 
 **Cons**:
+
 - Requires scrolling if problem is long
 - May feel more "formal" than conversational
 
@@ -73,6 +78,7 @@ Add a dedicated **Answer** section in the Problem Panel (left side), clearly sep
 **Location**: Chat panel, but visually distinct section at top
 
 **Layout**:
+
 ```
 ┌─────────────────────────┐
 │ Math Problem (left)      │
@@ -94,10 +100,12 @@ Add a dedicated **Answer** section in the Problem Panel (left side), clearly sep
 ```
 
 **Pros**:
+
 - Everything in one panel
 - Still feels conversational
 
 **Cons**:
+
 - Less clear separation
 - May confuse answer vs. chat input
 - Harder to support image upload prominently
@@ -105,6 +113,7 @@ Add a dedicated **Answer** section in the Problem Panel (left side), clearly sep
 ### Recommended Implementation: Option A
 
 **Why Option A?**
+
 1. Better visual separation matches mental model: Problem → Answer → Discussion
 2. Supports image upload more naturally (can be larger, more prominent)
 3. Keeps chat focused on questions/help without confusion
@@ -116,6 +125,7 @@ Add a dedicated **Answer** section in the Problem Panel (left side), clearly sep
 #### Answer Section UI
 
 **Visual Design**:
+
 - Clear heading: "Your Answer" or "Submit Your Answer"
 - Input field with placeholder: "Type your answer here..." or "Enter your answer (e.g., 5, x = 3, or upload image)"
 - Image upload button: "Upload Handwritten Answer" (optional, secondary)
@@ -124,6 +134,7 @@ Add a dedicated **Answer** section in the Problem Panel (left side), clearly sep
 - Accessible: Clear labels, ARIA attributes, keyboard navigation
 
 **States**:
+
 - **Empty**: Input field ready, button enabled
 - **Typing**: Input field active, button enabled
 - **Checking**: Input disabled, button shows loading spinner, "Checking..."
@@ -132,6 +143,7 @@ Add a dedicated **Answer** section in the Problem Panel (left side), clearly sep
 - **Error**: Error message, answer field remains
 
 **Interaction**:
+
 - Text input: Multi-line support for longer answers
 - Image upload: Drag-and-drop or click to upload
 - Check Answer: Submits answer for validation
@@ -140,11 +152,13 @@ Add a dedicated **Answer** section in the Problem Panel (left side), clearly sep
 #### Integration with Current Flow
 
 **Hybrid Approach** (Best UX):
+
 1. **Primary**: Dedicated Answer field (explicit, clear)
 2. **Secondary**: Keep passive detection in chat as fallback (for convenience)
 3. **Behavior**: If answer detected in chat, show confirmation: "Looks like you're submitting an answer! Use the Answer field below the problem for better results, or continue here."
 
 **Rationale**:
+
 - Provides clear primary path (Answer field)
 - Maintains flexibility for students who prefer typing in chat
 - Educates users about preferred method over time
@@ -178,11 +192,13 @@ graph TD
 ### Age-Appropriate Design
 
 **Language**:
+
 - "Your Answer" (clear, friendly)
 - "Check Answer" (action-oriented, not intimidating)
 - "Upload Handwritten Answer" (optional, secondary)
 
 **Visual**:
+
 - Friendly colors (not harsh red for errors)
 - Encouraging messages
 - Clear success/error states
@@ -190,18 +206,21 @@ graph TD
 ### Technical Implementation Notes
 
 **Components Needed**:
+
 - `AnswerInput.tsx` - Answer input field component
 - `AnswerCheckButton.tsx` - Check answer button with states
 - Integration with existing `ProblemPanel.tsx`
 - Integration with existing answer checking service
 
 **State Management**:
+
 - Track answer input state
 - Track answer checking status
 - Handle answer validation results
 - Manage celebration/feedback display
 
 **API Integration**:
+
 - Use existing `/api/answer/check` endpoint
 - Support both text and image uploads
 - Handle validation responses
@@ -209,15 +228,18 @@ graph TD
 ### Migration Strategy
 
 **Phase 1**: Add Answer field alongside existing chat detection
+
 - Implement Answer field in Problem Panel
 - Keep passive detection active
 - Show gentle nudge: "Tip: Use the Answer field for best results"
 
 **Phase 2**: Make Answer field primary, detection secondary
+
 - Answer field becomes recommended method
 - Passive detection still works but shows confirmation prompt
 
 **Phase 3**: Evaluate usage, consider deprecating passive detection
+
 - Monitor which method students prefer
 - Gather feedback on UX clarity
 - Decide if both methods are needed long-term
@@ -239,6 +261,7 @@ graph TD
 ### Recommendation Summary
 
 **YES, add a dedicated Answer field** in the Problem Panel (Option A) because:
+
 1. Significantly improves UX clarity for 6th grade students
 2. Supports image uploads for handwritten work
 3. Reduces ambiguity about answer submission
@@ -246,5 +269,3 @@ graph TD
 5. Better aligns with mental model: Problem → Answer → Discussion
 
 **Implementation**: Hybrid approach - Answer field as primary, chat detection as fallback for convenience.
-
-
