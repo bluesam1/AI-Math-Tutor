@@ -1,22 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import ProblemInput from './ProblemInput';
-import ImageUpload from './ImageUpload';
 import ProblemTypeBadge from './ProblemTypeBadge';
 import EmptyState from './EmptyState';
 import LoadingSpinner from './LoadingSpinner';
+import MathRenderer from './MathRenderer';
+import AnswerInput from './AnswerInput';
+import ExampleProblems from './ExampleProblems';
 import { RotateCcw } from 'lucide-react';
 import type { ProblemPanelProps } from '../types';
-
-type InputMode = 'text' | 'image';
+import type { ProblemType } from '../types';
 
 interface ExtendedProblemPanelProps extends ProblemPanelProps {
   onProblemSubmit?: (problem: string) => void;
   onImageSubmit?: (file: File) => void;
+  onClearProblem?: () => void;
   validationError?: string | null;
   isValidating?: boolean;
   isSubmitting?: boolean;
   isUploading?: boolean;
   isProcessing?: boolean;
+  onAnswerChecked?: (result: {
+    isCorrect: boolean;
+    isPartial?: boolean;
+    feedback?: string;
+    studentAnswer?: string;
+  }) => void;
+  onAddStudentMessage?: (message: string, isAnswer?: boolean) => void;
+  onTypingChange?: (isTyping: boolean) => void;
 }
 
 const ProblemPanel: React.FC<ExtendedProblemPanelProps> = ({
@@ -24,49 +34,53 @@ const ProblemPanel: React.FC<ExtendedProblemPanelProps> = ({
   problemType,
   onProblemSubmit,
   onImageSubmit,
+  onClearProblem,
   validationError,
   isValidating,
   isSubmitting = false,
   isUploading = false,
   isProcessing = false,
+  onAnswerChecked,
+  onAddStudentMessage,
+  onTypingChange,
 }) => {
-  const [inputMode, setInputMode] = useState<InputMode>('text');
   const [isInputExpanded, setIsInputExpanded] = useState(!problem);
 
   // Auto-collapse input when problem is loaded
   useEffect(() => {
     if (problem) {
       setIsInputExpanded(false);
+    } else {
+      setIsInputExpanded(true);
     }
   }, [problem]);
 
-  const handleImageFileSelect = (file: File) => {
-    // Auto-submit if onImageSubmit is available and not loading
-    if (onImageSubmit && !isLoading) {
-      setTimeout(() => {
-        onImageSubmit(file);
-      }, 100);
-    }
-  };
-
   const handleChangeProblem = () => {
+    // Clear the problem to reset everything to empty state
+    if (onClearProblem) {
+      onClearProblem();
+    }
     setIsInputExpanded(true);
-    setInputMode('text');
   };
 
   const isLoading = isSubmitting || isUploading || isProcessing || isValidating;
 
   return (
     <div
-      className="flex h-full flex-col bg-gradient-to-br from-background-secondary to-gray-50 p-4 sm:p-6 lg:p-8 overflow-y-auto"
+      className={`flex h-full flex-col bg-gradient-to-br from-background-secondary to-gray-50 overflow-y-auto ${
+        problem ? 'p-4 sm:p-6 lg:p-8' : ''
+      }`}
       role="region"
       aria-label="Problem input and display"
     >
-      <div className="mb-4 sm:mb-6">
-        <h2 className="text-text-primary text-xl sm:text-2xl font-semibold mb-2 sm:mb-3">
-          Math Problem
-        </h2>
-      </div>
+      {/* Header - only show when problem is set */}
+      {problem && (
+        <div className="mb-4 sm:mb-6">
+          <h2 className="text-text-primary text-xl sm:text-2xl font-semibold mb-2 sm:mb-3">
+            Math Problem
+          </h2>
+        </div>
+      )}
 
       {/* Problem Input Section */}
       {(onProblemSubmit || onImageSubmit) && (
@@ -88,59 +102,21 @@ const ProblemPanel: React.FC<ExtendedProblemPanelProps> = ({
             </div>
           )}
 
-          {/* Expanded State: Show Input Controls */}
-          {(!problem || isInputExpanded) && (
+          {/* Expanded State: Show Input Controls (only when problem exists and input is expanded) */}
+          {problem && isInputExpanded && (
             <div
-              className={`mb-6 space-y-4 transition-all duration-300 ${
-                isInputExpanded
-                  ? 'opacity-100 max-h-none'
-                  : 'opacity-0 max-h-0 overflow-hidden'
-              }`}
+              className="mb-6 space-y-4 transition-all duration-300"
               aria-expanded={isInputExpanded}
             >
-              {/* Toggle Buttons */}
-              <div className="flex gap-2 border-b border-border pb-4">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setInputMode('text');
-                  }}
-                  disabled={isLoading}
-                  className={`px-4 py-2 rounded-lg font-medium text-base transition-all ${
-                    inputMode === 'text'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-gray-100 text-text-secondary hover:bg-gray-200'
-                  } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  aria-pressed={inputMode === 'text'}
-                >
-                  Enter Problem
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setInputMode('image');
-                  }}
-                  disabled={isLoading}
-                  className={`px-4 py-2 rounded-lg font-medium text-base transition-all ${
-                    inputMode === 'image'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-gray-100 text-text-secondary hover:bg-gray-200'
-                  } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  aria-pressed={inputMode === 'image'}
-                >
-                  Upload Image
-                </button>
-              </div>
-
               {/* Loading Indicator */}
               {isLoading && (
                 <div className="flex items-center gap-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                   <LoadingSpinner size="sm" ariaLabel="Processing" />
                   <p className="text-sm text-blue-800">
                     {isUploading
-                      ? 'Uploading image...'
+                      ? 'Uploading problem...'
                       : isProcessing
-                        ? 'Processing image...'
+                        ? 'Processing problem...'
                         : isSubmitting || isValidating
                           ? 'Validating problem...'
                           : 'Processing...'}
@@ -148,25 +124,14 @@ const ProblemPanel: React.FC<ExtendedProblemPanelProps> = ({
                 </div>
               )}
 
-              {/* Text Input Mode */}
-              {inputMode === 'text' && onProblemSubmit && (
+              {/* Problem Input (handles both text and image) */}
+              {onProblemSubmit && (
                 <ProblemInput
                   onSubmit={onProblemSubmit}
+                  onImageSubmit={onImageSubmit}
                   disabled={isLoading}
                   validationError={validationError}
                   isSubmitting={isSubmitting}
-                />
-              )}
-
-              {/* Image Upload Mode */}
-              {inputMode === 'image' && onImageSubmit && (
-                <ImageUpload
-                  onFileSelect={handleImageFileSelect}
-                  disabled={isLoading}
-                  onError={validationError ? () => {} : undefined}
-                  autoSubmit={true}
-                  isUploading={isUploading}
-                  isProcessing={isProcessing}
                 />
               )}
             </div>
@@ -195,22 +160,51 @@ const ProblemPanel: React.FC<ExtendedProblemPanelProps> = ({
             </h3>
             <div className="prose prose-sm sm:prose-base lg:prose-lg max-w-none">
               <p
-                className="text-text-primary text-base sm:text-lg md:text-xl leading-relaxed whitespace-pre-wrap break-words"
+                className="text-text-primary text-base sm:text-lg md:text-xl leading-relaxed break-words"
                 role="text"
                 aria-label="Math problem statement"
               >
-                {problem}
+                <MathRenderer content={problem} />
               </p>
             </div>
           </article>
+
+          {/* Answer Input Section */}
+          {problem && problemType && (
+            <AnswerInput
+              problemText={problem}
+              problemType={problemType as ProblemType}
+              disabled={isLoading}
+              onAnswerChecked={onAnswerChecked}
+              onAddStudentMessage={onAddStudentMessage}
+              onTypingChange={onTypingChange}
+            />
+          )}
         </div>
       ) : (
-        <div
-          className="flex-1 flex items-center justify-center bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 lg:p-8 shadow-sm border border-border"
-          role="status"
-          aria-live="polite"
-        >
-          <EmptyState showInput={!!onProblemSubmit} />
+        /* Empty State: Center content vertically and horizontally */
+        <div className="flex-1 flex items-center justify-center min-h-0">
+          <div className="w-full max-w-2xl mx-auto px-4">
+            {/* Problem Input (handles both text and image) */}
+            {onProblemSubmit && (
+              <>
+                <ProblemInput
+                  onSubmit={onProblemSubmit}
+                  onImageSubmit={onImageSubmit}
+                  disabled={isLoading}
+                  validationError={validationError}
+                  isSubmitting={isSubmitting}
+                />
+                {/* Example Problems - only show in empty state when not loading */}
+                {!isLoading && (
+                  <ExampleProblems
+                    onSelectProblem={onProblemSubmit}
+                    disabled={isLoading}
+                  />
+                )}
+              </>
+            )}
+          </div>
         </div>
       )}
     </div>

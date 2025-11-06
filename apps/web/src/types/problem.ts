@@ -4,6 +4,7 @@
 
 export interface ProblemInputProps {
   onSubmit: (problem: string) => void;
+  onImageSubmit?: (file: File) => void;
   disabled?: boolean;
   validationError?: string | null;
   isSubmitting?: boolean;

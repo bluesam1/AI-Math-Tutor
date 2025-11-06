@@ -19,6 +19,8 @@ export const configureCors = (app: Express): void => {
     'http://localhost:5000', // Firebase Hosting emulator
     'http://127.0.0.1:3000', // Alternative localhost
     'http://127.0.0.1:5000', // Alternative localhost
+    'https://learnmath.app', // Production domain
+    'http://learnmath.app', // Production domain (HTTP fallback)
   ];
 
   const corsOptions = {
@@ -74,6 +76,14 @@ export const configureCors = (app: Express): void => {
         return callback(null, true);
       }
 
+      // Allow learnmath.app domain (production)
+      if (origin.includes('learnmath.app')) {
+        if (isDevelopment) {
+          console.log('[CORS] Allowing learnmath.app origin:', origin);
+        }
+        return callback(null, true);
+      }
+
       // Log rejected origin
       console.warn(
         '[CORS] Origin rejected:',
@@ -85,7 +95,14 @@ export const configureCors = (app: Express): void => {
     },
     credentials: true,
     optionsSuccessStatus: 200,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    exposedHeaders: ['Content-Type'],
   };
 
+  // Apply CORS middleware
   app.use(cors(corsOptions));
+
+  // Explicitly handle OPTIONS requests for preflight (in case CORS middleware doesn't catch it)
+  app.options('*', cors(corsOptions));
 };

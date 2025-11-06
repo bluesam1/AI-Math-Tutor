@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import type { Message } from '../types';
 import MessageItem from './MessageItem';
 
@@ -7,11 +7,6 @@ interface MessageListProps {
 }
 
 const MessageList: React.FC<MessageListProps> = ({ messages }) => {
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
 
   if (messages.length === 0) {
     return (
@@ -22,11 +17,10 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
   }
 
   return (
-    <div className="flex flex-col gap-4 scroll-smooth">
+    <div className="flex flex-col gap-4">
       {messages.map(message => (
         <MessageItem key={message.id} message={message} />
       ))}
-      <div ref={messagesEndRef} />
     </div>
   );
 };

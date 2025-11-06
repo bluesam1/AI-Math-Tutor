@@ -2,7 +2,7 @@
 
 ## Overview
 
-Epic 3 delivers the visual and mathematical rendering capabilities that complete the system, ensuring the product is fully functional and ready for deployment. This epic includes 6 stories that build upon each other to create a polished, age-appropriate user experience.
+Epic 3 delivers the visual and mathematical rendering capabilities that complete the system, ensuring the product is fully functional and ready for deployment. This epic includes 11 stories that build upon each other to create a polished, age-appropriate user experience.
 
 ## Story Dependencies
 
@@ -12,6 +12,13 @@ graph TD
     S3.2[Story 3.2: Visual Feedback] --> S3.5
     S3.3[Story 3.3: Responsive Design] --> S3.5
     S3.4[Story 3.4: Age-Appropriate Styling] --> S3.5
+    S3.7[Story 3.7: Answer Checking] --> S3.8[Story 3.8: Automatic Follow-Up]
+    S3.8 --> S3.9[Story 3.9: Help Offer Card]
+    S3.7 --> S3.10[Story 3.10: Dedicated Answer Field]
+    S3.10 --> S3.5
+    S3.7 --> S3.5
+    S3.8 --> S3.5
+    S3.9 --> S3.5
     S3.1 --> S3.3[Story 3.3: Responsive Design]
     S3.2 --> S3.3
     S3.3 --> S3.5
@@ -21,6 +28,12 @@ graph TD
     S3.2 --> S3.6
     S3.3 --> S3.6
     S3.4 --> S3.6
+    S3.7 --> S3.6
+    S3.8 --> S3.6
+    S3.9 --> S3.6
+    S3.10 --> S3.6
+    S3.11[Story 3.11: Clean Problem Entry] --> S3.5
+    S3.11 --> S3.6
 ```
 
 ## Recommended Implementation Order
@@ -53,19 +66,48 @@ graph TD
    - **Dependencies:** Stories 1.2, 1.4, 1.5, 1.8, 2.7, 3.2, 3.3
    - Required by: Stories 3.5, 3.6
 
-### Phase 3: Testing & Polish (Stories 3.5, 3.6)
+### Phase 3: Answer Checking & Engagement (Stories 3.7, 3.8, 3.9, 3.10)
+
+**Goal:** Answer validation and automatic tutor engagement
+
+5. **Story 3.7: Answer Checking and Celebration**
+   - Validates student answers and provides celebration feedback
+   - **Dependencies:** Stories 2.7, 3.2 (ChatPanel, Visual Feedback components exist)
+   - Required by: Stories 3.8, 3.10, 3.5, 3.6
+
+6. **Story 3.8: Automatic Contextual Follow-Up**
+   - Automatically generates contextual follow-up messages after answer validation
+   - **Dependencies:** Story 3.7 (Answer Checking must be completed first)
+   - Required by: Story 3.9, 3.5, 3.6
+
+7. **Story 3.9: Optional Help Offer Card**
+   - Displays optional help offer card after follow-up message
+   - **Dependencies:** Story 3.8 (Automatic Follow-Up must be completed first)
+   - Required by: Stories 3.5, 3.6
+
+8. **Story 3.10: Dedicated Answer Field in Problem Panel**
+   - Provides dedicated Answer field in Problem Panel for explicit answer submission
+   - **Dependencies:** Stories 3.7, 1.8, 3.2 (Answer checking service, Problem Panel, Visual Feedback components exist)
+   - Required by: Stories 3.5, 3.6
+
+### Phase 4: Testing & Polish (Stories 3.5, 3.6)
 
 **Goal:** Comprehensive testing and final polish
 
-5. **Story 3.5: Comprehensive Testing Across All 5 Problem Types** ⭐ Critical
+9. **Story 3.5: Comprehensive Testing Across All 5 Problem Types** ⭐ Critical
    - Validates system works for all problem types
-   - **Dependencies:** All previous stories (Epic 1, Epic 2, Stories 3.1-3.4)
+   - **Dependencies:** All previous stories (Epic 1, Epic 2, Stories 3.1-3.4, 3.7-3.10)
    - Required by: Story 3.6
 
-6. **Story 3.6: Final UI Polish & Error Handling** ⭐ Final
+10. **Story 3.6: Final UI Polish & Error Handling** ⭐ Final
    - Final polish and error handling
-   - **Dependencies:** All previous stories (Epic 1, Epic 2, Stories 3.1-3.5)
+   - **Dependencies:** All previous stories (Epic 1, Epic 2, Stories 3.1-3.5, 3.7-3.10)
    - **Final Story:** Completes Epic 3
+
+11. **Story 3.11: Clean Problem Entry Screen**
+   - Clean, minimal problem entry interface
+   - **Dependencies:** Stories 1.8, 3.6 (ProblemPanel exists, UI polish established)
+   - Required by: Stories 3.5, 3.6
 
 ## Story Summary
 
@@ -168,6 +210,88 @@ graph TD
 
 ---
 
+### Story 3.7: Answer Checking and Celebration
+
+**Priority:** High  
+**Complexity:** Medium-High  
+**Dependencies:** Stories 2.7, 3.2  
+**Estimate:** 3-4 days
+
+**What it delivers:**
+
+- Answer detection utility (heuristic patterns and LLM-based validation)
+- Answer checking service (LLM-based validation comparing student answer with correct solution)
+- Answer checking API endpoint (`POST /api/answer/check`)
+- Celebration component for correct answers (age-appropriate, prominent but non-blocking)
+- Integration with ChatPanel for automatic answer detection and validation
+- Support for multiple answer formats (numerical, algebraic, text-based)
+
+**Key Files:**
+
+- `apps/web/src/utils/answerDetection.ts`
+- `functions/src/services/answerCheckingService.ts`
+- `functions/src/controllers/answerController.ts`
+- `apps/web/src/components/CelebrationMessage.tsx`
+- Updates to `ChatPanel.tsx`
+
+---
+
+### Story 3.8: Automatic Contextual Follow-Up After Answer Validation
+
+**Priority:** High  
+**Complexity:** Medium  
+**Dependencies:** Story 3.7  
+**Estimate:** 2-3 days
+
+**What it delivers:**
+
+- Automatic generation of contextual follow-up messages after answer validation
+- Enhanced Socratic dialogue generation with `answerValidationContext` parameter
+- Follow-up generation service that maintains Socratic principles
+- Contextual messages based on validation result (correct/incorrect/partial)
+- Integration with ChatPanel for automatic follow-up display
+- All generated messages pass answer detection guardrails
+
+**Key Files:**
+
+- `functions/src/services/followUpGenerationService.ts`
+- Updates to `functions/src/services/llmService.ts`
+- Updates to `functions/src/controllers/answerController.ts`
+- Updates to `apps/web/src/components/ChatPanel.tsx`
+- Updates to `apps/web/src/services/api.ts`
+
+**Design Reference:** `docs/ux-design/auto-engagement-after-validation.md`
+
+---
+
+### Story 3.9: Optional Help Offer Card After Follow-Up
+
+**Priority:** Medium  
+**Complexity:** Medium  
+**Dependencies:** Story 3.8  
+**Estimate:** 2-3 days
+
+**What it delivers:**
+
+- Help offer card component (subtle, dismissible, age-appropriate)
+- Timer logic for delayed display (5-10 seconds after follow-up)
+- Auto-dismiss functionality (15 seconds or when student engages)
+- Step-by-step guidance service (maintains Socratic principles)
+- Integration with ChatPanel for help offer display
+- Accessibility features (screen readers, keyboard navigation)
+
+**Key Files:**
+
+- `apps/web/src/components/HelpOfferCard.tsx`
+- `functions/src/services/stepByStepGuidanceService.ts`
+- Updates to `functions/src/controllers/chatController.ts`
+- Updates to `apps/web/src/components/ChatPanel.tsx`
+- Updates to `apps/web/src/services/api.ts`
+
+**Design Reference:** `docs/ux-design/auto-engagement-after-validation.md`
+
+---
+
 ### Story 3.5: Comprehensive Testing Across All 5 Problem Types
 
 **Priority:** Critical  
@@ -190,6 +314,54 @@ graph TD
 - Testing documentation (test cases, results, reports)
 - Updates to Developer Testing Interface (if needed)
 - Test problem library enhancements (if needed)
+
+---
+
+### Story 3.10: Dedicated Answer Field in Problem Panel
+
+**Priority:** High  
+**Complexity:** Medium  
+**Dependencies:** Stories 3.7, 1.8, 3.2  
+**Estimate:** 3-4 days
+
+**What it delivers:**
+
+- `AnswerInput.tsx` component with text input and image upload support
+- Integration with Problem Panel component
+- Connection to existing answer checking service
+- Multiple feedback states (checking, correct, incorrect, partial)
+- Image upload support for handwritten answers
+- Responsive design for all devices
+- Accessibility features (ARIA labels, keyboard navigation)
+- Integration with passive detection (hybrid approach)
+
+**Key Files:**
+
+- `apps/web/src/components/AnswerInput.tsx`
+- Updates to `apps/web/src/components/ProblemPanel.tsx`
+- Updates to answer checking integration (if needed)
+- Image upload handling for handwritten answers
+
+---
+
+### Story 3.11: Clean Problem Entry Screen
+
+**Priority:** Medium  
+**Complexity:** Low  
+**Dependencies:** Stories 1.8, 3.6  
+**Estimate:** 1-2 days
+
+**What it delivers:**
+
+- Minimal, clean problem entry screen showing only the input
+- Text input automatically hidden when image is uploaded
+- Simplified ProblemPanel empty state (no extra headers or UI elements)
+- Clean, focused interface for problem entry
+
+**Key Files:**
+
+- Updates to `apps/web/src/components/ProblemInput.tsx`
+- Updates to `apps/web/src/components/ProblemPanel.tsx`
 
 ---
 
@@ -233,27 +405,42 @@ graph TD
 
 **Deliverable:** Interface works across devices and looks age-appropriate
 
-### Phase 3: Testing & Polish (Week 3-4)
+### Phase 3: Answer Checking & Engagement (Week 3-4)
+
+- Story 3.7: Answer Checking and Celebration
+- Story 3.8: Automatic Contextual Follow-Up
+- Story 3.9: Optional Help Offer Card
+- Story 3.10: Dedicated Answer Field in Problem Panel
+
+**Deliverable:** Answer validation and automatic engagement features ready, including dedicated Answer field
+
+### Phase 4: Testing & Polish (Week 4-5)
 
 - Story 3.5: Comprehensive Testing
 - Story 3.6: Final Polish
+- Story 3.11: Clean Problem Entry Screen
 
 **Deliverable:** Complete Epic 3 functionality, ready for deployment
 
 ## Total Epic Estimate
 
-**Total Stories:** 6  
-**Total Estimated Time:** 16-22 days (~3-4.5 weeks)  
-**Critical Path:** Stories 3.1 → 3.3 → 3.5 → 3.6
+**Total Stories:** 11  
+**Total Estimated Time:** 27-38 days (~5-7 weeks)  
+**Critical Path:** Stories 3.1 → 3.3 → 3.7 → 3.8 → 3.9 → 3.10 → 3.5 → 3.6
 
 ## Key Integration Points
 
 1. **Math Rendering (3.1)** → Used by: ProblemPanel, ChatPanel, Responsive Design (3.3), Testing (3.5)
-2. **Visual Feedback (3.2)** → Used by: ChatPanel, Responsive Design (3.3), Styling (3.4), Testing (3.5)
+2. **Visual Feedback (3.2)** → Used by: ChatPanel, Responsive Design (3.3), Styling (3.4), Answer Checking (3.7), Testing (3.5)
 3. **Responsive Design (3.3)** → Enhances: All components, Testing (3.5), Final Polish (3.6)
 4. **Age-Appropriate Styling (3.4)** → Enhances: All components, Testing (3.5), Final Polish (3.6)
-5. **Comprehensive Testing (3.5)** → Validates: All previous work, Prepares for: Final Polish (3.6)
-6. **Final Polish (3.6)** → Completes: Epic 3, Prepares for: Deployment
+5. **Answer Checking (3.7)** → Enables: Automatic Follow-Up (3.8), Help Offer Card (3.9), Dedicated Answer Field (3.10), Testing (3.5)
+6. **Automatic Follow-Up (3.8)** → Enables: Help Offer Card (3.9), Testing (3.5)
+7. **Help Offer Card (3.9)** → Enhances: Engagement features, Testing (3.5)
+8. **Dedicated Answer Field (3.10)** → Enhances: Answer submission clarity, Testing (3.5)
+9. **Comprehensive Testing (3.5)** → Validates: All previous work, Prepares for: Final Polish (3.6)
+10. **Final Polish (3.6)** → Completes: Epic 3, Prepares for: Deployment
+11. **Clean Problem Entry (3.11)** → Enhances: Problem entry UX, Testing (3.5), Final Polish (3.6)
 
 ## Testing Strategy
 
@@ -274,4 +461,3 @@ Each story should include:
 - Comprehensive testing should verify 100% Socratic compliance
 - All error messages should be age-appropriate with actionable guidance
 - System should be ready for deployment after Epic 3 completion
-

@@ -102,6 +102,12 @@ router.post('/parse-image', async (req: Request, res: Response) => {
 
     // Return successful response with extracted text
     console.log('[Parse Image] Successfully extracted problem text');
+    console.log('[Parse Image] *** RETURNING TO FRONTEND ***');
+    console.log('[Parse Image] Extracted text:', JSON.stringify(extractedText));
+    console.log('[Parse Image] Extracted text length:', extractedText.length);
+    console.log('[Parse Image] First 30 chars:', extractedText.substring(0, 30));
+    console.log('[Parse Image] Last 30 chars:', extractedText.substring(extractedText.length - 30));
+    
     return res.status(200).json({
       success: true,
       problemText: extractedText,

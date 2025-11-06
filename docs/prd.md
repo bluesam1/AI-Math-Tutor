@@ -31,6 +31,8 @@ The system is specifically designed for 6th grade mathematics, focusing on core 
 | 2025-01-XX | 1.1     | Scope refined to focus on 6th grade math specifically                                               | PM     |
 | 2025-01-XX | 1.2     | Added requirements for streamlined testing workflows and developer testing interface                | PM     |
 | 2025-11-04 | 1.3     | Migrated from AWS (Lambda, S3, CloudFront, ElastiCache) to Firebase (Functions, Hosting, Firestore) | PM     |
+| 2025-01-XX | 1.4     | Added requirements for student answer checking and celebration features (passive detection)         | PM     |
+| 2025-01-XX | 1.5     | Added requirements for dedicated Answer field in Problem Panel (primary method) with passive detection as fallback | PM     |
 
 ## Requirements
 
@@ -90,6 +92,30 @@ FR26: The developer testing interface must provide visual indicators showing tes
 
 FR27: The system must provide test utilities and fixtures that make it easy to test different problem types, answer detection scenarios, and edge cases programmatically.
 
+FR28: The system must automatically detect when a student message contains a potential answer to the math problem using passive detection (heuristic patterns and LLM-based validation).
+
+FR29: The system must validate student answers against the problem using an LLM-based answer checking service that compares the student's answer with the correct solution.
+
+FR30: The system must provide a backend endpoint (`/api/answer/check`) that accepts the student's answer, problem text, and problem type, and returns validation results (correct, incorrect, partial) with appropriate feedback.
+
+FR31: The system must display celebration visual feedback when a student provides a correct answer, using age-appropriate celebrations (emojis, animations, encouraging messages) that are prominent but non-blocking.
+
+FR32: The system must continue the Socratic dialogue flow naturally after answer checking, allowing students to explain their reasoning or continue working through the problem even after providing a correct answer.
+
+FR33: The system must handle multiple valid answer formats (e.g., "x = 5", "5", "the answer is five", numerical answers, algebraic expressions) when validating student answers.
+
+FR34: The system must provide a dedicated Answer field in the Problem Panel (left side) below the problem display, allowing students to explicitly submit their final answer with clear visual separation from the chat dialogue.
+
+FR35: The Answer field must support both text input and image upload for handwritten answers, providing students with flexible answer submission methods.
+
+FR36: The Answer field must include a "Check Answer" button that explicitly submits the answer for validation, providing clear user intent and action.
+
+FR37: The Answer field must display clear feedback states (checking, correct, incorrect, partial) with appropriate visual indicators and messages.
+
+FR38: The system must maintain passive answer detection in chat as a secondary/fallback method, while the dedicated Answer field serves as the primary method for answer submission.
+
+FR39: When passive answer detection identifies an answer in chat, the system must provide a gentle nudge encouraging students to use the Answer field for best results, while still allowing the chat submission if preferred.
+
 ### Non Functional
 
 NFR1: The system must respond to user inputs within 3 seconds for LLM-generated responses to maintain engaging conversation flow.
@@ -132,6 +158,12 @@ NFR19: The system must provide test fixtures for at least 10 different problem s
 
 NFR20: The developer testing interface must allow developers to test answer detection guardrails with various response patterns (explicit answers, implicit answers, edge cases) with immediate visual feedback.
 
+NFR21: The system must validate student answers within 2 seconds to maintain engaging conversation flow without noticeable delays.
+
+NFR22: Answer checking must be performed asynchronously without blocking the normal chat message flow, allowing the Socratic dialogue to continue naturally.
+
+NFR23: Celebration visual feedback must be age-appropriate for 6th grade students (ages 11-12), using friendly colors, simple animations, and encouraging messages that celebrate success without being overwhelming.
+
 ## User Interface Design Goals
 
 ### Overall UX Vision
@@ -148,6 +180,8 @@ The AI Math Tutor interface should feel like working with a patient, encouraging
 
 **Responsive Input Methods:** Students can input problems via text (typing or pasting) or image upload (drag-and-drop or file selection), with clear visual feedback during image processing.
 
+**Dedicated Answer Field:** Students can submit their final answer through a dedicated Answer field in the Problem Panel (left side), supporting both text input and image upload for handwritten work. This explicit answer submission method provides clear user intent and reduces ambiguity about when an answer is being submitted versus when questions are being asked in the chat dialogue.
+
 **Contextual Math Rendering:** Mathematical equations and formulas render automatically using LaTeX/KaTeX, ensuring proper mathematical notation appears in both problem statements and dialogue responses.
 
 **Error Recovery:** Clear, age-appropriate error messages guide students when technical issues occur (e.g., image parsing failure, API errors), with fallback options (e.g., text input when image fails) always available.
@@ -159,6 +193,8 @@ The AI Math Tutor interface should feel like working with a patient, encouraging
 **Problem Input View:** The interface state when a student first arrives or wants to start a new problem, featuring a text input field and an image upload button/drop zone, with clear instructions on how to input problems.
 
 **Chat Conversation View:** The right-side panel displaying the Socratic dialogue, with message bubbles showing student inputs and system responses, math rendering for equations, and visual feedback indicators (encouragement, progress, hints).
+
+**Answer Input Section:** A dedicated section in the Problem Panel (left side) below the problem display, featuring a text input field and optional image upload button for handwritten answers, with a "Check Answer" button for explicit answer submission. This section provides clear visual separation from the chat dialogue, making answer submission explicit and unambiguous for 6th grade students.
 
 **Visual Feedback Elements:** Throughout the interface, prominent visual indicators show progress, encouragement, and helpful hints, designed to be age-appropriate for 6th grade students (colors, simple icons, brief animations).
 

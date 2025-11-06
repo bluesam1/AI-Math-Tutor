@@ -19,6 +19,17 @@ import type {
   ChatMessageResponse,
   ChatMessageErrorResponse,
 } from '../types/api';
+import {
+  generateFollowUp,
+  type AnswerValidationContext,
+} from '../services/followUpGenerationService';
+import {
+  generateStepByStepGuidance,
+} from '../services/stepByStepGuidanceService';
+import {
+  generateInitialGreeting,
+  type GreetingPromptType,
+} from '../services/initialGreetingService';
 
 /**
  * Chat message endpoint handler
@@ -150,6 +161,14 @@ export const sendMessage = async (
       ? blockingResult.rewrittenResponse || dialogueResponse.response
       : dialogueResponse.response;
 
+    console.log('[Chat Controller] *** RETURNING RESPONSE TO FRONTEND ***');
+    console.log('[Chat Controller] Final response:', JSON.stringify(finalResponse));
+    console.log('[Chat Controller] Final response length:', finalResponse.length);
+    console.log('[Chat Controller] First 150 chars:', finalResponse.substring(0, 150));
+    console.log('[Chat Controller] Contains $:', finalResponse.includes('$'));
+    console.log('[Chat Controller] Contains \\(:', finalResponse.includes('\\('));
+    console.log('[Chat Controller] Contains \\):', finalResponse.includes('\\)'));
+
     // Add assistant response to context
     await addMessage(currentSessionId, {
       role: 'assistant',
@@ -215,5 +234,515 @@ export const sendMessage = async (
       error: 'Internal server error',
       message: 'An unexpected error occurred. Please try again.',
     });
+  }
+};
+
+/**
+ * Follow-up request body
+ */
+export interface FollowUpRequest {
+  /**
+   * Problem text
+   */
+  problemText: string;
+  /**
+   * Problem type
+   */
+  problemType: ProblemType;
+  /**
+   * Answer validation context
+   */
+  answerValidationContext: AnswerValidationContext;
+  /**
+   * Conversation history (optional)
+   */
+  conversationHistory?: Array<{
+    role: 'user' | 'assistant';
+    content: string;
+  }>;
+}
+
+/**
+ * Follow-up response
+ */
+export interface FollowUpResponse {
+  success: true;
+  followUpMessage: string;
+}
+
+/**
+ * Follow-up error response
+ */
+export interface FollowUpErrorResponse {
+  success: false;
+  error: string;
+  message: string;
+  code?: string;
+}
+
+/**
+ * Follow-up endpoint handler
+ *
+ * POST /api/chat/follow-up
+ * Generates contextual follow-up message after answer validation
+ */
+export const generateFollowUpMessage = async (
+  req: Request<
+    unknown,
+    FollowUpResponse | FollowUpErrorResponse,
+    FollowUpRequest
+  >,
+  res: Response<FollowUpResponse | FollowUpErrorResponse>
+): Promise<void> => {
+  try {
+    const {
+      problemText,
+      problemType,
+      answerValidationContext,
+      conversationHistory = [],
+    } = req.body;
+
+    // Validate required fields
+    if (
+      !problemText ||
+      typeof problemText !== 'string' ||
+      problemText.trim().length === 0
+    ) {
+      res.status(400).json({
+        success: false,
+        error: 'No problem set',
+        message: 'Please provide a valid problem text',
+      });
+      return;
+    }
+
+    if (!problemType) {
+      res.status(400).json({
+        success: false,
+        error: 'Invalid problem type',
+        message: 'Please provide a valid problem type',
+      });
+      return;
+    }
+
+    if (!answerValidationContext || !answerValidationContext.result) {
+      res.status(400).json({
+        success: false,
+        error: 'Invalid validation context',
+        message: 'Please provide a valid answer validation context',
+      });
+      return;
+    }
+
+    // Validate problem type
+    const validProblemTypes: ProblemType[] = [
+      'arithmetic',
+      'algebra',
+      'geometry',
+      'word',
+      'multi-step',
+    ];
+    if (!validProblemTypes.includes(problemType as ProblemType)) {
+      res.status(400).json({
+        success: false,
+        error: 'Invalid problem type',
+        message: `Problem type must be one of: ${validProblemTypes.join(', ')}`,
+      });
+      return;
+    }
+
+    // Validate validation result
+    const validResults: Array<'correct' | 'incorrect' | 'partial'> = [
+      'correct',
+      'incorrect',
+      'partial',
+    ];
+    if (!validResults.includes(answerValidationContext.result)) {
+      res.status(400).json({
+        success: false,
+        error: 'Invalid validation result',
+        message: `Validation result must be one of: ${validResults.join(', ')}`,
+      });
+      return;
+    }
+
+    console.log('[Chat Controller] Generating follow-up', {
+      problemType,
+      validationResult: answerValidationContext.result,
+      studentAnswerLength: answerValidationContext.studentAnswer.length,
+    });
+
+    // Generate follow-up message
+    const followUpResult = await generateFollowUp({
+      problemText: problemText.trim(),
+      problemType: problemType as ProblemType,
+      answerValidationContext,
+      conversationHistory: conversationHistory.map(msg => ({
+        role: msg.role === 'user' ? 'user' : 'assistant',
+        content: msg.content,
+      })),
+    });
+
+    console.log('[Chat Controller] Follow-up generated', {
+      messageLength: followUpResult.followUpMessage.length,
+      wasRewritten: followUpResult.wasRewritten,
+    });
+
+    // Return success response
+    const response: FollowUpResponse = {
+      success: true,
+      followUpMessage: followUpResult.followUpMessage,
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    console.error('[Chat Controller] Error generating follow-up', {
+      errorName: error instanceof Error ? error.name : 'Unknown',
+      errorMessage: error instanceof Error ? error.message : String(error),
+    });
+
+    // Return error response
+    const errorResponse: FollowUpErrorResponse = {
+      success: false,
+      error: 'Internal server error',
+      message:
+        error instanceof Error
+          ? error.message
+          : 'Failed to generate follow-up. Please try again.',
+    };
+
+    // Include error code if available
+    if (error instanceof Error && error.name) {
+      errorResponse.code = error.name;
+    }
+
+    res.status(500).json(errorResponse);
+  }
+};
+
+/**
+ * Step-by-step guidance request body
+ */
+export interface StepByStepGuidanceRequest {
+  /**
+   * Problem text
+   */
+  problemText: string;
+  /**
+   * Problem type
+   */
+  problemType: ProblemType;
+  /**
+   * Conversation history (optional)
+   */
+  conversationHistory?: Array<{
+    role: 'user' | 'assistant';
+    content: string;
+  }>;
+}
+
+/**
+ * Step-by-step guidance response
+ */
+export interface StepByStepGuidanceResponse {
+  success: true;
+  guidanceMessage: string;
+}
+
+/**
+ * Step-by-step guidance error response
+ */
+export interface StepByStepGuidanceErrorResponse {
+  success: false;
+  error: string;
+  message: string;
+  code?: string;
+}
+
+/**
+ * Step-by-step guidance endpoint handler
+ *
+ * POST /api/chat/step-by-step-guidance
+ * Generates step-by-step Socratic guidance message
+ */
+export const generateStepByStepGuidanceMessage = async (
+  req: Request<
+    unknown,
+    StepByStepGuidanceResponse | StepByStepGuidanceErrorResponse,
+    StepByStepGuidanceRequest
+  >,
+  res: Response<StepByStepGuidanceResponse | StepByStepGuidanceErrorResponse>
+): Promise<void> => {
+  try {
+    const { problemText, problemType, conversationHistory = [] } = req.body;
+
+    // Validate required fields
+    if (
+      !problemText ||
+      typeof problemText !== 'string' ||
+      problemText.trim().length === 0
+    ) {
+      res.status(400).json({
+        success: false,
+        error: 'No problem set',
+        message: 'Please provide a valid problem text',
+      });
+      return;
+    }
+
+    if (!problemType) {
+      res.status(400).json({
+        success: false,
+        error: 'Invalid problem type',
+        message: 'Please provide a valid problem type',
+      });
+      return;
+    }
+
+    // Validate problem type
+    const validProblemTypes: ProblemType[] = [
+      'arithmetic',
+      'algebra',
+      'geometry',
+      'word',
+      'multi-step',
+    ];
+    if (!validProblemTypes.includes(problemType as ProblemType)) {
+      res.status(400).json({
+        success: false,
+        error: 'Invalid problem type',
+        message: `Problem type must be one of: ${validProblemTypes.join(', ')}`,
+      });
+      return;
+    }
+
+    console.log('[Chat Controller] Generating step-by-step guidance', {
+      problemType,
+      problemLength: problemText.length,
+    });
+
+    // Generate step-by-step guidance message
+    const guidanceResult = await generateStepByStepGuidance({
+      problemText: problemText.trim(),
+      problemType: problemType as ProblemType,
+      conversationHistory: conversationHistory.map(msg => ({
+        role: msg.role === 'user' ? 'user' : 'assistant',
+        content: msg.content,
+      })),
+    });
+
+    console.log('[Chat Controller] Step-by-step guidance generated', {
+      messageLength: guidanceResult.guidanceMessage.length,
+      wasRewritten: guidanceResult.wasRewritten,
+    });
+
+    // Return success response
+    const response: StepByStepGuidanceResponse = {
+      success: true,
+      guidanceMessage: guidanceResult.guidanceMessage,
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    console.error('[Chat Controller] Error generating step-by-step guidance', {
+      errorName: error instanceof Error ? error.name : 'Unknown',
+      errorMessage: error instanceof Error ? error.message : String(error),
+    });
+
+    // Return error response
+    const errorResponse: StepByStepGuidanceErrorResponse = {
+      success: false,
+      error: 'Internal server error',
+      message:
+        error instanceof Error
+          ? error.message
+          : 'Failed to generate step-by-step guidance. Please try again.',
+    };
+
+    // Include error code if available
+    if (error instanceof Error && error.name) {
+      errorResponse.code = error.name;
+    }
+
+    res.status(500).json(errorResponse);
+  }
+};
+
+/**
+ * Initial greeting request body
+ */
+export interface InitialGreetingRequest {
+  /**
+   * Problem text
+   */
+  problemText: string;
+  /**
+   * Problem type
+   */
+  problemType: ProblemType;
+  /**
+   * Prompt type
+   */
+  promptType: GreetingPromptType;
+  /**
+   * Conversation history (optional)
+   */
+  conversationHistory?: Array<{
+    role: 'user' | 'assistant';
+    content: string;
+  }>;
+}
+
+/**
+ * Initial greeting response
+ */
+export interface InitialGreetingResponse {
+  success: true;
+  greetingMessage: string;
+}
+
+/**
+ * Initial greeting error response
+ */
+export interface InitialGreetingErrorResponse {
+  success: false;
+  error: string;
+  message: string;
+  code?: string;
+}
+
+/**
+ * Initial greeting endpoint handler
+ *
+ * POST /api/chat/initial-greeting
+ * Generates initial greeting message when problem is set
+ */
+export const generateInitialGreetingMessage = async (
+  req: Request<
+    unknown,
+    InitialGreetingResponse | InitialGreetingErrorResponse,
+    InitialGreetingRequest
+  >,
+  res: Response<InitialGreetingResponse | InitialGreetingErrorResponse>
+): Promise<void> => {
+  try {
+    const { problemText, problemType, promptType, conversationHistory = [] } = req.body;
+
+    // Validate required fields
+    if (
+      !problemText ||
+      typeof problemText !== 'string' ||
+      problemText.trim().length === 0
+    ) {
+      res.status(400).json({
+        success: false,
+        error: 'No problem set',
+        message: 'Please provide a valid problem text',
+      });
+      return;
+    }
+
+    if (!problemType) {
+      res.status(400).json({
+        success: false,
+        error: 'Invalid problem type',
+        message: 'Please provide a valid problem type',
+      });
+      return;
+    }
+
+    if (!promptType) {
+      res.status(400).json({
+        success: false,
+        error: 'Invalid prompt type',
+        message: 'Please provide a valid prompt type',
+      });
+      return;
+    }
+
+    // Validate problem type
+    const validProblemTypes: ProblemType[] = [
+      'arithmetic',
+      'algebra',
+      'geometry',
+      'word',
+      'multi-step',
+    ];
+    if (!validProblemTypes.includes(problemType as ProblemType)) {
+      res.status(400).json({
+        success: false,
+        error: 'Invalid problem type',
+        message: `Problem type must be one of: ${validProblemTypes.join(', ')}`,
+      });
+      return;
+    }
+
+    // Validate prompt type
+    const validPromptTypes: GreetingPromptType[] = [
+      'initial',
+      'follow-up-1',
+      'follow-up-2',
+      'follow-up-3',
+    ];
+    if (!validPromptTypes.includes(promptType)) {
+      res.status(400).json({
+        success: false,
+        error: 'Invalid prompt type',
+        message: `Prompt type must be one of: ${validPromptTypes.join(', ')}`,
+      });
+      return;
+    }
+
+    console.log('[Chat Controller] Generating initial greeting', {
+      problemType,
+      promptType,
+      problemLength: problemText.length,
+    });
+
+    // Generate initial greeting message
+    const greetingResult = await generateInitialGreeting({
+      problemText: problemText.trim(),
+      problemType: problemType as ProblemType,
+      promptType,
+      conversationHistory: conversationHistory.map(msg => ({
+        role: msg.role === 'user' ? 'user' : 'assistant',
+        content: msg.content,
+      })),
+    });
+
+    console.log('[Chat Controller] Initial greeting generated', {
+      messageLength: greetingResult.greetingMessage.length,
+      wasRewritten: greetingResult.wasRewritten,
+    });
+
+    // Return success response
+    const response: InitialGreetingResponse = {
+      success: true,
+      greetingMessage: greetingResult.greetingMessage,
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    console.error('[Chat Controller] Error generating initial greeting', {
+      errorName: error instanceof Error ? error.name : 'Unknown',
+      errorMessage: error instanceof Error ? error.message : String(error),
+    });
+
+    // Return error response
+    const errorResponse: InitialGreetingErrorResponse = {
+      success: false,
+      error: 'Internal server error',
+      message:
+        error instanceof Error
+          ? error.message
+          : 'Failed to generate initial greeting. Please try again.',
+    };
+
+    // Include error code if available
+    if (error instanceof Error && error.name) {
+      errorResponse.code = error.name;
+    }
+
+    res.status(500).json(errorResponse);
   }
 };
