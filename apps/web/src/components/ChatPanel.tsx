@@ -3,13 +3,11 @@ import type { ChatPanelProps } from '../types';
 import MessageList from './MessageList';
 import LoadingMessage from './LoadingMessage';
 import ProgressIndicator from './ProgressIndicator';
-import EncouragementMessage from './EncouragementMessage';
 import CelebrationMessage from './CelebrationMessage';
 import ErrorMessage from './ErrorMessage';
 import HelpOfferCard from './HelpOfferCard';
 import { useProgressTracking } from '../hooks/useProgressTracking';
 import { useProgressiveEngagement } from '../hooks/useProgressiveEngagement';
-import { generateEncouragementMessage } from '../utils/visualFeedback';
 import { detectAnswer } from '../utils/answerDetection';
 import { apiClient } from '../services/api';
 
@@ -26,10 +24,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
 }) => {
   const [inputValue, setInputValue] = useState('');
   const [internalLoading, setInternalLoading] = useState(false);
-  const [showEncouragement, setShowEncouragement] = useState(false);
-  const [encouragementMessage, setEncouragementMessage] = useState<
-    string | undefined
-  >(undefined);
   const [isCheckingAnswer, setIsCheckingAnswer] = useState(false);
   const [answerCheckResult, setAnswerCheckResult] = useState<{
     isCorrect: boolean;
@@ -174,28 +168,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     }
   }, [messages, recordAttempt, recordResponse, markProgress]);
 
-  // Show encouragement when progress is made or milestones are reached
-  useEffect(() => {
-    if (hasMadeProgressSinceLastCheck || isMilestone) {
-      const message = generateEncouragementMessage(
-        encouragementType,
-        progressLevel
-      );
-      setEncouragementMessage(message);
-      setShowEncouragement(true);
-
-      // Hide encouragement after 3 seconds
-      const timer = setTimeout(() => {
-        setShowEncouragement(false);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [
-    hasMadeProgressSinceLastCheck,
-    isMilestone,
-    encouragementType,
-    progressLevel,
-  ]);
 
   // Auto-scroll to bottom when new messages arrive
   // Only scroll within the messages container, not the entire page
@@ -659,7 +631,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
 
   return (
     <div
-      className="flex h-full flex-col bg-white border-l border-border"
+      className="flex h-full flex-col gradient-background border-l border-primary/30"
       role="region"
       aria-label="Chat conversation"
     >
@@ -680,16 +652,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             attempts={messages.filter(m => m.role === 'student').length}
             showMilestones={true}
             className="mt-3"
-          />
-        )}
-
-        {/* Encouragement Message */}
-        {showEncouragement && encouragementMessage && (
-          <EncouragementMessage
-            type={encouragementType}
-            message={encouragementMessage}
-            animate={true}
-            className="mt-2"
           />
         )}
 
@@ -771,7 +733,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             disabled={
               !inputValue.trim() || isLoading || !problemText || !problemType
             }
-            className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all min-w-[44px] flex items-center justify-center"
+            className="px-6 py-3 bg-accent text-accent-foreground rounded-xl font-medium hover:bg-accent/90 shadow-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all min-w-[44px] flex items-center justify-center"
             aria-label="Send message"
           >
             <svg

@@ -60,23 +60,21 @@ const StatusIndicator: React.FC = () => {
   };
 
   return (
-    <div className="fixed top-4 right-4 z-50">
-      <div className="relative group">
-        <div
-          className={`w-4 h-4 rounded-full ${getStatusColor()} shadow-lg transition-colors duration-300 cursor-pointer hover:scale-110`}
-          title={getStatusTooltip()}
-          aria-label={getStatusTooltip()}
-          role="status"
-        />
-        {/* Optional: Add a pulsing animation for checking state */}
-        {status === 'checking' && (
-          <span className="absolute inset-0 w-4 h-4 rounded-full bg-yellow-500 animate-ping opacity-75" />
-        )}
-        {/* Tooltip on hover */}
-        <div className="absolute top-6 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-          <div className="bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
-            {getStatusTooltip()}
-          </div>
+    <div className="relative group">
+      <div
+        className={`w-4 h-4 rounded-full ${getStatusColor()} shadow-lg transition-colors duration-300 cursor-pointer hover:scale-110`}
+        title={getStatusTooltip()}
+        aria-label={getStatusTooltip()}
+        role="status"
+      />
+      {/* Optional: Add a pulsing animation for checking state */}
+      {status === 'checking' && (
+        <span className="absolute inset-0 w-4 h-4 rounded-full bg-yellow-500 animate-ping opacity-75" />
+      )}
+      {/* Tooltip on hover */}
+      <div className="absolute top-6 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
+        <div className="bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
+          {getStatusTooltip()}
         </div>
       </div>
     </div>

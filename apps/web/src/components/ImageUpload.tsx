@@ -242,7 +242,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
               className={`mt-4 px-6 py-2 rounded-lg font-medium text-base transition-all ${
                 disabled
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-primary text-primary-foreground hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2'
+                  : 'bg-primary text-primary-foreground hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2'
               }`}
               aria-label="Select image file"
             >

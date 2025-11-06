@@ -43,11 +43,11 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
 }) => {
   const getProgressColor = (): string => {
     if (progressPercentage >= 80) {
-      return 'bg-green-500';
+      return 'bg-accent';
     } else if (progressPercentage >= 50) {
-      return 'bg-blue-500';
+      return 'bg-primary-light';
     } else if (progressPercentage >= 25) {
-      return 'bg-yellow-500';
+      return 'bg-primary-bright';
     } else {
       return 'bg-gray-300';
     }
@@ -92,7 +92,12 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
       <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
         <div
           className={`h-full transition-all duration-500 ease-out rounded-full ${getProgressColor()}`}
-          style={{ width: `${progressPercentage}%` }}
+          style={{
+            width: `${progressPercentage}%`,
+            background: progressPercentage >= 50
+              ? `linear-gradient(to right, hsl(var(--color-primary)), hsl(var(--color-accent)))`
+              : undefined,
+          }}
           aria-hidden="true"
         />
       </div>

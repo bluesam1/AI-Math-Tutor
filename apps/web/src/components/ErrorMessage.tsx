@@ -59,9 +59,9 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
       case 'session-expired':
         return 'bg-orange-50 border-orange-200 text-orange-800';
       case 'rate-limit':
-        return 'bg-blue-50 border-blue-200 text-blue-800';
+        return 'bg-blue-50 border-primary-light text-primary';
       case 'invalid-input':
-        return 'bg-purple-50 border-purple-200 text-purple-800';
+        return 'bg-blue-50 border-primary-light text-primary';
       default:
         return 'bg-red-50 border-red-200 text-red-800';
     }
@@ -92,7 +92,7 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
           {errorInfo.retryable && onRetry && (
             <button
               onClick={onRetry}
-              className="mt-3 px-4 py-2 bg-white/50 hover:bg-white/70 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-current"
+              className="mt-3 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary shadow-primary"
               aria-label="Retry"
             >
               Try Again

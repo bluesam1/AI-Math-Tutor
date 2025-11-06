@@ -78,7 +78,7 @@ const CelebrationMessage: React.FC<CelebrationMessageProps> = ({
     <div
       className={`relative rounded-lg p-4 border-2 transition-all duration-500 ${
         isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-2 scale-95'
-      } bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-300 text-yellow-900 shadow-lg ${className}`}
+      } bg-accent text-accent-foreground border-accent shadow-accent ${className}`}
       role="status"
       aria-live="polite"
       aria-label={`Celebration: ${displayMessage}`}
@@ -86,23 +86,28 @@ const CelebrationMessage: React.FC<CelebrationMessageProps> = ({
       {/* Confetti animation effect */}
       {showConfetti && (
         <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-lg">
-          {[...Array(12)].map((_, i) => (
-            <div
-              key={i}
-              className={`absolute w-2 h-2 rounded-full ${
-                ['bg-yellow-400', 'bg-orange-400', 'bg-red-400', 'bg-pink-400'][
-                  i % 4
-                ]
-              } animate-bounce`}
-              style={{
-                left: `${(i * 8.33) % 100}%`,
-                top: '-10px',
-                animationDelay: `${i * 0.1}s`,
-                animationDuration: '1s',
-              }}
-              aria-hidden="true"
-            />
-          ))}
+          {[...Array(12)].map((_, i) => {
+            const colors = [
+              'hsl(var(--color-primary-bright))',
+              'hsl(var(--color-primary-light))',
+              'hsl(var(--color-accent-light))',
+              'hsl(var(--color-accent))',
+            ];
+            return (
+              <div
+                key={i}
+                className="absolute w-2 h-2 rounded-full animate-bounce"
+                style={{
+                  left: `${(i * 8.33) % 100}%`,
+                  top: '-10px',
+                  animationDelay: `${i * 0.1}s`,
+                  animationDuration: '1s',
+                  backgroundColor: colors[i % 4],
+                }}
+                aria-hidden="true"
+              />
+            );
+          })}
         </div>
       )}
 

@@ -59,12 +59,26 @@ const Layout: React.FC<LayoutComponentProps> = ({
   isAnswerTyping = false,
 }) => {
   return (
-    <main className="h-screen w-full overflow-hidden relative">
-      {/* Status indicator - top right */}
-      <StatusIndicator />
+    <main className="h-screen w-full overflow-hidden relative gradient-background">
+      {/* Header with Logo */}
+      <header className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-4 py-3 bg-white/90">
+        <div className="flex items-center gap-3">
+          <img
+            src="/logo.png"
+            alt="Learn Math Logo"
+            className="h-10 w-10 sm:h-12 sm:w-12 object-contain"
+            aria-hidden="true"
+          />
+          <h1 className="text-lg sm:text-xl font-bold text-primary">
+            Learn Math
+          </h1>
+        </div>
+        {/* Status indicator - top right */}
+        <StatusIndicator />
+      </header>
 
       {/* Responsive layout: stacked on mobile/tablet, side-by-side on desktop */}
-      <div className="h-full flex flex-col md:flex-row">
+      <div className="h-full flex flex-col md:flex-row pt-16 sm:pt-20">
         {/* Problem Display Panel - Left side on desktop, top on mobile/tablet */}
         <div className={`w-full ${problem ? 'md:w-1/2' : 'md:w-full'} h-auto md:h-full flex-shrink-0 border-b md:border-b-0 ${problem ? 'md:border-r' : ''} border-border overflow-hidden flex flex-col`}>
           <ProblemPanel

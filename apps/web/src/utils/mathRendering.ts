@@ -15,7 +15,7 @@ export interface MathExpression {
 /**
  * Detects if text contains KaTeX syntax
  * Supports KaTeX format: $...$ (inline), $$...$$ (block)
- * Distinguishes between math expressions and currency
+ * In a math tutoring context, all dollar-wrapped content is treated as math
  */
 export function hasMathSyntax(text: string): boolean {
   // Check for block math: $$...$$
@@ -25,61 +25,19 @@ export function hasMathSyntax(text: string): boolean {
   }
   
   // Check for inline math: $...$ (but not $$)
-  // Only count as math if it looks like math (not currency)
+  // In a math tutoring context, all dollar-wrapped content is math
   const inlineMathRegex = /(?<!\$)\$(?!\$)([^$]+)\$(?!\$)/g;
-  let match;
-  while ((match = inlineMathRegex.exec(text)) !== null) {
-    if (looksLikeMath(match[1].trim())) {
-      return true;
-    }
+  if (inlineMathRegex.test(text)) {
+    return true;
   }
   
   return false;
 }
 
 /**
- * Checks if content looks like math (not just currency)
- * Currency patterns: $50, $18.75 (just a number after $)
- * Math patterns: contains operators, variables, functions, LaTeX commands, etc.
- */
-function looksLikeMath(content: string): boolean {
-  const trimmed = content.trim();
-  
-  // If it's empty or whitespace, it's not math
-  if (!trimmed) {
-    return false;
-  }
-  
-  // If it's just a number (with optional decimal), it's probably currency, not math
-  // Pattern: optional negative sign, digits, optional decimal point and digits
-  // This catches: 4, 3, 50, 18.75, -5, etc.
-  const currencyPattern = /^-?\d+\.?\d*$/;
-  if (currencyPattern.test(trimmed)) {
-    return false;
-  }
-  
-  // If it's just a single digit or simple number, it's likely currency
-  // This is a more strict check for very simple cases like "4" or "3"
-  if (/^-?\d+$/.test(trimmed) && trimmed.length <= 3) {
-    return false;
-  }
-  
-  // Check for math indicators:
-  // - Math operators: +, -, *, /, =, <, >, ≤, ≥, ≠, etc.
-  // - Variables: x, y, z, a, b, c, etc. (single letters)
-  // - LaTeX commands: \frac, \sqrt, \sin, etc.
-  // - Functions: sin, cos, log, etc.
-  // - Parentheses (often used in math expressions)
-  // - Greek letters and other math symbols
-  const mathIndicators = /[+\-*/=<>≤≥≠±×÷]|\\[a-zA-Z]+|\b(sin|cos|tan|log|ln|exp|sqrt|frac|sum|int|lim)\b|\(|\)|[xyzabcαβθπ]/;
-  
-  return mathIndicators.test(trimmed);
-}
-
-/**
  * Finds all math expressions in text
  * Supports KaTeX format: $...$ (inline), $$...$$ (block)
- * Distinguishes between math expressions and currency ($50, $18.75)
+ * In a math tutoring context, all dollar-wrapped content is treated as math
  */
 export function findMathExpressions(text: string): MathExpression[] {
   const expressions: MathExpression[] = [];
@@ -98,7 +56,7 @@ export function findMathExpressions(text: string): MathExpression[] {
 
   // Find KaTeX inline math expressions ($...$ but not $$...$$)
   // We need to be careful not to match block math delimiters
-  // Also exclude currency patterns like $4$, $3$, $50$, etc.
+  // In a math tutoring context, all dollar-wrapped content should be treated as math
   const inlineMathRegex = /(?<!\$)\$(?!\$)([^$]+)\$(?!\$)/g;
   let inlineMatch: RegExpExecArray | null;
   while ((inlineMatch = inlineMathRegex.exec(text)) !== null) {
@@ -112,16 +70,10 @@ export function findMathExpressions(text: string): MathExpression[] {
     if (!isPartOfBlock) {
       const content = inlineMatch[1].trim();
       
-      // Explicitly exclude currency patterns: simple numbers like 4, 3, 50, etc.
-      // This is a more aggressive check to prevent currency from being treated as math
-      const isSimpleNumber = /^-?\d+\.?\d*$/.test(content);
-      if (isSimpleNumber) {
-        // This is currency, not math - skip it
-        continue;
-      }
-      
-      // Only treat as math if it looks like math (not currency)
-      if (looksLikeMath(content)) {
+      // In a math tutoring context, any content wrapped in dollar signs
+      // should be treated as a math expression, including simple numbers
+      // This ensures "$4$" and "$3$" are rendered as math, not displayed with dollar signs
+      if (content) {
         expressions.push({
           type: 'inline',
           content: content,

@@ -1,6 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import CelebrationMessage from './CelebrationMessage';
-import EncouragementMessage from './EncouragementMessage';
 import { Upload, X, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 import type { ProblemType } from '../types';
 import { apiClient } from '../services/api';
@@ -389,7 +388,7 @@ const AnswerInput: React.FC<AnswerInputProps> = ({
 
   return (
     <div
-      className="mt-6 p-5 sm:p-6 bg-white rounded-xl border border-gray-200 shadow-md hover:shadow-lg transition-shadow"
+      className="mt-6 p-5 sm:p-6 bg-white rounded-xl border border-primary/30 shadow-card hover:shadow-primary transition-shadow"
       role="region"
       aria-label="Answer submission section"
     >
@@ -408,7 +407,7 @@ const AnswerInput: React.FC<AnswerInputProps> = ({
               }
             }}
             disabled={isInputDisabled}
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-primary text-white hover:bg-primary/90 hover:text-white hover:shadow-md active:scale-[0.98] rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-accent text-accent-foreground hover:bg-accent/90 hover:shadow-accent active:scale-[0.98] rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
             aria-label="Upload handwritten answer"
           >
             <Upload className="w-4 h-4" aria-hidden="true" />
@@ -453,17 +452,6 @@ const AnswerInput: React.FC<AnswerInputProps> = ({
           />
         </div>
       )}
-
-      {/* Encouragement message for incorrect/partial answers */}
-      {(answerState === 'incorrect' || answerState === 'partial') &&
-        feedbackMessage && (
-          <div className="mb-4">
-            <EncouragementMessage
-              type={answerState === 'partial' ? 'progress' : 'effort'}
-              message={feedbackMessage}
-            />
-          </div>
-        )}
 
       {/* Image preview (if uploaded) */}
       {previewUrl && selectedFile && (
@@ -560,10 +548,10 @@ const AnswerInput: React.FC<AnswerInputProps> = ({
             type="button"
             onClick={handleCheckAnswer}
             disabled={isButtonDisabled}
-            className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-base transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary min-h-[44px] shadow-sm ${
+            className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-base transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent min-h-[44px] shadow-sm ${
               isButtonDisabled
                 ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                : 'bg-primary text-white hover:bg-primary/90 hover:shadow-md active:scale-[0.98]'
+                : 'bg-accent text-accent-foreground hover:bg-accent/90 hover:shadow-accent active:scale-[0.98]'
             }`}
             aria-label="Check answer"
             aria-busy={answerState === 'checking'}

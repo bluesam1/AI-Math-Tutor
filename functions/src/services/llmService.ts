@@ -388,6 +388,8 @@ When a student is stuck (after 2+ turns without progress), provide more concrete
 
 CRITICAL: When referencing the problem text in your responses, PRESERVE ALL SPACES exactly as shown. Do not remove spaces between words or numbers. For example, if the problem says "Tom has $50. He spends $18.75", keep it exactly as "Tom has $50. He spends $18.75" with all spaces intact.
 
+IMPORTANT: Do NOT wrap simple numbers (like 1, 2, 5, 10) in dollar signs ($1$, $2$, etc.) unless they are part of a mathematical expression. Simple numbers should be written as plain text: "1", "2", "5", not "$1$", "$2$", "$5$". Only use dollar signs for actual mathematical expressions like "$x + 5$" or "$\\frac{1}{2}$".
+
 Problem Type: ${options.problemType}
 Current Problem: ${options.problemText}`;
 
@@ -529,6 +531,20 @@ Current Problem: ${options.problemText}`;
         }
       }
     }
+    
+    // Fix simple numbers wrapped in dollar signs (e.g., $1$, $2$, $5$)
+    // These should be plain text, not math expressions
+    // Pattern: $ followed by a simple number (digits only, possibly with decimal) followed by $
+    const simpleNumberMathPattern = /\$(\d+\.?\d*)\$/g;
+    responseText = responseText.replace(simpleNumberMathPattern, (match, number) => {
+      // Only fix if it's a simple number (not a complex expression)
+      // Check if it's just digits (possibly with decimal point)
+      if (/^\d+\.?\d*$/.test(number)) {
+        console.log(`[LLM Service] Fixed simple number in math delimiters: "${match}" -> "${number}"`);
+        return number; // Remove dollar signs, keep the number
+      }
+      return match; // Keep complex expressions as-is
+    });
 
     console.log('[LLM Service] *** NORMALIZATION COMPLETE ***');
     console.log('[LLM Service] Final response text:', JSON.stringify(responseText));

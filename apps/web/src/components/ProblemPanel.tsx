@@ -67,7 +67,7 @@ const ProblemPanel: React.FC<ExtendedProblemPanelProps> = ({
 
   return (
     <div
-      className={`flex h-full flex-col bg-gradient-to-br from-background-secondary to-gray-50 overflow-y-auto ${
+      className={`flex h-full flex-col gradient-background overflow-y-auto ${
         problem ? 'p-4 sm:p-6 lg:p-8' : ''
       }`}
       role="region"
@@ -92,7 +92,7 @@ const ProblemPanel: React.FC<ExtendedProblemPanelProps> = ({
                 type="button"
                 onClick={handleChangeProblem}
                 disabled={isLoading}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-base transition-all bg-gray-100 text-text-secondary hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-base transition-all bg-primary text-primary-foreground hover:bg-primary/90 shadow-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Change problem"
                 aria-expanded="false"
               >
@@ -151,7 +151,7 @@ const ProblemPanel: React.FC<ExtendedProblemPanelProps> = ({
 
           {/* Problem Statement */}
           <article
-            className="flex-1 bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 lg:p-8 shadow-sm border-2 border-primary/20 min-h-0 overflow-y-auto focus-within:ring-2 focus-within:ring-primary/20 focus-within:ring-offset-2"
+            className="flex-1 bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 lg:p-8 shadow-card border-2 border-primary/30 min-h-0 overflow-y-auto focus-within:ring-2 focus-within:ring-primary/20 focus-within:ring-offset-2"
             aria-labelledby="problem-heading"
             tabIndex={0}
           >

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Epic 3 delivers the visual and mathematical rendering capabilities that complete the system, ensuring the product is fully functional and ready for deployment. This epic includes 11 stories that build upon each other to create a polished, age-appropriate user experience.
+Epic 3 delivers the visual and mathematical rendering capabilities that complete the system, ensuring the product is fully functional and ready for deployment. This epic includes 14 stories that build upon each other to create a polished, age-appropriate user experience with cohesive branding.
 
 ## Story Dependencies
 
@@ -34,6 +34,11 @@ graph TD
     S3.10 --> S3.6
     S3.11[Story 3.11: Clean Problem Entry] --> S3.5
     S3.11 --> S3.6
+    S3.4 --> S3.12[Story 3.12: Logo-Based Color System]
+    S3.12 --> S3.13[Story 3.13: Component Color Redesign]
+    S3.13 --> S3.14[Story 3.14: Visual Polish & Branding]
+    S3.14 --> S3.5
+    S3.14 --> S3.6
 ```
 
 ## Recommended Implementation Order
@@ -90,21 +95,40 @@ graph TD
    - **Dependencies:** Stories 3.7, 1.8, 3.2 (Answer checking service, Problem Panel, Visual Feedback components exist)
    - Required by: Stories 3.5, 3.6
 
-### Phase 4: Testing & Polish (Stories 3.5, 3.6)
+### Phase 4: Color Theme & Branding (Stories 3.12, 3.13, 3.14)
+
+**Goal:** Implement cohesive logo-based color system and branding
+
+9. **Story 3.12: Logo-Based Color System Foundation**
+   - Establishes logo-based color palette in CSS
+   - **Dependencies:** Story 3.4 (Age-Appropriate Styling must exist)
+   - Required by: Stories 3.13, 3.14
+
+10. **Story 3.13: Component Color Redesign**
+   - Updates all components to use logo-based colors
+   - **Dependencies:** Story 3.12 (Color system must be established)
+   - Required by: Story 3.14
+
+11. **Story 3.14: Visual Polish & Branding**
+   - Adds gradients, shadows, animations, and logo integration
+   - **Dependencies:** Story 3.13 (Components must use new colors)
+   - Required by: Stories 3.5, 3.6
+
+### Phase 5: Testing & Polish (Stories 3.5, 3.6)
 
 **Goal:** Comprehensive testing and final polish
 
-9. **Story 3.5: Comprehensive Testing Across All 5 Problem Types** ⭐ Critical
+12. **Story 3.5: Comprehensive Testing Across All 5 Problem Types** ⭐ Critical
    - Validates system works for all problem types
-   - **Dependencies:** All previous stories (Epic 1, Epic 2, Stories 3.1-3.4, 3.7-3.10)
+   - **Dependencies:** All previous stories (Epic 1, Epic 2, Stories 3.1-3.4, 3.7-3.11, 3.12-3.14)
    - Required by: Story 3.6
 
-10. **Story 3.6: Final UI Polish & Error Handling** ⭐ Final
+13. **Story 3.6: Final UI Polish & Error Handling** ⭐ Final
    - Final polish and error handling
-   - **Dependencies:** All previous stories (Epic 1, Epic 2, Stories 3.1-3.5, 3.7-3.10)
+   - **Dependencies:** All previous stories (Epic 1, Epic 2, Stories 3.1-3.5, 3.7-3.11, 3.12-3.14)
    - **Final Story:** Completes Epic 3
 
-11. **Story 3.11: Clean Problem Entry Screen**
+14. **Story 3.11: Clean Problem Entry Screen**
    - Clean, minimal problem entry interface
    - **Dependencies:** Stories 1.8, 3.6 (ProblemPanel exists, UI polish established)
    - Required by: Stories 3.5, 3.6
@@ -365,6 +389,101 @@ graph TD
 
 ---
 
+### Story 3.12: Logo-Based Color System Foundation
+
+**Priority:** High  
+**Complexity:** Low-Medium  
+**Dependencies:** Story 3.4  
+**Estimate:** 1-2 days
+
+**What it delivers:**
+
+- Logo-based color palette extracted from Learn Math logo
+- CSS custom properties updated with HSL color values
+- Primary colors: Blues (dark, light, sky blue)
+- Accent colors: Lime green (vibrant and light variants)
+- Background colors: Sky blue tint and soft grey
+- Text colors: Dark grey and medium grey
+- WCAG AA contrast compliance verification
+- Backward compatibility with existing components
+
+**Key Files:**
+
+- `apps/web/src/styles/globals.css` - Color system overhaul
+
+---
+
+### Story 3.13: Component Color Redesign
+
+**Priority:** High  
+**Complexity:** Medium  
+**Dependencies:** Story 3.12  
+**Estimate:** 3-4 days
+
+**What it delivers:**
+
+- All components updated to use logo-based colors
+- Layout component with logo and gradients
+- Problem Panel with logo-inspired colors
+- Chat Panel with redesigned message bubbles (blue for student, green accent for tutor)
+- Problem Input with brand-colored buttons
+- Message Item with logo blue (not indigo)
+- Answer Input with lime green primary button
+- Empty State with gradient background
+- Visual feedback components with brand colors
+- Consistent button styling throughout
+
+**Key Files:**
+
+- `apps/web/src/components/Layout.tsx`
+- `apps/web/src/components/ProblemPanel.tsx`
+- `apps/web/src/components/ChatPanel.tsx`
+- `apps/web/src/components/ProblemInput.tsx`
+- `apps/web/src/components/MessageItem.tsx`
+- `apps/web/src/components/AnswerInput.tsx`
+- `apps/web/src/components/EmptyState.tsx`
+- `apps/web/src/components/CelebrationMessage.tsx`
+- `apps/web/src/components/EncouragementMessage.tsx`
+- `apps/web/src/components/ErrorMessage.tsx`
+- `apps/web/src/components/ProgressIndicator.tsx`
+- `apps/web/src/components/HelpOfferCard.tsx`
+- `apps/web/src/components/ExampleProblems.tsx`
+
+---
+
+### Story 3.14: Visual Polish & Branding
+
+**Priority:** High  
+**Complexity:** Medium  
+**Dependencies:** Story 3.13  
+**Estimate:** 3-4 days
+
+**What it delivers:**
+
+- Gradients throughout (sky blue to lighter blue, lime green to lighter green)
+- Colored shadows (primary blue, lime green, subtle depth)
+- Smooth animations (color transitions, scale animations, loading animations)
+- Micro-interactions (button hover, input focus, success feedback)
+- Logo integration (header, empty state, loading states, favicon)
+- Logo-inspired elements (calculator icon, math symbols in lime green)
+- Responsive design maintained
+- Accessibility verified
+- Cross-browser compatibility verified
+- Final polish complete
+
+**Key Files:**
+
+- `apps/web/src/components/Layout.tsx` - Logo integration
+- `apps/web/src/components/EmptyState.tsx` - Logo integration
+- `apps/web/src/components/LoadingIndicator.tsx` - Logo animation
+- `apps/web/src/components/CelebrationMessage.tsx` - Brand color animations
+- `apps/web/src/components/EncouragementMessage.tsx` - Brand color animations
+- `apps/web/src/styles/globals.css` - Gradients, shadows, animations
+- `apps/web/public/` - Favicon
+- All component files - Final polish pass
+
+---
+
 ### Story 3.6: Final UI Polish & Error Handling
 
 **Priority:** Critical  
@@ -414,7 +533,15 @@ graph TD
 
 **Deliverable:** Answer validation and automatic engagement features ready, including dedicated Answer field
 
-### Phase 4: Testing & Polish (Week 4-5)
+### Phase 4: Color Theme & Branding (Week 4-5)
+
+- Story 3.12: Logo-Based Color System Foundation
+- Story 3.13: Component Color Redesign
+- Story 3.14: Visual Polish & Branding
+
+**Deliverable:** Cohesive logo-based color system and branding complete
+
+### Phase 5: Testing & Polish (Week 5-6)
 
 - Story 3.5: Comprehensive Testing
 - Story 3.6: Final Polish
@@ -424,9 +551,9 @@ graph TD
 
 ## Total Epic Estimate
 
-**Total Stories:** 11  
-**Total Estimated Time:** 27-38 days (~5-7 weeks)  
-**Critical Path:** Stories 3.1 → 3.3 → 3.7 → 3.8 → 3.9 → 3.10 → 3.5 → 3.6
+**Total Stories:** 14  
+**Total Estimated Time:** 34-48 days (~6-8 weeks)  
+**Critical Path:** Stories 3.1 → 3.3 → 3.4 → 3.12 → 3.13 → 3.14 → 3.7 → 3.8 → 3.9 → 3.10 → 3.5 → 3.6
 
 ## Key Integration Points
 
@@ -439,8 +566,11 @@ graph TD
 7. **Help Offer Card (3.9)** → Enhances: Engagement features, Testing (3.5)
 8. **Dedicated Answer Field (3.10)** → Enhances: Answer submission clarity, Testing (3.5)
 9. **Comprehensive Testing (3.5)** → Validates: All previous work, Prepares for: Final Polish (3.6)
-10. **Final Polish (3.6)** → Completes: Epic 3, Prepares for: Deployment
-11. **Clean Problem Entry (3.11)** → Enhances: Problem entry UX, Testing (3.5), Final Polish (3.6)
+10. **Logo-Based Color System (3.12)** → Establishes: Color foundation, Required by: Component Redesign (3.13)
+11. **Component Color Redesign (3.13)** → Updates: All components, Required by: Visual Polish (3.14)
+12. **Visual Polish & Branding (3.14)** → Adds: Gradients, animations, logo, Required by: Testing (3.5), Final Polish (3.6)
+13. **Final Polish (3.6)** → Completes: Epic 3, Prepares for: Deployment
+14. **Clean Problem Entry (3.11)** → Enhances: Problem entry UX, Testing (3.5), Final Polish (3.6)
 
 ## Testing Strategy
 

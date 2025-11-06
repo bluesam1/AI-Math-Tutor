@@ -231,7 +231,7 @@ const ProblemInput: React.FC<ProblemInputProps> = ({
                 }
               }}
               disabled={isInputDisabled}
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-primary text-white hover:bg-primary/90 hover:text-white hover:shadow-md active:scale-[0.98] rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-accent text-accent-foreground hover:bg-accent/90 hover:shadow-accent active:scale-[0.98] rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
               aria-label="Upload problem image"
             >
               <Upload className="w-4 h-4" aria-hidden="true" />
@@ -362,7 +362,7 @@ const ProblemInput: React.FC<ProblemInputProps> = ({
               className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-base transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary min-h-[44px] shadow-sm ${
                 isButtonDisabled
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                  : 'bg-primary text-white hover:bg-primary/90 hover:shadow-md active:scale-[0.98]'
+                  : 'bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-primary active:scale-[0.98]'
               }`}
               aria-label="Submit math problem"
             >

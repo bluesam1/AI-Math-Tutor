@@ -5,44 +5,47 @@ All colors MUST be HSL values.
 */
 
 @theme {
-  /* Age-Appropriate Color Palette for 6th Grade (ages 11-12) */
-  /* Primary palette - Friendly blue for key interactions */
-  --color-primary: 217 91% 60%; /* #3B82F6 Blue - friendly and engaging */
+  /* Logo-Based Color Palette - Learn Math Brand Colors */
+  /* Primary Blues - From logo */
+  --color-primary: 217 65% 35%; /* #1E3A8A - Medium to Dark Blue - Primary brand color */
+  --color-primary-light: 217 91% 65%; /* #60A5FA - Lighter Blue - Secondary buttons, accents, hover states */
+  --color-primary-bright: 192 100% 50%; /* #00C9FF - Bright Cyan/Sky Blue - Backgrounds, gradients */
   --color-primary-foreground: 0 0% 100%;
   
-  /* Success/Secondary - Green for positive feedback */
-  --color-secondary: 142 76% 36%; /* #10B981 Emerald - positive and encouraging */
-  --color-secondary-foreground: 0 0% 100%;
-  
-  /* Accent - Warm orange for encouragement */
-  --color-accent: 38 92% 50%; /* #F59E0B Amber - warm and encouraging */
+  /* Accent Green - From logo calculator */
+  --color-accent: 75 80% 45%; /* #84CC16 - Vibrant Lime Green - Success states, celebrations, calculator accents */
+  --color-accent-light: 75 85% 55%; /* #A3E635 - Lighter Lime Green - Light accent variant */
   --color-accent-foreground: 0 0% 100%;
+  
+  /* Success/Secondary - Use accent green */
+  --color-secondary: 75 80% 45%; /* #84CC16 - Lime Green - positive and encouraging */
+  --color-secondary-foreground: 0 0% 100%;
   
   /* Destructive - Soft red for errors (age-appropriate) */
   --color-destructive: 0 84% 60%; /* #EF4444 Red - clear but not alarming */
   --color-destructive-foreground: 0 0% 100%;
   
-  /* Background colors - Clean and friendly */
-  --color-background: 0 0% 100%; /* White - clean and clear */
-  --color-background-secondary: 210 20% 98%; /* Gray-50 - soft and friendly */
-  --color-foreground: 217 33% 17%; /* Gray-800 - readable and clear */
+  /* Background colors - Logo-inspired */
+  --color-background: 192 100% 98%; /* Sky blue tint - Primary background */
+  --color-background-secondary: 220 14% 96%; /* #F3F4F6 - Soft grey - Secondary background */
+  --color-foreground: 217 33% 17%; /* #1F2937 - Dark grey/black - Primary text */
   
   /* Text colors - High contrast for readability */
-  --color-text-primary: 217 33% 17%; /* Gray-800 - WCAG AA compliant */
-  --color-text-secondary: 220 9% 46%; /* Gray-500 - secondary text */
+  --color-text-primary: 217 33% 17%; /* #1F2937 - Dark grey - WCAG AA compliant */
+  --color-text-secondary: 217 20% 45%; /* Medium grey - secondary text */
   
   /* UI elements - Friendly borders */
-  --color-border: 214 32% 91%; /* Gray-200 - subtle borders */
+  --color-border: 214 32% 91%; /* #E5E7EB - Light grey - subtle borders */
   --color-input: 214 32% 91%;
-  --color-ring: 217 91% 60%; /* Primary color for focus */
+  --color-ring: 217 65% 35%; /* Primary blue for focus */
   
   /* Card */
   --color-card: 0 0% 100%;
   --color-card-foreground: 217 33% 17%;
   
   /* Muted */
-  --color-muted: 210 20% 98%;
-  --color-muted-foreground: 220 9% 46%;
+  --color-muted: 220 14% 96%;
+  --color-muted-foreground: 217 20% 45%;
   
   /* Popover */
   --color-popover: 0 0% 100%;
@@ -148,6 +151,14 @@ All colors MUST be HSL values.
     background-color: hsl(var(--color-primary));
   }
   
+  .bg-primary-light {
+    background-color: hsl(var(--color-primary-light));
+  }
+  
+  .bg-primary-bright {
+    background-color: hsl(var(--color-primary-bright));
+  }
+  
   .text-primary-foreground {
     color: hsl(var(--color-primary-foreground));
   }
@@ -156,8 +167,20 @@ All colors MUST be HSL values.
     background-color: hsl(var(--color-secondary));
   }
   
+  .bg-accent {
+    background-color: hsl(var(--color-accent));
+  }
+  
+  .bg-accent-light {
+    background-color: hsl(var(--color-accent-light));
+  }
+  
   .text-secondary-foreground {
     color: hsl(var(--color-secondary-foreground));
+  }
+  
+  .text-accent-foreground {
+    color: hsl(var(--color-accent-foreground));
   }
   
   .border-border {
@@ -168,8 +191,42 @@ All colors MUST be HSL values.
     border-color: hsl(var(--color-input));
   }
   
+  .border-primary {
+    border-color: hsl(var(--color-primary));
+  }
+  
+  .border-accent {
+    border-color: hsl(var(--color-accent));
+  }
+  
   .ring-ring {
     --tw-ring-color: hsl(var(--color-ring));
+  }
+  
+  /* Logo-based gradients */
+  .gradient-primary {
+    background: linear-gradient(to bottom right, hsl(var(--color-primary-bright)), hsl(var(--color-primary-light)));
+  }
+  
+  .gradient-accent {
+    background: linear-gradient(to bottom right, hsl(var(--color-accent)), hsl(var(--color-accent-light)));
+  }
+  
+  .gradient-background {
+    background: linear-gradient(to bottom, hsl(var(--color-primary-bright) / 0.1), hsl(var(--color-background)));
+  }
+  
+  /* Colored shadows */
+  .shadow-primary {
+    box-shadow: 0 4px 6px -1px hsl(var(--color-primary) / 0.2), 0 2px 4px -1px hsl(var(--color-primary) / 0.1);
+  }
+  
+  .shadow-accent {
+    box-shadow: 0 4px 6px -1px hsl(var(--color-accent) / 0.2), 0 2px 4px -1px hsl(var(--color-accent) / 0.1);
+  }
+  
+  .shadow-card {
+    box-shadow: 0 1px 3px 0 hsl(var(--color-primary) / 0.1), 0 1px 2px -1px hsl(var(--color-primary) / 0.1);
   }
 }
 
@@ -189,6 +246,93 @@ body {
   overflow: hidden;
 }
 
+/* Smooth transitions for interactive elements */
+@layer base {
+  button, a, input, textarea, select {
+    transition: all 0.2s ease-in-out;
+  }
+  
+  button:hover {
+    transform: translateY(-1px);
+  }
+  
+  button:active {
+    transform: translateY(0);
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slideIn {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.2s ease-out;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
 /* Respect reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -197,5 +341,9 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+  
+  button:hover {
+    transform: none;
   }
 }

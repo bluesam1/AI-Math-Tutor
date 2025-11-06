@@ -52,7 +52,15 @@ const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({
   if (fullScreen) {
     return (
       <div className="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center">
-        {content}
+        <div className="flex flex-col items-center gap-4">
+          <img
+            src="/logo.png"
+            alt="Learn Math Logo"
+            className="h-16 w-16 object-contain animate-pulse"
+            aria-hidden="true"
+          />
+          {content}
+        </div>
       </div>
     );
   }
